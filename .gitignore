@@ -1,0 +1,11 @@
+__pycache__
+venv/
+.idea/
+*.iml
+target/
+*.env
+sbt-cache/
+.jvmopts
+.metals/
+.bloop/
+metals.sbt
