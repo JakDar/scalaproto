@@ -2,12 +2,14 @@ package com.github.jakdar.scalaproto
 
 import cats.effect.{ExitCode, IO, IOApp}
 import com.typesafe.config.ConfigFactory
-import scala.concurrent.ExecutionContext.Implicits.global
+import fastparse._
+import com.github.jakdar.scalaproto.scala.ScalaParser
+import com.github.jakdar.scalaproto.proto2.Proto2Generator
+object Main extends App {
 
-object Main extends IOApp {
+  val example = "case class Ala(id:String, ola:Int, time :ZonedDateTime)"
 
-  val app = new Application(???)
-
-  override def run(args: List[String]): IO[ExitCode] = ???
+  val Parsed.Success(parsed, _) = parse(example, ScalaParser.program(_))
+  print(Proto2Generator.generateClass(parsed))
 
 }
