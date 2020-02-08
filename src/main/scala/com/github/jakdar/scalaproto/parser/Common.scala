@@ -19,11 +19,13 @@ object Common {
 
   def NotNewline[_: P]: P[Unit] = P(&(WS ~ !Newline))
 
+  def Num[_: P] = P(CharIn("0-9").rep().!).map(_.toInt)
+
   def OneNLMax[_: P]: P[Unit] = {
     def ConsumeComments = P((WSChars.? ~ NoTrace(Comment) ~ WSChars.? ~ Newline).rep())
     P(NoCut(NoTrace(WS ~ Newline.? ~ ConsumeComments ~ NotNewline)))
   }
 
-  def TrailingComma[_: P]: P[Unit] = P(("," ~ WS ~ Newline).?)
+  def TrailingComma[_: P]: P[Unit] = P(("," ~ WS.? ~ Newline.?).?)
 
 }

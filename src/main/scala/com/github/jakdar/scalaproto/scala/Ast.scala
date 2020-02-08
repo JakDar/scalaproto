@@ -1,4 +1,4 @@
-package com.github.jakdar.scalaproto.parser
+package com.github.jakdar.scalaproto.scala
 
 import cats.data.NonEmptyList
 
@@ -13,7 +13,7 @@ object Ast {
   case class UniHigherTypeIdentifer(id: Identifier, internal: SimpleTypeIdentifier) extends TypeIdentifier
 
   case class TypePath(init: List[Identifier], last: TypeIdentifier) {
-    def initString = init.fold("")(_ + "." + _)
+    def initString = init.map(_.value).fold("")(_ + "." + _)
   }
 
   case class ArgList(args: List[(Identifier, TypePath)]) {

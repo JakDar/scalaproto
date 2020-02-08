@@ -1,6 +1,5 @@
 package com.github.jakdar.scalaproto.proto2
-import com.github.jakdar.scalaproto.parser._
-import Ast._
+import com.github.jakdar.scalaproto.scala.Ast._
 import mouse.all._
 
 object Proto2Generator {

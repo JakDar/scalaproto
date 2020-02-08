@@ -1,12 +1,11 @@
 package com.github.jakdar.scalaproto
 
-import cats.effect.Timer
 import com.typesafe.scalalogging.StrictLogging
 import cats.effect.{ContextShift, IO}
 
-import scala.concurrent.ExecutionContext
+import _root_.scala.concurrent.ExecutionContext
 
-class Application(config: ConfigValues)(
+class Application(
     implicit ec: ExecutionContext,
     cs: ContextShift[IO]
 ) extends StrictLogging {
