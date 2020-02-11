@@ -1,6 +1,5 @@
 package com.github.jakdar.scalaproto.proto2
 
-import cats.data._
 import com.github.jakdar.scalaproto.parser._
 import Ast._, Common._
 import fastparse._

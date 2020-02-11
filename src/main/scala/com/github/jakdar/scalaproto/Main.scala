@@ -1,29 +1,21 @@
 package com.github.jakdar.scalaproto
 
 import fastparse._
-import com.github.jakdar.scalaproto.scala.ScalaParser
+import com.github.jakdar.scalaproto.scala.{ScalaGenerator, ScalaParser}
 import com.github.jakdar.scalaproto.proto2.Proto2Generator
+import com.github.jakdar.scalaproto.proto2.Proto2Parser
+
 object Main extends App {
 
-  val example                   = """
-case class Ala(
-    id:Option[String],
- ola:List[Int],
- time :Option[ZonedDateTime]
-)
+  val mode = args(0)
+  val code = args(1).trim()
 
-
-  case class Ola(
-      id: String,
-      mamacita: Boolean,
-      ola: Option[Int]
-  )
-
-""".trim()
-  val Parsed.Success(parsed, _) = parse(example, ScalaParser.program(_))
-  parsed.map(Proto2Generator.generateClass).foreach(println)
-  // val typeEx = "Alamakota"
-  // val Parsed.Success(parsed, _) = parse(typeEx, ScalaParser.typePath(_))
-  // println(parsed)
-
+  mode match {
+    case "to-proto" =>
+      val Parsed.Success(parsed, _) = parse(code, ScalaParser.program(_))
+      print(parsed.map(Proto2Generator.generateClass).fold("")(_ + "\n" + _))
+    case "to-scala" =>
+      val Parsed.Success(parsed, _) = parse(code, Proto2Parser.program(_))
+      print(parsed.map(ScalaGenerator.generateClass).fold("")(_ + "\n" + _))
+  }
 }
