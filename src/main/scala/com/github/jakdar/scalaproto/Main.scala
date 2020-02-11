@@ -18,4 +18,5 @@ object Main extends App {
       val Parsed.Success(parsed, _) = parse(code, Proto2Parser.program(_))
       print(parsed.map(ScalaGenerator.generateClass).fold("")(_ + "\n" + _))
   }
+
 }

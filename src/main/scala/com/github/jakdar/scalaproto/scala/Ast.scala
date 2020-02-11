@@ -6,14 +6,19 @@ object Ast {
 
   case class Identifier(value: String)
 
-  sealed trait TypeIdentifier
+  sealed trait TypeIdentifier {
+    def isSingleType = this match {
+      case _: SimpleTypeIdentifier => true
+      case _                       => false
+    }
+  }
 
   case class SimpleTypeIdentifier(id: Identifier) extends TypeIdentifier
 
-  case class UniHigherTypeIdentifer(id: Identifier, internal: SimpleTypeIdentifier) extends TypeIdentifier
+  case class HigherTypeIdentifer(id: Identifier, internal: NonEmptyList[TypePath]) extends TypeIdentifier
 
-  case class TypePath(init: List[Identifier], last: TypeIdentifier) {
-    def initString = init.map(_.value).fold("")(_ + "." + _)
+  case class TypePath(packagePath: List[Identifier], typeId: TypeIdentifier) {
+    def initString = packagePath.map(_.value).fold("")(_ + "." + _)
   }
 
   case class ArgList(args: List[(Identifier, TypePath)]) {

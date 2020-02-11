@@ -13,9 +13,11 @@ object ScalaParser {
   def identifier[_: P]: P[Ast.Identifier] =
     P(CharsWhileIn("0-9a-zA-Z_") !).map(Identifier(_)) // TODO:bcm disallow start with 0-9
 
-  def higherTypeIdentifier[_: P]: P[UniHigherTypeIdentifer] = P(identifier ~ "[" ~ identifier ~ "]").map { // TODO - not only unitype
-    case (external, internal) => UniHigherTypeIdentifer(id = external, internal = SimpleTypeIdentifier(internal))
-  }
+  def higherTypeIdentifier[_: P]: P[HigherTypeIdentifer] =
+    P(identifier ~ "[" ~ (typePath ~ ",").rep() ~ typePath ~ "]").map { // TODO - not only unitype
+      case (external, internal, internalLast) =>
+        HigherTypeIdentifer(id = external, internal = NonEmptyList.fromListUnsafe(internal.toList :+ internalLast))
+    }
   def simpleTypeIdentifier[_: P]: P[SimpleTypeIdentifier] = P(identifier).map(SimpleTypeIdentifier)
 
   def typePath[_: P] = P((identifier ~ ".").rep() ~ (higherTypeIdentifier | simpleTypeIdentifier)).map {
@@ -25,8 +27,8 @@ object ScalaParser {
   def argpair[_: P]       = P(identifier ~ ":" ~ typePath)
   def comma_argpair[_: P] = P(identifier ~ ":" ~ typePath ~ "," ~ WS.? ~ Newline.?)
 
-  def arglist[_: P] = P(OneNLMax ~ "(" ~ "implicit".? ~ comma_argpair.rep() ~ argpair ~ ",".? ~ ")").map { //FIXME - last comma doesn't work
-    case (argpairList, l) => ArgList(argpairList.toList :+ l)
+  def arglist[_: P] = P(OneNLMax ~ "(" ~ "implicit".? ~ comma_argpair.rep() ~ argpair ~ ")" ~ ("extends" ~ typePath).?).map {
+    case (argpairList, l, _) => ArgList(argpairList.toList :+ l)
   }
 
   def clazz[_: P] = P("case".? ~ "class" ~ identifier ~ arglist.rep() ~ WS.? ~ Newline.?).map {

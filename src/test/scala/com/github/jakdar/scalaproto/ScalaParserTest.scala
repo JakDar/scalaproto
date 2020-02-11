@@ -6,7 +6,7 @@ import fastparse.Parsed
 import com.github.jakdar.scalaproto.scala.ScalaParser
 import com.github.jakdar.scalaproto.proto2.Proto2Generator
 
-class ScalaToProto extends FlatSpec {
+class ScalaParserTest extends FlatSpec {
 
   "scala to proto" should "work in basic case " in {
 
@@ -22,7 +22,8 @@ class ScalaToProto extends FlatSpec {
                 id: String,
                 mamacita: Boolean,
                 ola: Option[Int]
-            )
+            ) extends Ala[Makota,and.it.is.fasinating.That[It.Works],
+            Psa]
 
 """.trim()
     val Parsed.Success(parsed, _) = parse(example, ScalaParser.program(_))

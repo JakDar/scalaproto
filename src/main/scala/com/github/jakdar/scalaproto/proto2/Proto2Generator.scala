@@ -1,6 +1,7 @@
 package com.github.jakdar.scalaproto.proto2
 import com.github.jakdar.scalaproto.scala.Ast._
 import mouse.all._
+import cats.syntax.option.catsSyntaxOptionId
 
 object Proto2Generator {
 
@@ -22,20 +23,29 @@ object Proto2Generator {
   }
 
   private val specialTypes = Map(
-    "Option" -> "optional",
-    "List"   -> "repeated",
-    "Seq"    -> "repeated",
-    "Set"    -> "repeated",
-    "Array"  -> "repeated"
+    "Option"       -> "optional",
+    "List"         -> "repeated",
+    "Seq"          -> "repeated",
+    "Set"          -> "repeated",
+    "Array"        -> "repeated",
+    "NonEmptyList" -> "repeated"
   )
 
   private def fieldFormatter(name: Identifier, typePath: TypePath, id: Int) = {
-    typePath.last match {
-      case UniHigherTypeIdentifer(Identifier(specTypeId), simpleType) =>
-        val prefix   = specialTypes.getOrElse(specTypeId, "required")
-        val typeName = specialTypes.contains(specTypeId).fold(t = formatSimpleType(simpleType), f = specTypeId)
+    typePath.typeId match {
+      case HigherTypeIdentifer(Identifier(specTypeId), typeArgs) =>
+        if (typeArgs.size == 1 && typeArgs.head.typeId.isSingleType) {
 
-        s"$prefix $typeName ${name.value} = $id;"
+          val prefix = specialTypes.getOrElse(specTypeId, "required")
+
+          val simpleType = typeArgs.head.typeId.some.collect { case s: SimpleTypeIdentifier => s }.get
+
+          val typeName = specialTypes.contains(specTypeId).fold(t = formatSimpleType(simpleType), f = specTypeId) // TODO:bcm
+
+          s"$prefix $typeName ${name.value} = $id;"
+        } else {
+          throw new IllegalArgumentException("Cannot map to proto complex scala syntax :(")
+        }
 
       case s: SimpleTypeIdentifier =>
         val typeName = formatSimpleType(s)
