@@ -1,7 +1,8 @@
 enablePlugins(SbtNativePackager)
 enablePlugins(JavaAppPackaging)
 enablePlugins(GraalVMNativeImagePlugin)
-//addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1")
+
+addCompilerPlugin(scalafixSemanticdb)
 
 scalaVersion := "2.13.1"
 version := "0.0"

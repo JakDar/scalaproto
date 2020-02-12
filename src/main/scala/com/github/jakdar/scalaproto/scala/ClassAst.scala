@@ -2,7 +2,7 @@ package com.github.jakdar.scalaproto.scala
 
 import cats.data.NonEmptyList
 
-object Ast {
+object ClassAst {
 
   case class Identifier(value: String)
 
@@ -26,6 +26,22 @@ object Ast {
     def nonEmpty = !isEmpty
   }
 
-  case class Clazz(name: Identifier, argLists: NonEmptyList[ArgList])
+  sealed trait AstEntity {
+    def parents: List[TypePath]
 
+    def maybeObject = this match {
+      case o: ObjectAst => Some(o)
+      case _            => None
+    }
+
+    def isCaseObject = this match {
+      case obj: ObjectAst => obj.definitions.isEmpty
+      case _              => false
+    }
+
+  }
+
+  case class Clazz(name: Identifier, argLists: NonEmptyList[ArgList], parents: List[TypePath]) extends AstEntity
+  case class Trait(isSealed: Boolean, id: Identifier, parents: List[TypePath])                 extends AstEntity
+  case class ObjectAst(id: Identifier, definitions: List[AstEntity], parents: List[TypePath])  extends AstEntity
 }

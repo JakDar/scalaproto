@@ -27,8 +27,32 @@ class ScalaParserTest extends FlatSpec {
 
 """.trim()
     val Parsed.Success(parsed, _) = parse(example, ScalaParser.program(_))
-    parsed.map(Proto2Generator.generateClass).foreach(println)
+    parsed.map(Proto2Generator.generateAstEntity).foreach(println) // TODO:bcm
 
   }
+
+  val example                   = """
+           |sealed trait Kulka
+           |
+           |object Kulka {
+           |
+           |case object AlaMakota extends Kulka
+           |
+           |case object Ola extends Kulka
+           |
+           |case object Ula extends Kulka
+           |
+           |}
+           |
+           |
+           |case class Ala(
+           |    id:Option[String],
+           |ola:List[Int],
+           |time :Option[ZonedDateTime]
+           |)
+""".stripMargin.trim()
+  val Parsed.Success(parsed, _) = parse(example, ScalaParser.program(_))
+  parsed.map(Proto2Generator.generateAstEntity).foreach(println) // TODO:bcm
+  it should "work for enums and classes" in {}
 
 }

@@ -13,7 +13,7 @@ object Main extends App {
   mode match {
     case "to-proto" =>
       val Parsed.Success(parsed, _) = parse(code, ScalaParser.program(_))
-      print(parsed.map(Proto2Generator.generateClass).fold("")(_ + "\n" + _))
+      print(parsed.map(Proto2Generator.generateAstEntity).fold("")(_ + "\n" + _))
     case "to-scala" =>
       val Parsed.Success(parsed, _) = parse(code, Proto2Parser.program(_))
       print(parsed.map(ScalaGenerator.generateClass).fold("")(_ + "\n" + _))

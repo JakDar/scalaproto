@@ -7,6 +7,7 @@ object Dependencies {
   val CatsVersion       = "2.1.0"
   val CatsEffectVersion = "2.0.0"
   val MouseVersion      = "0.23"
+  val GuavaVersion      = "28.2-jre"
 
   val catsDependencies = Seq(
     "org.typelevel" %% "cats-core"   % CatsVersion,
@@ -16,7 +17,8 @@ object Dependencies {
 
   private val miscDependencies = Seq(
     "com.github.mpilquist" %% "simulacrum" % SimulacrumVersion,
-    "com.lihaoyi"          %% "fastparse"  % FastParseVersion
+    "com.lihaoyi"          %% "fastparse"  % FastParseVersion,
+    "com.google.guava"     % "guava"       % GuavaVersion
   )
 
   private val testDependencies = Seq(
