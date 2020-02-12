@@ -24,9 +24,15 @@ class Proto2ParserTest extends FlatSpec {
                 repeated int32 ola = 2;
                 optional bool ula = 3;
             }
+
+
+           enum AlaMakota {
+            ALA_MAKOTA = 1;
+            OLA_MAPSA = 2;
+           }
 """.trim()
     val Parsed.Success(parsed, _) = parse(example, Proto2Parser.program(_))
-    parsed.map(ScalaGenerator.generateClass).foreach(println)
+    parsed.map(ScalaGenerator.generateScala).foreach(println)
 
   }
 

@@ -26,7 +26,9 @@ object Proto2Parser {
 
   def message[_: P] = P("message" ~ identifier ~ "{" ~ argline.rep() ~ "}" ~ WS.? ~ Newline.?).map { case (id, fields) => Message(id, fields.toList) }
 
-  def enum[_: P] = ??? // TODO:bcm
+  def enumline[_: P] = P(identifier ~ "=" ~ Common.Num ~ ";").map(EnumLine.tupled)
 
-  def program[_: P] = P(message.rep() ~ End)
+  def enum[_: P] = P("enum" ~ identifier ~ "{" ~ enumline.rep() ~ "}").map { case (id, lines) => EnumAst(id, lines.toList) }
+
+  def program[_: P]: P[Seq[AstEntity]] = P((message | enum).rep() ~ End)
 }

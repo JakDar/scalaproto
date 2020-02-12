@@ -16,7 +16,7 @@ object Main extends App {
       print(parsed.map(Proto2Generator.generateAstEntity).fold("")(_ + "\n" + _))
     case "to-scala" =>
       val Parsed.Success(parsed, _) = parse(code, Proto2Parser.program(_))
-      print(parsed.map(ScalaGenerator.generateClass).fold("")(_ + "\n" + _))
+      print(parsed.map(ScalaGenerator.generateScala).fold("")(_ + "\n" + _))
   }
 
 }

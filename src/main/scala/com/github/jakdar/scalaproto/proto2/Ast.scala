@@ -18,8 +18,12 @@ object Ast {
     def initString = init.map(_.value).fold("")(_ + "." + _)
   }
 
-  case class FieldLine(repeat: ArgRepeat, typePath: TypePath, identifier: Identifier, number: Int)
+  sealed trait AstEntity
 
-  case class Message(name: Identifier, fields: List[FieldLine])
+  case class EnumLine(name: Identifier, number: Int)
+  case class EnumAst(name: Identifier, values: List[EnumLine]) extends AstEntity
+
+  case class FieldLine(repeat: ArgRepeat, typePath: TypePath, identifier: Identifier, number: Int)
+  case class Message(name: Identifier, fields: List[FieldLine]) extends AstEntity
 
 }
