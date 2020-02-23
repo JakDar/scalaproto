@@ -1,5 +1,5 @@
 package com.github.jakdar.scalaproto.proto2
-import com.github.jakdar.scalaproto.scala.ClassAst._
+import com.github.jakdar.scalaproto.scala.Ast._
 import mouse.all._
 import cats.syntax.option.catsSyntaxOptionId
 import cats.data.NonEmptyList
@@ -29,7 +29,7 @@ object Proto2Generator {
       .foldLeft("")(_ + "\n" + _)
 
     s"""
-    |message ${clazz.name.value} {$formattedFields
+    |message ${clazz.id.value} {$formattedFields
     |}
     """.stripMargin
   }

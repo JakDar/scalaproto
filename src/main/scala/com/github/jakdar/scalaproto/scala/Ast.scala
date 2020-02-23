@@ -2,7 +2,7 @@ package com.github.jakdar.scalaproto.scala
 
 import cats.data.NonEmptyList
 
-object ClassAst {
+object Ast {
 
   case class Identifier(value: String)
 
@@ -41,7 +41,7 @@ object ClassAst {
 
   }
 
-  case class Clazz(name: Identifier, argLists: NonEmptyList[ArgList], parents: List[TypePath]) extends AstEntity
-  case class Trait(isSealed: Boolean, id: Identifier, parents: List[TypePath])                 extends AstEntity
-  case class ObjectAst(id: Identifier, definitions: List[AstEntity], parents: List[TypePath])  extends AstEntity
+  case class Clazz(id: Identifier, argLists: NonEmptyList[ArgList], parents: List[TypePath])  extends AstEntity
+  case class Trait(isSealed: Boolean, id: Identifier, parents: List[TypePath])                extends AstEntity
+  case class ObjectAst(id: Identifier, definitions: List[AstEntity], parents: List[TypePath]) extends AstEntity
 }

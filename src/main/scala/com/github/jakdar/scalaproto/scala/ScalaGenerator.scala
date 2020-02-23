@@ -1,71 +1,72 @@
 package com.github.jakdar.scalaproto.scala
-import com.github.jakdar.scalaproto.proto2.Ast._
-import com.github.jakdar.scalaproto.proto2.Ast.ArgRepeat.Required
-import com.github.jakdar.scalaproto.proto2.Ast.ArgRepeat.Optional
-import com.github.jakdar.scalaproto.proto2.Ast.ArgRepeat.Repeated
-import com.google.common.base.CaseFormat
+import Ast._
 
 object ScalaGenerator {
   val indent = (0 until 4).map(_ => " ").mkString
 
   def generateScala(ast: AstEntity): String = ast match {
-    case enum: EnumAst => generateEnum(enum)
-    case msg: Message  => generateClass(msg)
+    case a: Clazz     => generateClass(a)
+    case t: Trait     => generateTrait(t)
+    case a: ObjectAst => generateObject(a)
   }
 
-  def upperUnderscoreToUpeerCammel(s: String) = CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, s)
+  def generateClass(ast: Ast.Clazz): String = {
 
-  def generateEnum(enum: EnumAst): String = {
+    val lines = ast.argLists.map(_.args.map { case (id, typeId) => s"${indent}${id.value}: ${typePathToString(typeId)}" })
 
-    val enumFields = enum.values.map(v => s"${indent}${upperUnderscoreToUpeerCammel(v.name.value)} = ${v.number};").fold("")(_ + "\n" + _)
-
+    val fields = lines.map(_.fold("")(_ + ",\n" + _).stripSuffix(",\n").stripPrefix(",")).map(d => "(" + d + ")").reduceLeft(_ + _)
     s"""
-     |sealed trait ${enum.name.value}
-     |
-     |object ${enum.name.value} {$enumFields
+     |case class ${ast.id.value} $fields ${patentsToString(ast.parents)}
+     |""".stripMargin.trim()
+
+  }
+
+  private def patentsToString(parents: List[Ast.TypePath]) = {
+    parents.map(typePathToString).reduceOption(_ + " with " + _) match {
+      case Some(p) => "extends " + p
+      case None    => ""
+    }
+  }
+
+  def generateTrait(t: Trait): String = {
+    val p = patentsToString(t.parents)
+    if (t.isSealed) {
+      s"sealed trait ${t.id.value} ${p}"
+    } else {
+      s"trait ${t.id.value} ${p}"
+    }
+  }
+
+  def generateObject(o: ObjectAst): String = {
+
+    val enumFields = o.definitions.map(generateScala).map(indent + _).fold("")(_ + "\n" + _)
+
+    if (o.definitions.isEmpty) {
+      s"case object ${o.id.value} ${patentsToString(o.parents)}" // TODO:bcm  - toCammel
+    } else {
+      s"""
+     |object ${o.id.value}${" " + patentsToString(o.parents)} {$enumFields
      |}
      |""".stripMargin.trim()
+    }
   }
 
-  def generateClass(message: Message): String =
-    s"""
-     |case class ${message.name.value} (${message.fields
-         .map(generateField)
-         .map("   " + _)
-         .fold("")(_ + ",\n" + _)
-         .stripSuffix(",\n")
-         .stripPrefix(",")}
-     |)
-     |""".stripMargin.trim()
+  private def typeIdToString(t: Ast.TypeIdentifier) =
+    t match {
+      case SimpleTypeIdentifier(id) => id.value
+      case HigherTypeIdentifer(id, internal) =>
+        id.value + "[" + internal.map(typePathToString).toList.reduce(_ + "," + _) + "]"
+    }
 
-  private val simpleTypeMapper = Map(
-    "int64"  -> "Long",
-    "int32"  -> "Int",
-    "double" -> "Double",
-    "bool"   -> "Boolean",
-    "string" -> "String",
-    "bytes"  -> "ByteString"
-  )
+  private def typePathToString(a: Ast.TypePath): String = {
 
-  def generateField(field: FieldLine): String = {
-    val FieldLine(repeat, typePath: TypePath, identifier, _) = field
+    val typeId = typeIdToString(a.typeId)
 
-    val typeIdentifier = typePath.last.id.value
-
-    val typeId = if (typeIdentifier == "int64" && identifier.value == "time") {
-      "ZonedDateTime"
+    if (a.packagePath.isEmpty) {
+      typeId
     } else {
-      simpleTypeMapper.getOrElse(typeIdentifier, typeIdentifier)
+      a.packagePath.map(_.value).reduce(_ + "," + _) + "." + typeId
     }
-
-    val `type` = typePath.init.map(_.value).foldRight(typeId)(_ + "." + _)
-
-    repeat match {
-      case Required => s"${identifier.value}: ${`type`}"
-      case Optional => s"${identifier.value}: Option[${`type`}]"
-      case Repeated => s"${identifier.value}: Seq[${`type`}]"
-    }
-
   }
 
 }

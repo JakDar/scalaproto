@@ -1,8 +1,8 @@
 package com.github.jakdar.scalaproto.scala
 
 import cats.data._
-import com.github.jakdar.scalaproto.parser._
-import ClassAst._, Common._
+import com.github.jakdar.scalaproto.parser.Common
+import Ast._, Common._
 import fastparse._
 
 import ScalaWhitespace._
@@ -10,7 +10,7 @@ import language.postfixOps
 
 object ScalaParser {
 
-  def identifier[_: P]: P[ClassAst.Identifier] =
+  def identifier[_: P]: P[Ast.Identifier] =
     P(CharsWhileIn("0-9a-zA-Z_") !).map(Identifier(_)) // TODO:bcm disallow start with 0-9
 
   def higherTypeIdentifier[_: P]: P[HigherTypeIdentifer] =

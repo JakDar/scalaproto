@@ -1,16 +1,12 @@
 package com.github.jakdar.scalaproto
 
 import org.scalatest.FlatSpec
-import fastparse._
-import fastparse.Parsed
-import com.github.jakdar.scalaproto.proto2.Proto2Parser
-import com.github.jakdar.scalaproto.scala.ScalaGenerator
 
 class Proto2ParserTest extends FlatSpec {
 
   "scala to proto" should "work in basic case " in {
 
-    val example                   = """
+    val example = """
             message Ala{
                 required string ala =1 ;
                 repeated int32 ola = 2;
@@ -31,8 +27,7 @@ class Proto2ParserTest extends FlatSpec {
             OLA_MAPSA = 2;
            }
 """.trim()
-    val Parsed.Success(parsed, _) = parse(example, Proto2Parser.program(_))
-    parsed.map(ScalaGenerator.generateScala).foreach(println)
+    print(Application.toScala(example))
 
   }
 
