@@ -16,24 +16,20 @@ object ScalaGenerator {
 
     val fields = lines.map(_.fold("")(_ + ",\n" + _).stripSuffix(",\n").stripPrefix(",")).map(d => "(" + d + ")").reduceLeft(_ + _)
     s"""
-     |case class ${ast.id.value} $fields ${patentsToString(ast.parents)}
+     |case class ${ast.id.value} ${fields}${patentsToString(ast.parents)}
      |""".stripMargin.trim()
 
   }
 
-  private def patentsToString(parents: List[Ast.TypePath]) = {
-    parents.map(typePathToString).reduceOption(_ + " with " + _) match {
-      case Some(p) => "extends " + p
-      case None    => ""
-    }
-  }
+  private def patentsToString(parents: List[Ast.TypePath]) =
+    parents.map(typePathToString).reduceOption(_ + " with " + _).map(rest => s" extends $rest").getOrElse("")
 
   def generateTrait(t: Trait): String = {
     val p = patentsToString(t.parents)
     if (t.isSealed) {
-      s"sealed trait ${t.id.value} ${p}"
+      s"sealed trait ${t.id.value}${p}"
     } else {
-      s"trait ${t.id.value} ${p}"
+      s"trait ${t.id.value}${p}"
     }
   }
 
@@ -42,10 +38,10 @@ object ScalaGenerator {
     val enumFields = o.definitions.map(generateScala).map(indent + _).fold("")(_ + "\n" + _)
 
     if (o.definitions.isEmpty) {
-      s"case object ${o.id.value} ${patentsToString(o.parents)}" // TODO:bcm  - toCammel
+      s"case object ${o.id.value}${patentsToString(o.parents)}" // TODO:bcm  - toCammel
     } else {
       s"""
-     |object ${o.id.value}${" " + patentsToString(o.parents)} {$enumFields
+     |object ${o.id.value}${patentsToString(o.parents)} {$enumFields
      |}
      |""".stripMargin.trim()
     }

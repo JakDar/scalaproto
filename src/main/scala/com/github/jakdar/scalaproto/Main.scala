@@ -10,6 +10,9 @@ object Main extends App {
       print(Application.toProto(code))
     case "to-scala" =>
       print(Application.toScala(code))
+
+    case "fix-proto-numbers" =>
+      print(Application.protoFixNumbers(code))
   }
 
 }

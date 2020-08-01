@@ -1,13 +1,14 @@
 object Dependencies {
   import sbt._
-  val ScalaTestVersion  = "3.0.8"
-  val ScalaMockVersion  = "4.4.0"
+  val ScalaTestVersion  = "3.2.0"
+  val ScalaMockVersion  = "5.0.0"
   val SimulacrumVersion = "0.19.0"
   val FastParseVersion  = "2.2.2"
-  val CatsVersion       = "2.1.0"
-  val CatsEffectVersion = "2.0.0"
-  val MouseVersion      = "0.23"
-  val GuavaVersion      = "28.2-jre"
+  val CatsVersion       = "2.1.1"
+  val CatsEffectVersion = "2.1.4"
+  val MouseVersion      = "0.25"
+  val GuavaVersion      = "29.0-jre"
+  val DiffxVersion      = "0.3.29"
 
   val catsDependencies = Seq(
     "org.typelevel" %% "cats-core"   % CatsVersion,
@@ -22,8 +23,9 @@ object Dependencies {
   )
 
   private val testDependencies = Seq(
-    "org.scalatest" %% "scalatest" % ScalaTestVersion % Test,
-    "org.scalamock" %% "scalamock" % ScalaMockVersion % Test
+    "org.scalatest"          %% "scalatest"       % ScalaTestVersion % Test,
+    "org.scalamock"          %% "scalamock"       % ScalaMockVersion % Test,
+    "com.softwaremill.diffx" %% "diffx-scalatest" % DiffxVersion     % Test
   )
 
   val all: Seq[ModuleID] = Seq(

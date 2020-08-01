@@ -10,6 +10,6 @@ object ToCommon {
   sealed trait Error
 
   object Error {
-    // TODO:bcm
+    case object NotSupportedEnumtoCommon extends Error
   }
 }

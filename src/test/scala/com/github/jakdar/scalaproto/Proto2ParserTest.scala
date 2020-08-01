@@ -1,8 +1,10 @@
 package com.github.jakdar.scalaproto
 
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
+import com.softwaremill.diffx.scalatest.DiffMatcher._
+import org.scalatest.matchers.should.Matchers
 
-class Proto2ParserTest extends FlatSpec {
+class Proto2ParserTest extends AnyFlatSpec with Matchers {
 
   "scala to proto" should "work in basic case " in {
 
@@ -27,7 +29,25 @@ class Proto2ParserTest extends FlatSpec {
             OLA_MAPSA = 2;
            }
 """.trim()
-    print(Application.toScala(example))
+    val result = Application.toScala(example)
+    val expected = """|case class Ala (
+                      |    ala: String,
+                      |    ola: List[Int],
+                      |    ula: Option[Long])
+                      |
+                      |case class Ola (
+                      |    ala: Option[String],
+                      |    ola: List[Int],
+                      |    ula: Option[Boolean])
+                      |
+                      |sealed trait AlaMakota
+                      |
+                      |object AlaMakota {
+                      |    case object AlaMakota
+                      |    case object OlaMapsa
+                      |}""".stripMargin
+
+    result.trim() should matchTo(expected.trim())
 
   }
 

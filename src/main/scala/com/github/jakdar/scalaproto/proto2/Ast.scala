@@ -16,6 +16,7 @@ object Ast {
 
   case class TypePath(init: List[Identifier], last: TypeIdentifier) {
     def initString = init.map(_.value).fold("")(_ + "." + _)
+    def generate   = init.map(_.value).foldRight(last.id.value) { case (a, b) => a + "." + b }
   }
 
   sealed trait AstEntity

@@ -1,12 +1,12 @@
 package com.github.jakdar.scalaproto
 
-import org.scalatest.FlatSpec
 import fastparse._
 import fastparse.Parsed
 import com.github.jakdar.scalaproto.scala.ScalaParser
-import com.github.jakdar.scalaproto.proto2.Proto2Generator
+import com.github.jakdar.scalaproto.proto2.FromScalaProto2Generator
+import org.scalatest.flatspec.AnyFlatSpec
 
-class ScalaParserTest extends FlatSpec {
+class ScalaParserTest extends AnyFlatSpec {
 
   "scala to proto" should "work in basic case " in {
 
@@ -27,7 +27,7 @@ class ScalaParserTest extends FlatSpec {
 
 """.trim()
     val Parsed.Success(parsed, _) = parse(example, ScalaParser.program(_))
-    parsed.map(Proto2Generator.generateAstEntity).foreach(println) // TODO:bcm
+    parsed.map(FromScalaProto2Generator.generateAstEntity).foreach(println) // TODO:bcm
 
   }
 
@@ -52,7 +52,7 @@ class ScalaParserTest extends FlatSpec {
            |)
 """.stripMargin.trim()
   val Parsed.Success(parsed, _) = parse(example, ScalaParser.program(_))
-  parsed.map(Proto2Generator.generateAstEntity).foreach(println) // TODO:bcm
+  parsed.map(FromScalaProto2Generator.generateAstEntity).foreach(println) // TODO:bcm
   it should "work for enums and classes" in {}
 
 }

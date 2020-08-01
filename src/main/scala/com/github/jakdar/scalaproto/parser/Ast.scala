@@ -52,6 +52,6 @@ object Ast {
   }
 
   case class ClassAst(id: Identifier, argLists: NonEmptyList[Fields], parents: List[CustomTypeIdentifier]) extends AstEntity
-  case class EnumAst(id: Identifier, definitions: List[AstEntity], parents: List[CustomTypeIdentifier])    extends AstEntity
+  case class EnumAst(id: Identifier, definitions: List[AstEntity], parents: List[CustomTypeIdentifier])    extends AstEntity // TODO:bcm should empty enum represent enumValue? doubt it
 
 }
