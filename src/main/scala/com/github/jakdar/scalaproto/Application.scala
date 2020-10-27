@@ -18,7 +18,7 @@ object Application {
 
   def protoFixNumbers(code: String): String = {
     val Parsed.Success(parsed, _) = parse(code, Proto2Parser.program(_))
-    val withFixedNumbers = parsed.map(Proto2Homomorphisms.correctNumbers)
+    val withFixedNumbers          = parsed.map(Proto2Homomorphisms.correctNumbers)
     withFixedNumbers.map(Proto2Generator.generateAstEntity(_)).fold("")(_ + "\n" + _)
   }
 

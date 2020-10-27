@@ -8,7 +8,7 @@ class Proto2ParserTest extends AnyFlatSpec with Matchers {
 
   "scala to proto" should "work in basic case " in {
 
-    val example = """
+    val example  = """
             message Ala{
                 required string ala =1 ;
                 repeated int32 ola = 2;
@@ -29,7 +29,7 @@ class Proto2ParserTest extends AnyFlatSpec with Matchers {
             OLA_MAPSA = 2;
            }
 """.trim()
-    val result = Application.toScala(example)
+    val result   = Application.toScala(example)
     val expected = """|case class Ala (
                       |    ala: String,
                       |    ola: List[Int],
