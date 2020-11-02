@@ -6,8 +6,8 @@ object Proto2Homomorphisms {
 
   def correctNumbers(ast: Ast.AstEntity): Ast.AstEntity =
     ast match {
-      case EnumAst(name, lines)  => EnumAst(name, correctNumbersEnumLines(lines))
-      case Message(name, fields) => Message(name, correctNumbersFieldLines(fields))
+      case EnumAst(name, lines) => EnumAst(name, correctNumbersEnumLines(lines))
+      case msg: Message         => Message(msg.name, correctNumbersFieldLines(msg.fields) ++ msg.innerEntities.map(correctNumbers(_)))
     }
 
   def correctNumbersEnumLines(lines: List[Ast.EnumLine]) =

@@ -19,12 +19,21 @@ object Ast {
     def generate   = init.map(_.value).foldRight(last.id.value) { case (a, b) => a + "." + b }
   }
 
-  sealed trait AstEntity
 
   case class EnumLine(name: Identifier, number: Int)
+
+  sealed trait MessageEntry{
+    def widen:MessageEntry = this
+  }
+
+  sealed trait AstEntity extends MessageEntry
+
   case class EnumAst(name: Identifier, values: List[EnumLine]) extends AstEntity
 
-  case class FieldLine(repeat: ArgRepeat, typePath: TypePath, identifier: Identifier, number: Int)
-  case class Message(name: Identifier, fields: List[FieldLine]) extends AstEntity
+  case class FieldLine(repeat: ArgRepeat, typePath: TypePath, identifier: Identifier, number: Int) extends MessageEntry
+  case class Message(name: Identifier, entries: List[MessageEntry]) extends AstEntity {
+    def fields        = entries.collect { case f: FieldLine => f }
+    def innerEntities = entries.collect { case a: AstEntity => a }
+  }
 
 }

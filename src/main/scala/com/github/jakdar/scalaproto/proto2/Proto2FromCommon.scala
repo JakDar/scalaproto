@@ -42,7 +42,7 @@ object Proto2FromCommon extends FromCommon[Ast.AstEntity] {
   private def messageToCommon(m: CommonAst.ClassAst): Ast.Message = {
     val fields = m.argLists.toList.map(_.args).flatten.zipWithIndex.map { case ((id, typeId), idx) => typeIdentifierToProtoLine(typeId, id)(idx) }
 
-    Ast.Message(name = Ast.Identifier(m.id.value), fields = fields)
+    Ast.Message(name = Ast.Identifier(m.id.value), fields)
   }
 
   private def typeIdentifierToProtoLine(t: CommonAst.TypeIdentifier, name: CommonAst.Identifier)(number: Int) = {

@@ -22,9 +22,13 @@ object Proto2Parser {
     case (path, typee) => TypePath(path.toList, TypeIdentifier(typee))
   }
 
-  def argline[_: P] = P(argrepeat ~ typePath ~ identifier ~ "=" ~ Common.Num ~ ";" ~ WS.? ~ Newline.rep()).map(FieldLine.tupled)
+  def fieldline[_: P] = P(argrepeat ~ typePath ~ identifier ~ "=" ~ Common.Num ~ ";" ~ WS.? ~ Newline.rep()).map(FieldLine.tupled)
 
-  def message[_: P] = P("message" ~ identifier ~ "{" ~ argline.rep() ~ "}" ~ WS.? ~ Newline.?).map { case (id, fields) => Message(id, fields.toList) }
+  def messageEntry[_: P]: P[MessageEntry] = P((fieldline | message | enum))
+
+  def message[_: P] = P("message" ~ identifier ~ "{" ~ messageEntry.rep() ~ "}" ~ WS.? ~ Newline.?).map {
+    case (id, fields) => Message(id, fields.toList)
+  }
 
   def enumline[_: P] = P(identifier ~ "=" ~ Common.Num ~ ";").map(EnumLine.tupled)
 
