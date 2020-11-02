@@ -1,9 +1,8 @@
 package com.github.jakdar.scalaproto
 
-import org.scalatest.flatspec.AnyFlatSpec
 import com.softwaremill.diffx.scalatest.DiffMatcher._
+import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import com.github.jakdar.scalaproto.proto2.Proto2Parser
 
 class ProtoHomomorphismsTest extends AnyFlatSpec with Matchers {
 

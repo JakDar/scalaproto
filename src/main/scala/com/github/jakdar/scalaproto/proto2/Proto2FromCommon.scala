@@ -24,12 +24,11 @@ object Proto2FromCommon extends FromCommon[Ast.AstEntity] {
 
     def fixCasing(s: String) =
       if (s.filter(_.isLetter).forall(_.isUpper)) {
-        CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, s) // TODO:bcm fix
+        CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, s) // TODO:bcm use it or loose it
       } else {
         s
       }
 
-    // val defs = e.values.map(line => CommonAst.EnumAst(CommonAst.Identifier(fixCasing(line.name.value)), definitions = Nil, parents = Nil))
 
     val defs = e.definitions.zipWithIndex.map {
       case (c: CommonAst.EnumAst, idx) => Ast.EnumLine(name = Ast.Identifier(c.id.value), idx)
