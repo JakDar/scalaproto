@@ -27,6 +27,7 @@ object ScalaParser {
   def argpair[_: P]       = P(identifier ~ ":" ~ typePath)
   def comma_argpair[_: P] = P(identifier ~ ":" ~ typePath ~ "," ~ WS.? ~ Newline.?)
 
+  // NOTE: There something doesn't work with graalvm
   def arglist[_: P] = P(OneNLMax ~ "(" ~ "implicit".? ~ comma_argpair.rep() ~ argpair ~ ")").map {
     case (argpairList, l) => ArgList(argpairList.toList :+ l)
   }

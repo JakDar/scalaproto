@@ -1,14 +1,14 @@
 object Dependencies {
   import sbt._
-  val ScalaTestVersion  = "3.2.0"
+  val ScalaTestVersion  = "3.2.3"
   val ScalaMockVersion  = "5.0.0"
   val SimulacrumVersion = "0.19.0"
-  val FastParseVersion  = "2.2.2"
-  val CatsVersion       = "2.1.1"
-  val CatsEffectVersion = "2.1.4"
-  val MouseVersion      = "0.25"
-  val GuavaVersion      = "29.0-jre"
-  val DiffxVersion      = "0.3.29"
+  val FastParseVersion  = "2.3.0"
+  val CatsVersion       = "2.3.0"
+  val CatsEffectVersion = "2.3.0"
+  val MouseVersion      = "0.26.2"
+  val GuavaVersion      = "30.0-jre"
+  val DiffxVersion      = "0.3.30"
 
   val catsDependencies = Seq(
     "org.typelevel" %% "cats-core"   % CatsVersion,

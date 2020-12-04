@@ -1,0 +1,23 @@
+#+TITLE: Readme
+
+* Future Improvements
+** TODO [#A] Scala Map => Entry class
+#+BEGIN_SRC scala
+case class Ala(ola:Int, firendAges: Map[String,Int])
+#+END_SRC
+
+#+BEGIN_SRC protobuf
+message Ala {
+  required int32 ola = 1;
+  repeated FriendAgesEntry friendAges = 2;
+}
+
+message FriendAgesEntry{
+  required string key = 1;
+  required string value = 2;
+}
+#+END_SRC
+** TODO [#B] Scala tuple => Entry class
+- avoid name conflicts
+** TODO [#C] Generate Grpc Service with nice api from proto
+** TODO Check if proto enum to scala works

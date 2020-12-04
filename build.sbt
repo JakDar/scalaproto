@@ -18,13 +18,13 @@ lazy val `scalaproto` = (project in file("."))
   )
 graalVMNativeImageOptions ++= {
   List(
-    "-H:+ReportUnsupportedElementsAtRuntime",
-    "--initialize-at-build-time",
-    "--no-server",
+    // "-H:+ReportUnsupportedElementsAtRuntime",
+    // "--initialize-at-build-time",
+    // "--no-server",
     "--enable-https",
     "-H:EnableURLProtocols=http,https",
     "--enable-all-security-services",
-    "--no-fallback",
+    // "--no-fallback",
     "--allow-incomplete-classpath",
     "-H:+ReportExceptionStackTraces"
   )
