@@ -29,3 +29,6 @@ graalVMNativeImageOptions ++= {
     "-H:+ReportExceptionStackTraces"
   )
 }
+
+test in assembly := {}
+assemblyJarName in assembly := "scalaproto.jar"

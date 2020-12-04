@@ -2,7 +2,6 @@ object Dependencies {
   import sbt._
   val ScalaTestVersion  = "3.2.3"
   val ScalaMockVersion  = "5.0.0"
-  val SimulacrumVersion = "0.19.0"
   val FastParseVersion  = "2.3.0"
   val CatsVersion       = "2.3.0"
   val CatsEffectVersion = "2.3.0"
@@ -17,7 +16,6 @@ object Dependencies {
   )
 
   private val miscDependencies = Seq(
-    "com.github.mpilquist" %% "simulacrum" % SimulacrumVersion,
     "com.lihaoyi"          %% "fastparse"  % FastParseVersion,
     "com.google.guava"     % "guava"       % GuavaVersion
   )

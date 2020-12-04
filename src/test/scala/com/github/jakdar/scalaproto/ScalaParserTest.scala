@@ -53,6 +53,18 @@ class ScalaParserTest extends AnyFlatSpec {
 """.stripMargin.trim()
   val Parsed.Success(parsed, _) = parse(example, ScalaParser.program(_))
   parsed.map(FromScalaProto2Generator.generateAstEntity).foreach(println) // TODO:bcm
-  it should "work for enums and classes" in {}
+
+  it should "work for enums and classes" ignore {
+    fail()
+  }
+
+  it should "work in simple cases" in {
+
+    val example = "case class Entity(id: Long, name: String)"
+
+    val Parsed.Success(parsed, _) = parse(example, ScalaParser.program(_))
+    parsed.map(FromScalaProto2Generator.generateAstEntity).foreach(println) // TODO:bcm
+
+  }
 
 }
