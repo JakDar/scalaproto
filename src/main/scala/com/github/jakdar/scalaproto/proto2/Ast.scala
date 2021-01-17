@@ -19,11 +19,10 @@ object Ast {
     def generate   = init.map(_.value).foldRight(last.id.value) { case (a, b) => a + "." + b }
   }
 
-
   case class EnumLine(name: Identifier, number: Int)
 
-  sealed trait MessageEntry{
-    def widen:MessageEntry = this
+  sealed trait MessageEntry {
+    def widen: MessageEntry = this
   }
 
   sealed trait AstEntity extends MessageEntry

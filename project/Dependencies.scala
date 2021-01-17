@@ -16,8 +16,8 @@ object Dependencies {
   )
 
   private val miscDependencies = Seq(
-    "com.lihaoyi"          %% "fastparse"  % FastParseVersion,
-    "com.google.guava"     % "guava"       % GuavaVersion
+    "com.lihaoyi"      %% "fastparse" % FastParseVersion,
+    "com.google.guava" % "guava"      % GuavaVersion
   )
 
   private val testDependencies = Seq(

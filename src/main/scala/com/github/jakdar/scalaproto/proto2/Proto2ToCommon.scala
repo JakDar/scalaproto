@@ -25,9 +25,7 @@ object Proto2ToCommon extends ToCommon[Ast.AstEntity] {
     def fixCasing(s: String) =
       if (s.filter(_.isLetter).forall(_.isUpper)) {
         CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, s)
-      } else {
-        s
-      }
+      } else s
     val defs = e.values.map(line => CommonAst.EnumAst(CommonAst.Identifier(fixCasing(line.name.value)), definitions = Nil, parents = Nil))
 
     CommonAst.EnumAst(id = CommonAst.Identifier(e.name.value), definitions = defs, parents = Nil) // TODO:bcm snake case to cammel here?

@@ -17,7 +17,8 @@ message FriendAgesEntry{
   required string value = 2;
 }
 #+END_SRC
-** TODO [#B] Scala tuple => Entry class
+** TODO [#A] Scala tuple => Entry class
 - avoid name conflicts
 ** TODO [#C] Generate Grpc Service with nice api from proto
 ** TODO Check if proto enum to scala works
+** TODO Scala cc => doobie (create table)

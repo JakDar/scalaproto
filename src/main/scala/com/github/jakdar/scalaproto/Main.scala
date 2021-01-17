@@ -7,9 +7,9 @@ object Main extends App {
 
   mode match {
     case "to-proto" =>
-      print(Application.toProto(code))
+      print(Application.scalaToProto(code))
     case "to-scala" =>
-      print(Application.toScala(code))
+      print(Application.protoToScala(code))
 
     case "fix-proto-numbers" =>
       print(Application.protoFixNumbers(code))

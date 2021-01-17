@@ -25,7 +25,7 @@ object Ast {
   case class CustomSimpleTypeIdentifier(packagePath: List[Identifier], id: Identifier) extends CustomTypeIdentifier
 
   sealed trait HigherTypeIdentifier extends TypeIdentifier
-  case class CustomHigherTypeIdentifer(outerPackagePath: List[Identifier], outer: Identifier, inner: NonEmptyList[TypeIdentifier])
+  case class CustomHigherTypeIdentifer(outerPackagePath: List[Identifier], outer: Identifier, inner: NonEmptyList[TypeIdentifier]) //NOTE: inner is NEL to support Either[L,R] etc
       extends HigherTypeIdentifier
       with CustomTypeIdentifier
   case class OptionType(inner: TypeIdentifier) extends HigherTypeIdentifier

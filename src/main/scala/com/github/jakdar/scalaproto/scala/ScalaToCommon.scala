@@ -40,7 +40,7 @@ object ScalaToCommon extends ToCommon[Ast.AstEntity] {
 
     t.typeId match {
       case SimpleTypeIdentifier(Ast.Identifier("Int"))                    => CommonAst.IntType
-      case SimpleTypeIdentifier(Ast.Identifier("Long" | "ZonedDatetime")) => CommonAst.LongType
+      case SimpleTypeIdentifier(Ast.Identifier("Long" | "ZonedDateTime")) => CommonAst.LongType
       case SimpleTypeIdentifier(Ast.Identifier("Float"))                  => CommonAst.FloatType
       case SimpleTypeIdentifier(Ast.Identifier("Double"))                 => CommonAst.DoubleType
       case SimpleTypeIdentifier(Ast.Identifier("String"))                 => CommonAst.StringType
@@ -48,6 +48,15 @@ object ScalaToCommon extends ToCommon[Ast.AstEntity] {
       case SimpleTypeIdentifier(Ast.Identifier("Short"))                  => CommonAst.ShortType
       case SimpleTypeIdentifier(Ast.Identifier("Byte"))                   => CommonAst.ByteType
       case SimpleTypeIdentifier(id)                                       => CommonAst.CustomSimpleTypeIdentifier(packagePath, CommonAst.Identifier(id.value))
+
+      case HigherTypeIdentifer(Ast.Identifier("Option" | "Optional"), internal) if internal.size == 1 =>
+        CommonAst.OptionType(typeToCommon(internal.head))
+
+      case HigherTypeIdentifer(Ast.Identifier("List" | "Seq" | "Set" | "Array" | "NonEmptyList"), internal) if internal.size == 1 =>
+        CommonAst.ArrayType(typeToCommon(internal.head))
+
+      // TODO:bcm  special cases for bytearray types + date types
+
       case HigherTypeIdentifer(id, internal) =>
         CommonAst.CustomHigherTypeIdentifer(packagePath, outer = CommonAst.Identifier(id.value), inner = internal.map(typeToCommon))
     }

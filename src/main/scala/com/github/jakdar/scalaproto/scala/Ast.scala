@@ -4,7 +4,6 @@ import cats.data.NonEmptyList
 
 object Ast {
 
-
   // TODO:bcm  support nested classes / objects
 
   case class Identifier(value: String)

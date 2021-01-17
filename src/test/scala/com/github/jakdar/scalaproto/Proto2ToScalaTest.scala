@@ -4,9 +4,9 @@ import org.scalatest.flatspec.AnyFlatSpec
 import com.softwaremill.diffx.scalatest.DiffMatcher._
 import org.scalatest.matchers.should.Matchers
 
-class Proto2ParserTest extends AnyFlatSpec with Matchers {
+class Proto2ToScalaTest extends AnyFlatSpec with Matchers {
 
-  "scala to proto" should "work in basic case " in {
+  "proto to scala" should "work in basic case " in {
 
     val example  = """
             message Ala{
@@ -29,7 +29,7 @@ class Proto2ParserTest extends AnyFlatSpec with Matchers {
             OLA_MAPSA = 2;
            }
 """.trim()
-    val result   = Application.toScala(example)
+    val result   = Application.protoToScala(example)
     val expected = """|case class Ala (
                       |    ala: String,
                       |    ola: List[Int],
