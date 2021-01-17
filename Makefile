@@ -11,12 +11,14 @@ build:
 	sbt assembly
 
 
-install:
+just-install:
 	mkdir -p ~/.local/usr/share/scalaproto
 	cp ./target/scala-2.13/scalaproto.jar ~/.local/usr/share/scalaproto/scalaproto.jar
 
-	printf '#!/bin/sh\njava -jar ~/.local/usr/share/scalaproto/scalaproto.jar "$$@"' > ~/.local/bin/scalaproto
+	printf '#!/usr/bin/env sh\njava -jar ~/.local/usr/share/scalaproto/scalaproto.jar "$$@"' > ~/.local/bin/scalaproto
 	chmod u+x ~/.local/bin/scalaproto
+
+install: build just-install
 
 test:
 	scalaproto "to-proto" "case class Entity(id: Long, name: String)"
