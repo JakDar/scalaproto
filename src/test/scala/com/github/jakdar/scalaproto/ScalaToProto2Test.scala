@@ -102,4 +102,44 @@ class ScalaToProto2Test extends AnyFlatSpec with Matchers {
 
   }
 
+  it should "assume id types if configured to do so" in {
+    val example = """
+           |sealed trait Kulka
+           |
+           |object Kulka {
+           |case object AlaMakota extends Kulka
+           |case object EloId extends Kulka
+           |}
+           |
+           |
+           |case class Ala(
+           | field:Int,
+           |    id:MyId,
+           |ola:List[AnId],
+           |time :Option[AnotherId]
+           |)
+""".stripMargin.trim()
+    val result  = Application.scalaToProto(example) // NOTE: by default assumes id is string
+
+    val expected = """|enum Kulka {
+                      |    ALA_MAKOTA = 1;
+                      |    ELO_ID = 2;
+                      |}
+                      |
+                      |
+                      |
+                      |message Ala {
+                      |    required int32 field = 1;
+                      |    required string id = 2;
+                      |    repeated string ola = 3;
+                      |    optional string time = 4;
+                      |}""".stripMargin
+
+    result.trim() should matchTo(expected.trim())
+  }
+
+  it should "convert certain predefined types well" ignore {
+    fail()
+  }
+
 }

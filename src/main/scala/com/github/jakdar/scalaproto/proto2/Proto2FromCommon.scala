@@ -5,8 +5,9 @@ import com.github.jakdar.scalaproto.parser.Ast.EnumAst
 import com.github.jakdar.scalaproto.parser.FromCommon
 import com.github.jakdar.scalaproto.parser.{Ast => CommonAst}
 import com.google.common.base.CaseFormat
+import Proto2FromCommon.Options
 
-object Proto2FromCommon extends FromCommon[Ast.AstEntity] {
+class Proto2FromCommon(options: Options) extends FromCommon[Ast.AstEntity] {
 
   override def fromCommon(other: CommonAst.AstEntity): List[Ast.AstEntity] =
     (other match {
@@ -55,12 +56,16 @@ object Proto2FromCommon extends FromCommon[Ast.AstEntity] {
       case CommonAst.ShortType | CommonAst.ByteType   => ???
       // case CommonAst.ArrayType(CommonAst.ByteType)    => primitive("bytes") // TODO:bcm
       case CommonAst.CustomSimpleTypeIdentifier(packagePath, typeId) =>
-        Ast.FieldLine(
-          Ast.ArgRepeat.Required,
-          Ast.TypePath(packagePath.map(tId => Ast.Identifier(tId.value)), Ast.TypeIdentifier(Ast.Identifier(typeId.value))),
-          identifier = Ast.Identifier(id.value),
-          number = 0
-        )
+        (options.assumeIdType, typeId.value.endsWith("Id")) match {
+          case (Some(idType), true) => primitive(idType.id.value)
+          case _ =>
+            Ast.FieldLine(
+              Ast.ArgRepeat.Required,
+              Ast.TypePath(packagePath.map(tId => Ast.Identifier(tId.value)), Ast.TypeIdentifier(Ast.Identifier(typeId.value))),
+              identifier = Ast.Identifier(id.value),
+              number = 0
+            )
+        }
 
       case CommonAst.OptionType(inner)                => typeIdToProto(id, inner).copy(repeat = Ast.ArgRepeat.Optional)
       case CommonAst.ArrayType(inner)                 => typeIdToProto(id, inner).copy(repeat = Ast.ArgRepeat.Repeated)
@@ -68,4 +73,11 @@ object Proto2FromCommon extends FromCommon[Ast.AstEntity] {
     }
   }
 
+}
+
+object Proto2FromCommon {
+  case class Options(assumeIdType: Option[Ast.TypeIdentifier])
+  object Options {
+    val empty = Options(None)
+  }
 }

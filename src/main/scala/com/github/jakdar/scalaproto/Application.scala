@@ -10,11 +10,14 @@ import com.github.jakdar.scalaproto.scala.ScalaToCommon
 import com.github.jakdar.scalaproto.proto2.Proto2FromCommon
 
 object Application {
+  val proto2FromCommon = new Proto2FromCommon(
+    Proto2FromCommon.Options(assumeIdType = Some(proto2.Ast.stringTypeIdentifier))
+  )
 
   def scalaToProto(code: String): String = {
     val Parsed.Success(scalaAst, _) = parse(code, ScalaParser.program(_))
     val commonAst                   = scalaAst.flatMap(x => ScalaToCommon.toCommon(x).getOrElse(throw new IllegalStateException("Empty to Common")))
-    val protoAst                    = commonAst.flatMap(Proto2FromCommon.fromCommon)
+    val protoAst                    = commonAst.flatMap(proto2FromCommon.fromCommon)
     protoAst.map(Proto2Generator.generateAstEntity).fold("")(_ + "\n\n" + _)
   }
 

@@ -35,4 +35,6 @@ object Ast {
     def innerEntities = entries.collect { case a: AstEntity => a }
   }
 
+  val stringTypeIdentifier = TypeIdentifier(Identifier("string"))
+
 }
