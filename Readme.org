@@ -1,7 +1,8 @@
 #+TITLE: Readme
 
 * Future Improvements
-** TODO [#A] Scala Map => Entry class
+** Type support
+*** TODO [#A] Scala Map => Entry class
 #+BEGIN_SRC scala
 case class Ala(ola:Int, firendAges: Map[String,Int])
 #+END_SRC
@@ -17,8 +18,16 @@ message FriendAgesEntry{
   required string value = 2;
 }
 #+END_SRC
-** TODO [#A] Scala tuple => Entry class
+*** TODO [#A] Scala tuple => Entry class
 - avoid name conflicts
-** TODO [#C] Generate Grpc Service with nice api from proto
-** TODO Check if proto enum to scala works
-** TODO Scala cc => doobie (create table)
+*** TODO Handle certain types in ScalaToCommon
+1. ByteString and friends
+2. ZonedDateTime and friends (also when there is =java.time.ZonedDateTime=)
+** Docs
+*** TODO decide and comment name casing in common AST
+** New formats
+*** TODO Pseudo json support?
+- names with example values
+*** TODO Postgresql create table
+** Misc
+*** TODO [#C] Generate Grpc Service with nice api from proto
