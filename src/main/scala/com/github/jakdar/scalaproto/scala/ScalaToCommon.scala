@@ -39,15 +39,15 @@ object ScalaToCommon extends ToCommon[Ast.AstEntity] {
     val packagePath = t.packagePath.map(x => CommonAst.Identifier(x.value))
 
     t.typeId match {
-      case SimpleTypeIdentifier(Ast.Identifier("Int"))                    => CommonAst.IntType
-      case SimpleTypeIdentifier(Ast.Identifier("Long" | "ZonedDateTime")) => CommonAst.LongType
-      case SimpleTypeIdentifier(Ast.Identifier("Float"))                  => CommonAst.FloatType
-      case SimpleTypeIdentifier(Ast.Identifier("Double"))                 => CommonAst.DoubleType
-      case SimpleTypeIdentifier(Ast.Identifier("String"))                 => CommonAst.StringType
-      case SimpleTypeIdentifier(Ast.Identifier("Boolean"))                => CommonAst.BooleanType
-      case SimpleTypeIdentifier(Ast.Identifier("Short"))                  => CommonAst.ShortType
-      case SimpleTypeIdentifier(Ast.Identifier("Byte"))                   => CommonAst.ByteType
-      case SimpleTypeIdentifier(id)                                       => CommonAst.CustomSimpleTypeIdentifier(packagePath, CommonAst.Identifier(id.value))
+      case SimpleTypeIdentifier(Ast.Identifier("Int"))                                       => CommonAst.IntType
+      case SimpleTypeIdentifier(Ast.Identifier("Long" | "ZonedDateTime" | "FiniteDuration")) => CommonAst.LongType
+      case SimpleTypeIdentifier(Ast.Identifier("Float"))                                     => CommonAst.FloatType
+      case SimpleTypeIdentifier(Ast.Identifier("Double"))                                    => CommonAst.DoubleType
+      case SimpleTypeIdentifier(Ast.Identifier("String"))                                    => CommonAst.StringType
+      case SimpleTypeIdentifier(Ast.Identifier("Boolean"))                                   => CommonAst.BooleanType
+      case SimpleTypeIdentifier(Ast.Identifier("Short"))                                     => CommonAst.ShortType
+      case SimpleTypeIdentifier(Ast.Identifier("Byte"))                                      => CommonAst.ByteType
+      case SimpleTypeIdentifier(id)                                                          => CommonAst.CustomSimpleTypeIdentifier(packagePath, CommonAst.Identifier(id.value))
 
       case HigherTypeIdentifer(Ast.Identifier("Option" | "Optional"), internal) if internal.size == 1 =>
         CommonAst.OptionType(typeToCommon(internal.head))
