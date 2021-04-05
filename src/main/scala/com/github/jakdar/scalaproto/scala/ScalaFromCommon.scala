@@ -16,13 +16,13 @@ import com.github.jakdar.scalaproto.parser.Ast.ArrayType
 import cats.data.NonEmptyList
 import com.github.jakdar.scalaproto.scala.Ast.ArgList
 import com.github.jakdar.scalaproto.parser.Ast.ClassAst
-import com.github.jakdar.scalaproto.parser.Ast.EnumAst
+import com.github.jakdar.scalaproto.parser.Ast.ObjectAst
 
 object ScalaFromCommon extends FromCommon[Ast.AstEntity] {
 
   override def fromCommon(ast: CommonAst.AstEntity): List[Ast.AstEntity] = ast match {
     case c: ClassAst => classToScala(c) :: Nil
-    case e: EnumAst  => enumToScala(e)
+    case e: ObjectAst  => enumToScala(e)
   }
 
   private def classToScala(clazz: CommonAst.ClassAst): Ast.Clazz = {
@@ -67,7 +67,7 @@ object ScalaFromCommon extends FromCommon[Ast.AstEntity] {
     }
   }
 
-  private def enumToScala(enum: CommonAst.EnumAst): List[Ast.AstEntity] = {
+  private def enumToScala(enum: CommonAst.ObjectAst): List[Ast.AstEntity] = {
 
     val sealedTrait = Ast.Trait(isSealed = true, id = Ast.Identifier(enum.id.value), parents = Nil)
 

@@ -19,16 +19,16 @@ object ScalaToCommon extends ToCommon[Ast.AstEntity] {
     CommonAst.ClassAst(id = CommonAst.Identifier(c.id.value), argLists = args, parents = Nil)
   }
 
-  private def objectToCommon(o: Ast.ObjectAst): Either[ToCommon.Error, List[CommonAst.EnumAst]] = {
+  private def objectToCommon(o: Ast.ObjectAst): Either[ToCommon.Error, List[CommonAst.ObjectAst]] = {
     val isEnum = o.definitions.forall(_.isCaseObject)
 
     if (isEnum) {
       val defs = o.definitions.map {
-        case ObjectAst(id, _, _) => CommonAst.EnumAst(CommonAst.Identifier(id.value), definitions = Nil, parents = Nil)
+        case ObjectAst(id, _, _) => CommonAst.ObjectAst(CommonAst.Identifier(id.value), definitions = Nil, parents = Nil)
         case other               => throw new IllegalStateException(s"Unhandled state $other")
       }
 
-      Right(List(CommonAst.EnumAst(id = CommonAst.Identifier(o.id.value), definitions = defs, parents = Nil)))
+      Right(List(CommonAst.ObjectAst(id = CommonAst.Identifier(o.id.value), definitions = defs, parents = Nil)))
     } else {
       Left(ToCommon.Error.NotSupportedEnumtoCommon)
     }

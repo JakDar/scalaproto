@@ -20,7 +20,11 @@ class Proto2ToScalaTest extends AnyFlatSpec with Matchers {
             message Ola {
                 optional string ala =1 ;
                 repeated int32 ola = 2;
-                optional bool ula = 3;
+                oneof ela {
+                   string koala = 3;
+                   int32 panda = 4;
+                }
+                optional bool ula = 5;
             }
 
 
@@ -38,7 +42,17 @@ class Proto2ToScalaTest extends AnyFlatSpec with Matchers {
                       |case class Ola (
                       |    ala: Option[String],
                       |    ola: List[Int],
+                      |    ela: OlaEla,
                       |    ula: Option[Boolean])
+                      |
+                      |sealed trait OlaEla
+                      |
+                      |object OlaEla {
+                      |    case class OlaElaKoala (
+                      |    koala: String) extends OlaEla
+                      |    case class OlaElaPanda (
+                      |    panda: Int) extends OlaEla
+                      |}
                       |
                       |sealed trait AlaMakota
                       |

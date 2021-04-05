@@ -15,6 +15,11 @@ class ProtoHomomorphismsTest extends AnyFlatSpec with Matchers {
 
                 repeated int32 ola = 5;
                 optional int64 ula = 7;
+                oneof a {
+ string b = 1;
+ string c = 102;
+}
+required string d = 9;
                 optional bytes tracing = 4;
             }
 
@@ -38,6 +43,11 @@ class ProtoHomomorphismsTest extends AnyFlatSpec with Matchers {
           |    required string ala = 1;
           |    repeated int32 ola = 2;
           |    optional int64 ula = 3;
+          |    oneof a {
+          |        string b = 4;
+          |        string c = 5;
+          |    }
+          |    required string d = 9;
           |    optional bytes tracing = 100;
           |}
           |

@@ -1,7 +1,7 @@
 package com.github.jakdar.scalaproto.proto2
 
 import com.github.jakdar.scalaproto.parser.Ast.ClassAst
-import com.github.jakdar.scalaproto.parser.Ast.EnumAst
+import com.github.jakdar.scalaproto.parser.Ast.ObjectAst
 import com.github.jakdar.scalaproto.parser.FromCommon
 import com.github.jakdar.scalaproto.parser.{Ast => CommonAst}
 import com.google.common.base.CaseFormat
@@ -12,17 +12,17 @@ class Proto2FromCommon(options: Options) extends FromCommon[Ast.AstEntity] {
   override def fromCommon(other: CommonAst.AstEntity): List[Ast.AstEntity] =
     (other match {
       case c: ClassAst => List(messageFromCommon(c))
-      case e: EnumAst  => List(enumFromCommon(e))
+      case e: ObjectAst  => List(enumFromCommon(e))
     }).map(Proto2Homomorphisms.correctNumbers)
 
-  private def enumFromCommon(e: CommonAst.EnumAst): Ast.EnumAst = {
+  private def enumFromCommon(e: CommonAst.ObjectAst): Ast.EnumAst = {
     def fixCasing(s: String) =
       if (!s.filter(_.isLetter).forall(_.isUpper)) {
         CaseFormat.UPPER_CAMEL.to(CaseFormat.UPPER_UNDERSCORE, s)
       } else s
 
     val defs = e.definitions.map {
-      case c: CommonAst.EnumAst => Ast.EnumLine(name = Ast.Identifier(fixCasing(c.id.value)), 0)
+      case c: CommonAst.ObjectAst => Ast.EnumLine(name = Ast.Identifier(fixCasing(c.id.value)), 0)
       case _                    => ???
     }
 

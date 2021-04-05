@@ -29,6 +29,9 @@ object Ast {
 
   case class EnumAst(name: Identifier, values: List[EnumLine]) extends AstEntity
 
+  case class OneofField(identifier: Identifier, entries: List[OneofEntry]) extends MessageEntry // TODO:bcm  support it furtsher
+  case class OneofEntry(typePath: TypePath, identifier: Identifier, number: Int)
+
   case class FieldLine(repeat: ArgRepeat, typePath: TypePath, identifier: Identifier, number: Int) extends MessageEntry
   case class Message(name: Identifier, entries: List[MessageEntry])                                extends AstEntity {
     def fields        = entries.collect { case f: FieldLine => f }

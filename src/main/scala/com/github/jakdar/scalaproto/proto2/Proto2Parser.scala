@@ -24,7 +24,12 @@ object Proto2Parser {
 
   def fieldline[_: P] = P(argrepeat ~ typePath ~ identifier ~ "=" ~ Common.Num ~ ";" ~ WS.? ~ Newline.rep()).map(FieldLine.tupled)
 
-  def messageEntry[_: P]: P[MessageEntry] = P((fieldline | message | enum))
+  def oneofEntry[_: P] = P(typePath ~ identifier ~ "=" ~ Common.Num ~ ";" ~ WS.? ~ Newline.rep()).map(OneofEntry.tupled)
+  def oneofField[_: P] = P("oneof" ~ identifier ~ "{" ~ WS.? ~ Newline.rep() ~ oneofEntry.rep() ~ "}").map { case (id, fields) =>
+    OneofField(id, fields.toList)
+  }
+
+  def messageEntry[_: P]: P[MessageEntry] = P((fieldline | message | enum | oneofField))
 
   def message[_: P] = P("message" ~ identifier ~ "{" ~ messageEntry.rep() ~ "}" ~ WS.? ~ Newline.?).map { case (id, fields) =>
     Message(id, fields.toList)

@@ -44,19 +44,19 @@ object Ast {
     def parents: List[CustomTypeIdentifier]
 
     def maybeEnum = this match {
-      case o: EnumAst => Some(o)
-      case _          => None
+      case o: ObjectAst => Some(o)
+      case _            => None
     }
 
     def isEnum = this match {
-      case obj: EnumAst => obj.definitions.isEmpty
-      case _            => false
+      case obj: ObjectAst => obj.definitions.isEmpty
+      case _              => false
     }
 
   }
 
   case class ClassAst(id: Identifier, argLists: NonEmptyList[Fields], parents: List[CustomTypeIdentifier]) extends AstEntity
-  case class EnumAst(id: Identifier, definitions: List[AstEntity], parents: List[CustomTypeIdentifier])
+  case class ObjectAst(id: Identifier, definitions: List[AstEntity], parents: List[CustomTypeIdentifier])
       extends AstEntity // TODO:bcm should empty enum represent enumValue? doubt it
 
 }

@@ -31,3 +31,34 @@ message FriendAgesEntry{
 *** TODO Postgresql create table
 ** Misc
 *** TODO [#C] Generate Grpc Service with nice api from proto
+* OneOf Support
+** Outline
+1. Proto
+#+begin_src protobuf
+message Ala {
+  required string name = 1;
+
+  oneof result {
+    string s = 1;
+    int32 i = 2;
+  }
+}
+#+end_src
+2. Scala
+#+begin_src scala :noeval
+case class Ala(
+    name: String,
+    result: AlaResult,
+)
+
+sealed trait AlaResult
+
+object AlaResult {
+  case class AlaResultS(s: String) extends AlaResult
+  case class AlaResultI(i: Int)    extends AlaResult
+}
+#+end_src
+** DONE Proto => Scala
+CLOSED: [2021-04-05 Mon 22:14]
+** TODO Sealed trait - add extends
+** TODO Check increase numebe

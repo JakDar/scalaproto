@@ -11,11 +11,11 @@ object Dependencies {
   val ScalaPbVersion    = "0.11.1"
 
   val catsDependencies = Seq(
-    "org.typelevel"        %% "cats-core"       % CatsVersion,
-    "org.typelevel"        %% "cats-effect"     % CatsEffectVersion,
-    "org.typelevel"        %% "mouse"           % MouseVersion,
-    "com.thesamet.scalapb" %% "scalapb-runtime" % ScalaPbVersion,
-    "org.scalameta"        %% "scalameta"       % "4.4.11",
+    "org.typelevel" %% "cats-core"   % CatsVersion,
+    "org.typelevel" %% "cats-effect" % CatsEffectVersion,
+    "org.typelevel" %% "mouse"       % MouseVersion,
+    // "org.scalameta"        %% "scalameta"       % "4.4.11",
+    "com.lihaoyi"   %% "pprint"      % "0.5.7",
   )
 
   private val miscDependencies = Seq(
