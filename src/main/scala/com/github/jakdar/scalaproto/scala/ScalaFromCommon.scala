@@ -21,8 +21,8 @@ import com.github.jakdar.scalaproto.parser.Ast.ObjectAst
 object ScalaFromCommon extends FromCommon[Ast.AstEntity] {
 
   override def fromCommon(ast: CommonAst.AstEntity): List[Ast.AstEntity] = ast match {
-    case c: ClassAst => classToScala(c) :: Nil
-    case e: ObjectAst  => enumToScala(e)
+    case c: ClassAst  => classToScala(c) :: Nil
+    case e: ObjectAst => enumToScala(e)
   }
 
   private def classToScala(clazz: CommonAst.ClassAst): Ast.Clazz = {

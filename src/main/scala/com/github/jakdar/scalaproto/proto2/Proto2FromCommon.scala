@@ -11,8 +11,8 @@ class Proto2FromCommon(options: Options) extends FromCommon[Ast.AstEntity] {
 
   override def fromCommon(other: CommonAst.AstEntity): List[Ast.AstEntity] =
     (other match {
-      case c: ClassAst => List(messageFromCommon(c))
-      case e: ObjectAst  => List(enumFromCommon(e))
+      case c: ClassAst  => List(messageFromCommon(c))
+      case e: ObjectAst => List(enumFromCommon(e))
     }).map(Proto2Homomorphisms.correctNumbers)
 
   private def enumFromCommon(e: CommonAst.ObjectAst): Ast.EnumAst = {
@@ -23,7 +23,7 @@ class Proto2FromCommon(options: Options) extends FromCommon[Ast.AstEntity] {
 
     val defs = e.definitions.map {
       case c: CommonAst.ObjectAst => Ast.EnumLine(name = Ast.Identifier(fixCasing(c.id.value)), 0)
-      case _                    => ???
+      case _                      => ???
     }
 
     Ast.EnumAst(name = Ast.Identifier(e.id.value), values = defs)
