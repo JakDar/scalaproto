@@ -1,5 +1,8 @@
 #+TITLE: Readme
 
+Scalaproto is a simple cli allowing conversions between scala and protobuf (proto2) formats.
+It can be integrated nicely with editors (e.g. vim / emacs).
+
 * Future Improvements
 ** Type support
 *** TODO [#A] Scala Map => Entry class
