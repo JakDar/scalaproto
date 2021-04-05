@@ -14,7 +14,7 @@ lazy val `scalaproto` = (project in file("."))
     resolvers ++= Dependencies.additionalResolvers,
     libraryDependencies ++= Dependencies.all,
     scalacOptions ++= CompilerOps.all,
-    parallelExecution in Test := false
+    parallelExecution in Test := false,
   )
 graalVMNativeImageOptions ++= {
   List(
@@ -26,7 +26,7 @@ graalVMNativeImageOptions ++= {
     "--enable-all-security-services",
     // "--no-fallback",
     "--allow-incomplete-classpath",
-    "-H:+ReportExceptionStackTraces"
+    "-H:+ReportExceptionStackTraces",
   )
 }
 

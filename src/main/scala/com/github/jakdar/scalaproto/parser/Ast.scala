@@ -25,7 +25,11 @@ object Ast {
   case class CustomSimpleTypeIdentifier(packagePath: List[Identifier], id: Identifier) extends CustomTypeIdentifier
 
   sealed trait HigherTypeIdentifier extends TypeIdentifier
-  case class CustomHigherTypeIdentifer(outerPackagePath: List[Identifier], outer: Identifier, inner: NonEmptyList[TypeIdentifier]) //NOTE: inner is NEL to support Either[L,R] etc
+  case class CustomHigherTypeIdentifer(
+      outerPackagePath: List[Identifier],
+      outer: Identifier,
+      inner: NonEmptyList[TypeIdentifier],
+  ) //NOTE: inner is NEL to support Either[L,R] etc
       extends HigherTypeIdentifier
       with CustomTypeIdentifier
   case class OptionType(inner: TypeIdentifier) extends HigherTypeIdentifier
@@ -52,6 +56,7 @@ object Ast {
   }
 
   case class ClassAst(id: Identifier, argLists: NonEmptyList[Fields], parents: List[CustomTypeIdentifier]) extends AstEntity
-  case class EnumAst(id: Identifier, definitions: List[AstEntity], parents: List[CustomTypeIdentifier])    extends AstEntity // TODO:bcm should empty enum represent enumValue? doubt it
+  case class EnumAst(id: Identifier, definitions: List[AstEntity], parents: List[CustomTypeIdentifier])
+      extends AstEntity // TODO:bcm should empty enum represent enumValue? doubt it
 
 }

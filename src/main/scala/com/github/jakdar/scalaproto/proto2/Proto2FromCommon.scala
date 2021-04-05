@@ -30,8 +30,8 @@ class Proto2FromCommon(options: Options) extends FromCommon[Ast.AstEntity] {
   }
 
   private def messageFromCommon(m: CommonAst.ClassAst): Ast.Message = {
-    val fieldLines = m.argLists.toList.flatMap(_.args).map {
-      case (id, typeId) => typeIdToProto(id, typeId)
+    val fieldLines = m.argLists.toList.flatMap(_.args).map { case (id, typeId) =>
+      typeIdToProto(id, typeId)
     }
 
     Ast.Message(name = Ast.Identifier(m.id.value), entries = fieldLines)
@@ -44,26 +44,26 @@ class Proto2FromCommon(options: Options) extends FromCommon[Ast.AstEntity] {
         Ast.ArgRepeat.Required,
         Ast.TypePath(Nil, Ast.TypeIdentifier(Ast.Identifier(tpe))),
         identifier = Ast.Identifier(id.value),
-        number = 0
+        number = 0,
       )
 
     typeId match {
-      case CommonAst.IntType                          => primitive("int32")
-      case CommonAst.LongType                         => primitive("int64")
-      case CommonAst.FloatType | CommonAst.DoubleType => primitive("double")
-      case CommonAst.StringType                       => primitive("string")
-      case CommonAst.BooleanType                      => primitive("bool")
-      case CommonAst.ShortType | CommonAst.ByteType   => ???
+      case CommonAst.IntType                                         => primitive("int32")
+      case CommonAst.LongType                                        => primitive("int64")
+      case CommonAst.FloatType | CommonAst.DoubleType                => primitive("double")
+      case CommonAst.StringType                                      => primitive("string")
+      case CommonAst.BooleanType                                     => primitive("bool")
+      case CommonAst.ShortType | CommonAst.ByteType                  => ???
       // case CommonAst.ArrayType(CommonAst.ByteType)    => primitive("bytes") // TODO:bcm
       case CommonAst.CustomSimpleTypeIdentifier(packagePath, typeId) =>
         (options.assumeIdType, typeId.value.endsWith("Id")) match {
           case (Some(idType), true) => primitive(idType.id.value)
-          case _ =>
+          case _                    =>
             Ast.FieldLine(
               Ast.ArgRepeat.Required,
               Ast.TypePath(packagePath.map(tId => Ast.Identifier(tId.value)), Ast.TypeIdentifier(Ast.Identifier(typeId.value))),
               identifier = Ast.Identifier(id.value),
-              number = 0
+              number = 0,
             )
         }
 

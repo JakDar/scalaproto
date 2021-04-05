@@ -49,7 +49,7 @@ object ScalaGenerator {
 
   private def typeIdToString(t: Ast.TypeIdentifier) =
     t match {
-      case SimpleTypeIdentifier(id) => id.value
+      case SimpleTypeIdentifier(id)          => id.value
       case HigherTypeIdentifer(id, internal) =>
         id.value + "[" + internal.map(typePathToString).toList.reduce(_ + "," + _) + "]"
     }

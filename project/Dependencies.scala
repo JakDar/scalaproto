@@ -8,34 +8,37 @@ object Dependencies {
   val MouseVersion      = "0.26.2"
   val GuavaVersion      = "30.0-jre"
   val DiffxVersion      = "0.3.30"
+  val ScalaPbVersion    = "0.11.1"
 
   val catsDependencies = Seq(
-    "org.typelevel" %% "cats-core"   % CatsVersion,
-    "org.typelevel" %% "cats-effect" % CatsEffectVersion,
-    "org.typelevel" %% "mouse"       % MouseVersion
+    "org.typelevel"        %% "cats-core"       % CatsVersion,
+    "org.typelevel"        %% "cats-effect"     % CatsEffectVersion,
+    "org.typelevel"        %% "mouse"           % MouseVersion,
+    "com.thesamet.scalapb" %% "scalapb-runtime" % ScalaPbVersion,
+    "org.scalameta"        %% "scalameta"       % "4.4.11",
   )
 
   private val miscDependencies = Seq(
-    "com.lihaoyi"      %% "fastparse" % FastParseVersion,
-    "com.google.guava" % "guava"      % GuavaVersion
+    "com.lihaoyi"     %% "fastparse" % FastParseVersion,
+    "com.google.guava" % "guava"     % GuavaVersion,
   )
 
   private val testDependencies = Seq(
     "org.scalatest"          %% "scalatest"       % ScalaTestVersion % Test,
     "org.scalamock"          %% "scalamock"       % ScalaMockVersion % Test,
-    "com.softwaremill.diffx" %% "diffx-scalatest" % DiffxVersion     % Test
+    "com.softwaremill.diffx" %% "diffx-scalatest" % DiffxVersion     % Test,
   )
 
   val all: Seq[ModuleID] = Seq(
     testDependencies,
     miscDependencies,
-    catsDependencies
+    catsDependencies,
   ).flatten
 
   val additionalResolvers: Seq[Resolver] = Seq(
     Resolver.jcenterRepo,
     Resolver.mavenCentral,
-    "Typesafe Repo" at "https://repo.typesafe.com/typesafe/releases/"
+    "Typesafe Repo" at "https://repo.typesafe.com/typesafe/releases/",
   )
 
 }

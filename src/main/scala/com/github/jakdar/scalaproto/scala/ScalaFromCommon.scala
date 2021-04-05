@@ -37,31 +37,31 @@ object ScalaFromCommon extends FromCommon[Ast.AstEntity] {
     def primitive(s: String) = Ast.TypePath(Nil, Ast.SimpleTypeIdentifier(Ast.Identifier(s)))
 
     t match {
-      case IntType     => primitive("Int")
-      case LongType    => primitive("Long")
-      case FloatType   => primitive("Float")
-      case DoubleType  => primitive("Double")
-      case StringType  => primitive("String")
-      case BooleanType => primitive("Boolean")
-      case ShortType   => primitive("Short")
-      case ByteType    => primitive("Byte")
-      case CustomSimpleTypeIdentifier(packagePath, id) =>
+      case IntType                                                   => primitive("Int")
+      case LongType                                                  => primitive("Long")
+      case FloatType                                                 => primitive("Float")
+      case DoubleType                                                => primitive("Double")
+      case StringType                                                => primitive("String")
+      case BooleanType                                               => primitive("Boolean")
+      case ShortType                                                 => primitive("Short")
+      case ByteType                                                  => primitive("Byte")
+      case CustomSimpleTypeIdentifier(packagePath, id)               =>
         Ast.TypePath(packagePath = packagePath.map(id => Ast.Identifier(id.value)), typeId = Ast.SimpleTypeIdentifier(Ast.Identifier(id.value)))
       case CustomHigherTypeIdentifer(outerPackagePath, outer, inner) =>
         Ast.TypePath(
           packagePath = outerPackagePath.map(id => Ast.Identifier(id.value)),
-          typeId = Ast.HigherTypeIdentifer(id = Ast.Identifier(outer.value), internal = inner.map(typeIdentifierToScala))
+          typeId = Ast.HigherTypeIdentifer(id = Ast.Identifier(outer.value), internal = inner.map(typeIdentifierToScala)),
         )
-      case OptionType(inner) =>
+      case OptionType(inner)                                         =>
         Ast.TypePath(
           packagePath = Nil,
-          typeId = Ast.HigherTypeIdentifer(id = Ast.Identifier("Option"), internal = NonEmptyList.of(typeIdentifierToScala(inner)))
+          typeId = Ast.HigherTypeIdentifer(id = Ast.Identifier("Option"), internal = NonEmptyList.of(typeIdentifierToScala(inner))),
         )
 
       case ArrayType(inner) =>
         Ast.TypePath(
           packagePath = Nil,
-          typeId = Ast.HigherTypeIdentifer(id = Ast.Identifier("List"), internal = NonEmptyList.of(typeIdentifierToScala(inner)))
+          typeId = Ast.HigherTypeIdentifer(id = Ast.Identifier("List"), internal = NonEmptyList.of(typeIdentifierToScala(inner))),
         )
 
     }

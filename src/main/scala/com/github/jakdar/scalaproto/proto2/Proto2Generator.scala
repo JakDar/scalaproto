@@ -14,8 +14,8 @@ object Proto2Generator {
   def generateEnum(e: EnumAst) = {
 
     val values = e.values
-      .map {
-        case EnumLine(name, number) => s"${indent}${name.value} = $number;"
+      .map { case EnumLine(name, number) =>
+        s"${indent}${name.value} = $number;"
       }
       .foldLeft("")(_ + "\n" + _)
 
@@ -29,9 +29,8 @@ object Proto2Generator {
   def generateMessage(m: Message) = {
 
     val formattedFields = m.fields
-      .map {
-        case Ast.FieldLine(repeat, typePath, identifier, number) =>
-          s"${indent}${repeatToString(repeat)} ${typePath.generate} ${identifier.value} = $number;"
+      .map { case Ast.FieldLine(repeat, typePath, identifier, number) =>
+        s"${indent}${repeatToString(repeat)} ${typePath.generate} ${identifier.value} = $number;"
       }
 
     val formattedInnerEntities = m.innerEntities.map(generateAstEntity)

@@ -30,7 +30,7 @@ object Ast {
   case class EnumAst(name: Identifier, values: List[EnumLine]) extends AstEntity
 
   case class FieldLine(repeat: ArgRepeat, typePath: TypePath, identifier: Identifier, number: Int) extends MessageEntry
-  case class Message(name: Identifier, entries: List[MessageEntry]) extends AstEntity {
+  case class Message(name: Identifier, entries: List[MessageEntry])                                extends AstEntity {
     def fields        = entries.collect { case f: FieldLine => f }
     def innerEntities = entries.collect { case a: AstEntity => a }
   }
