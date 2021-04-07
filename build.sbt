@@ -1,7 +1,5 @@
 name := "scalaproto"
-version := "0.3"
-enablePlugins(SbtNativePackager)
-enablePlugins(JavaAppPackaging)
+
 addCompilerPlugin(scalafixSemanticdb)
 // enablePlugins(GraalVMNativeImagePlugin)
 
@@ -14,7 +12,7 @@ lazy val `scalaproto` = (project in file("."))
     resolvers ++= Dependencies.additionalResolvers,
     libraryDependencies ++= Dependencies.all,
     scalacOptions ++= CompilerOps.all,
-    parallelExecution in Test := false,
+    Test / parallelExecution := false,
   )
 // graalVMNativeImageOptions ++= {
 //   List(
@@ -30,5 +28,5 @@ lazy val `scalaproto` = (project in file("."))
 //   )
 // }
 
-test in assembly := {}
-assemblyJarName in assembly := "scalaproto.jar"
+assembly / test := {}
+assembly / assemblyJarName := "scalaproto.jar"
