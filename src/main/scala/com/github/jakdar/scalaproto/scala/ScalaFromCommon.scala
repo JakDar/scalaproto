@@ -67,14 +67,19 @@ object ScalaFromCommon extends FromCommon[Ast.AstEntity] {
     }
   }
 
-  private def enumToScala(enum: CommonAst.ObjectAst): List[Ast.AstEntity] = {
+  private def enumToScala(objCommon: CommonAst.ObjectAst): List[Ast.AstEntity] = {
 
-    val sealedTrait = Ast.Trait(isSealed = true, id = Ast.Identifier(enum.id.value), parents = Nil)
+    val sealedTrait = Ast.Trait(isSealed = true, id = Ast.Identifier(objCommon.id.value), parents = Nil)
 
-    val inner = enum.definitions.flatMap(fromCommon)
-    val obj   = Ast.ObjectAst(id = Ast.Identifier(enum.id.value), definitions = inner, parents = Nil)
+    def innerWithExtends(d: CommonAst.AstEntity) = d match {
+      case c: CommonAst.ClassAst  => c.copy(parents = List(CommonAst.CustomSimpleTypeIdentifier(Nil, objCommon.id)))
+      case o: CommonAst.ObjectAst => o.copy(parents = List(CommonAst.CustomSimpleTypeIdentifier(Nil, objCommon.id)))
+    }
 
-    if (enum.definitions.isEmpty) {
+    val inner = objCommon.definitions.flatMap((innerWithExtends _).andThen(fromCommon _))
+    val obj   = Ast.ObjectAst(id = Ast.Identifier(objCommon.id.value), definitions = inner, parents = Nil)
+
+    if (objCommon.definitions.isEmpty) {
       List(obj)
     } else {
       List(sealedTrait, obj)

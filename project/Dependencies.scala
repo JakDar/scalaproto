@@ -36,7 +36,6 @@ object Dependencies {
   ).flatten
 
   val additionalResolvers: Seq[Resolver] = Seq(
-    Resolver.jcenterRepo,
     Resolver.mavenCentral,
     "Typesafe Repo" at "https://repo.typesafe.com/typesafe/releases/",
   )

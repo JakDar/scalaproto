@@ -47,7 +47,7 @@ required string d = 9;
           |        string b = 4;
           |        string c = 5;
           |    }
-          |    required string d = 9;
+          |    required string d = 6;
           |    optional bytes tracing = 100;
           |}
           |
@@ -63,15 +63,6 @@ required string d = 9;
           |    ALA_MAKOTA = 1;
           |    OLA_MAPSA = 2;
           |}""".stripMargin
-
-    // def diff(a: String, b: String) = {
-    //   Diff[String].apply(a, b) match {
-    //     case c: DiffResultDifferent =>
-    //       val diff = c.show.split('\n').map(x => s"<$x>").mkString(Console.RESET, s"${Console.RESET}\n${Console.RESET}", Console.RESET)
-    //       print(diff)
-    //     case _ => ()
-    //   }
-    // }
 
     val result = Application.protoFixNumbers(example)
     result.trim() should matchTo(expected.trim())

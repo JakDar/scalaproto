@@ -28,9 +28,19 @@ object Proto2Generator {
 
   def generateMessage(m: Message) = {
 
-    val formattedFields = m.fields
-      .map { case Ast.FieldLine(repeat, typePath, identifier, number) =>
-        s"${indent}${repeatToString(repeat)} ${typePath.generate} ${identifier.value} = $number;"
+    val formattedFields = m.entries
+      .collect {
+        case Ast.FieldLine(repeat, typePath, identifier, number) =>
+          s"${indent}${repeatToString(repeat)} ${typePath.generate} ${identifier.value} = $number;"
+
+        case oneOf: Ast.OneofField =>
+          val entries = oneOf.entries
+            .map { case e =>
+              s"${indent}${indent}${e.typePath.generate} ${e.identifier.value} = ${e.number};"
+            }
+            .mkString("\n")
+
+          s"${indent}oneof ${oneOf.identifier.value} {\n${entries}\n${indent}}"
       }
 
     val formattedInnerEntities = m.innerEntities.map(generateAstEntity)
