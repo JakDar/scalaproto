@@ -6,7 +6,7 @@ import org.scalatest.matchers.should.Matchers
 
 class ScalaToProto2Test extends AnyFlatSpec with Matchers {
 
-  "scala to proto" should "work in basic case " in {
+  "scala to proto" should "work in basic case, event with trailing comma" in {
 
     val example = """
             case class Ala(
@@ -19,7 +19,7 @@ class ScalaToProto2Test extends AnyFlatSpec with Matchers {
             case class Ola(
                 id: String,
                 mamacita: Boolean,
-                ola: Option[Int]
+                ola: Option[Int],
             ) extends Ala[Makota,and.it.is.fasinating.That[It.Works],
             Psa]
 

@@ -10,7 +10,7 @@ object Dependencies {
   val catsDependencies = Seq(
     "org.typelevel" %% "cats-core" % CatsVersion,
     "org.typelevel" %% "mouse"     % MouseVersion,
-    // "org.scalameta"        %% "scalameta"       % "4.4.11",
+    "org.scalameta" %% "scalameta" % "4.4.11",
   )
 
   private val miscDependencies = Seq(

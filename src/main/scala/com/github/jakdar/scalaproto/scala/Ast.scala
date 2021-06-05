@@ -9,10 +9,11 @@ object Ast {
   case class Identifier(value: String)
 
   sealed trait TypeIdentifier {
-    def isSingleType = this match {
-      case _: SimpleTypeIdentifier => true
-      case _                       => false
+    def singleType: Option[SimpleTypeIdentifier] = this match {
+      case s: SimpleTypeIdentifier => Some(s)
+      case _                       => None
     }
+    def isSingleType                             = singleType.isDefined
   }
 
   case class SimpleTypeIdentifier(id: Identifier) extends TypeIdentifier

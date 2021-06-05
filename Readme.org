@@ -3,6 +3,11 @@
 Scalaproto is a simple cli allowing conversions between scala and protobuf (proto2) formats.
 It can be integrated nicely with editors (e.g. vim / emacs).
 
+* WIP for GRPC emacs flow to work:
+** JSON support
+- generate example json from protobuf/cc
+** GRPC service parsing
+- extend GRPC AST, do not pass it to common AST
 * Future Improvements
 ** Type support
 *** TODO [#A] Scala Map => Entry class

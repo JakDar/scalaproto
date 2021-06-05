@@ -1,6 +1,6 @@
 package com.github.jakdar.scalaproto
 import fastparse._
-import com.github.jakdar.scalaproto.scala.{ScalaGenerator, ScalaParser}
+import com.github.jakdar.scalaproto.scala.{ScalaGenerator}
 import com.github.jakdar.scalaproto.proto2.Proto2Parser
 import com.github.jakdar.scalaproto.proto2.Proto2ToCommon
 import com.github.jakdar.scalaproto.scala.ScalaFromCommon
@@ -8,6 +8,7 @@ import com.github.jakdar.scalaproto.proto2.Proto2Homomorphisms
 import com.github.jakdar.scalaproto.proto2.Proto2Generator
 import com.github.jakdar.scalaproto.scala.ScalaToCommon
 import com.github.jakdar.scalaproto.proto2.Proto2FromCommon
+import com.github.jakdar.scalaproto.scala.ScalaParser
 
 object Application {
   val proto2FromCommon = new Proto2FromCommon(
@@ -15,9 +16,10 @@ object Application {
   )
 
   def scalaToProto(code: String): String = {
-    val Parsed.Success(scalaAst, _) = parse(code, ScalaParser.program(_))
-    val commonAst                   = scalaAst.flatMap(x => ScalaToCommon.toCommon(x).getOrElse(throw new IllegalStateException("Empty to Common")))
-    val protoAst                    = commonAst.flatMap(proto2FromCommon.fromCommon)
+    val scalaAst  =
+      ScalaParser.parse(code)
+    val commonAst = scalaAst.flatMap(x => ScalaToCommon.toCommon(x).getOrElse(throw new IllegalStateException("Empty to Common")))
+    val protoAst  = commonAst.flatMap(proto2FromCommon.fromCommon)
     protoAst.map(Proto2Generator.generateAstEntity).fold("")(_ + "\n\n" + _)
   }
 

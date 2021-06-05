@@ -1,62 +1,62 @@
 package com.github.jakdar.scalaproto.scala
 
-import cats.data._
-import com.github.jakdar.scalaproto.parser.Common
-import Ast._, Common._
-import fastparse._
-
-import ScalaWhitespace._
-import language.postfixOps
+import cats.data.NonEmptyList
+import scala.meta._
 
 object ScalaParser {
 
-  def identifier[_: P]: P[Ast.Identifier] =
-    P(CharsWhileIn("0-9a-zA-Z_") !).map(Identifier(_)) // TODO:bcm disallow start with 0-9
+  def treeToAst(t: Tree): Ast.AstEntity = t match {
+    case c: Defn.Class  => classToAst(c)
+    case c: Defn.Trait  => traitToAst(c)
+    case c: Defn.Object => objectToAst(c)
+    case other          => throw new IllegalArgumentException(s"Cannot convert $other")
+  }
 
-  def higherTypeIdentifier[_: P]: P[HigherTypeIdentifer]  =
-    P(identifier ~ "[" ~ (typePath ~ ",").rep() ~ typePath ~ "]").map { case (external, internal, internalLast) =>
-      HigherTypeIdentifer(id = external, internal = NonEmptyList.fromListUnsafe(internal.toList :+ internalLast))
+  def classToAst(t: Defn.Class): Ast.Clazz = t match {
+    case Defn.Class(_, name, _, constructor, _) =>
+      val argLists = NonEmptyList
+        .fromList(constructor.paramss)
+        .get
+        .map(params => Ast.ArgList(params.map(p => (Ast.Identifier(p.name.value), typeToAst(p.decltpe.get)))))
+      Ast.Clazz(id = Ast.Identifier(name.value), argLists = argLists, parents = Nil) // TODO:bcm  fix parents
+  }
+
+  def typeToAst(p: Type): Ast.TypePath = {
+
+    p match {
+      case Type.Apply(prent, internal) =>
+        val select                           = typeToAst(prent)
+        val typeId: Ast.SimpleTypeIdentifier = select.typeId.singleType.getOrElse(throw new IllegalArgumentException("Expected simple type"))
+        Ast.TypePath(
+          packagePath = select.packagePath,
+          typeId = Ast.HigherTypeIdentifer(id = typeId.id, internal = NonEmptyList.fromListUnsafe(internal.map(typeToAst))),
+        )
+
+      case Type.Select(ref, name) =>
+        Ast.TypePath(
+          packagePath = ref.toString().split(".").map(Ast.Identifier).toList,
+          typeId = Ast.SimpleTypeIdentifier(Ast.Identifier(name.value)),
+        )
+
+      case Type.Name(name) => Ast.TypePath(packagePath = Nil, typeId = Ast.SimpleTypeIdentifier(Ast.Identifier(name)))
+
+      case other => throw new IllegalArgumentException(s"Found other : ${other.structure}")
     }
-  def simpleTypeIdentifier[_: P]: P[SimpleTypeIdentifier] = P(identifier).map(SimpleTypeIdentifier)
-
-  def typePath[_: P] = P((identifier ~ ".").rep() ~ (higherTypeIdentifier | simpleTypeIdentifier)).map { case (path, typee) =>
-    TypePath(path.toList, typee)
   }
 
-  def argpair[_: P]       = P(identifier ~ ":" ~ typePath)
-  def comma_argpair[_: P] = P(identifier ~ ":" ~ typePath ~ "," ~ WS.? ~ Newline.?)
-
-  // NOTE: There something doesn't work with graalvm
-  def arglist[_: P] = P(OneNLMax ~ "(" ~ "implicit".? ~ comma_argpair.rep() ~ argpair ~ ")").map { case (argpairList, l) =>
-    ArgList(argpairList.toList :+ l)
+  def traitToAst(t: Defn.Trait): Ast.Trait = {
+    val isSealed = t.mods.exists { case Mod.Sealed() => true; case _ => false }
+    Ast.Trait(isSealed = isSealed, id = Ast.Identifier(t.name.value), parents = Nil) // TODO:bcm
   }
 
-  def extend[_: P]: P[NonEmptyList[TypePath]] = P(("extends" ~ typePath ~ ("with" ~ typePath).rep())).map { case (ex, tail) =>
-    NonEmptyList(ex, tail.toList)
+  def objectToAst(t: Defn.Object): Ast.ObjectAst = {
+
+    val innerDefs = t.templ.stats.map(treeToAst(_))
+
+    Ast.ObjectAst(id = Ast.Identifier(t.name.value), definitions = innerDefs, parents = Nil) // TODO:bcm  parents
   }
 
-  def clazz[_: P] = P("case".? ~ "class" ~ identifier ~ arglist.rep() ~ extend.?).map { case (className, argList, extend) =>
-    Clazz(
-      className,
-      NonEmptyList.fromListUnsafe( // TODO:bcm - make it safe using rep(1)
-        argList.toList
-      ),
-      parents = extend.fold[List[TypePath]](Nil)(_.toList),
-    )
-
-  }
-
-  def sealedTrait[_: P] = P("sealed".!.? ~ "trait" ~ identifier ~ extend.?).map { case (seal, id, extend) =>
-    Trait(isSealed = seal.isDefined, id = id, parents = extend.fold[List[TypePath]](Nil)(_.toList))
-  }
-
-  def obj[_: P]: P[ObjectAst] = P("case".? ~ "object" ~ identifier ~ ("{" ~ dataExpr ~ "}").? ~ extend.?).map {
-    case (id, data, extend) => // disallow multiple case thing without ;
-      ObjectAst(id, data.fold(List.empty[AstEntity])(_.toList), extend.fold[List[TypePath]](Nil)(_.toList)) // TODO:bcm
-  }
-
-  def dataExpr[_: P]: P[Seq[AstEntity]] = P((sealedTrait | obj | clazz).rep())
-
-  def program[_: P] = P(dataExpr ~ End)
+  def parse(s: String): Seq[Ast.AstEntity] =
+    s.parse[Source].get.children.map(treeToAst(_))
 
 }
