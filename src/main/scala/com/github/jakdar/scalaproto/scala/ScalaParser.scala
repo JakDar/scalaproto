@@ -4,6 +4,7 @@ import cats.data.NonEmptyList
 import scala.meta._
 
 object ScalaParser {
+  //REVIEW: go directly to /from CommonAst removing need of scala.Ast?
 
   def treeToAst(t: Tree): Ast.AstEntity = t match {
     case c: Defn.Class  => classToAst(c)
@@ -29,13 +30,13 @@ object ScalaParser {
         val typeId: Ast.SimpleTypeIdentifier = select.typeId.singleType.getOrElse(throw new IllegalArgumentException("Expected simple type"))
         Ast.TypePath(
           packagePath = select.packagePath,
-          typeId = Ast.HigherTypeIdentifer(id = typeId.id, internal = NonEmptyList.fromListUnsafe(internal.map(typeToAst))),
+          typeId = Ast.HigherTypeIdentifer(id = typeId.id, internal = NonEmptyList.fromListUnsafe(internal.map(typeToAst)))
         )
 
       case Type.Select(ref, name) =>
         Ast.TypePath(
           packagePath = ref.toString().split(".").map(Ast.Identifier).toList,
-          typeId = Ast.SimpleTypeIdentifier(Ast.Identifier(name.value)),
+          typeId = Ast.SimpleTypeIdentifier(Ast.Identifier(name.value))
         )
 
       case Type.Name(name) => Ast.TypePath(packagePath = Nil, typeId = Ast.SimpleTypeIdentifier(Ast.Identifier(name)))

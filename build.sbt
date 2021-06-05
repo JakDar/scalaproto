@@ -12,7 +12,7 @@ lazy val `scalaproto` = (project in file("."))
     resolvers ++= Dependencies.additionalResolvers,
     libraryDependencies ++= Dependencies.all,
     scalacOptions ++= CompilerOps.all,
-    Test / parallelExecution := false,
+    Test / parallelExecution := false
   )
 // graalVMNativeImageOptions ++= {
 //   List(

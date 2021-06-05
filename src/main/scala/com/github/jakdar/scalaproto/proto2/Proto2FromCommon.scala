@@ -44,7 +44,7 @@ class Proto2FromCommon(options: Options) extends FromCommon[Ast.AstEntity] {
         Ast.ArgRepeat.Required,
         Ast.TypePath(Nil, Ast.TypeIdentifier(Ast.Identifier(tpe))),
         identifier = Ast.Identifier(id.value),
-        number = 0,
+        number = 0
       )
 
     typeId match {
@@ -63,7 +63,7 @@ class Proto2FromCommon(options: Options) extends FromCommon[Ast.AstEntity] {
               Ast.ArgRepeat.Required,
               Ast.TypePath(packagePath.map(tId => Ast.Identifier(tId.value)), Ast.TypeIdentifier(Ast.Identifier(typeId.value))),
               identifier = Ast.Identifier(id.value),
-              number = 0,
+              number = 0
             )
         }
 

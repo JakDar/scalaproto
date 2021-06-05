@@ -28,7 +28,7 @@ object Ast {
   case class CustomHigherTypeIdentifer(
       outerPackagePath: List[Identifier],
       outer: Identifier,
-      inner: NonEmptyList[TypeIdentifier],
+      inner: NonEmptyList[TypeIdentifier]
   ) //NOTE: inner is NEL to support Either[L,R] etc
       extends HigherTypeIdentifier
       with CustomTypeIdentifier
