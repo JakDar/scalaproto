@@ -31,7 +31,9 @@ message FriendAgesEntry{
 *** TODO Handle certain types in ScalaToCommon
 1. [ ] ByteString and friends
 2. [ ] ZonedDateTime and friends (also when there is =java.time.ZonedDateTime=)
-** Docs
+** Docs/UI
 *** TODO decide and comment name casing in common AST
 *** TODO Document emacs usage
+*** TODO Add CLI
 ** TODO Move to scala3 (fastparse => catsparse?)
+** TODO Make it work with GraalVM
