@@ -3,12 +3,11 @@
 Scalaproto is a simple cli allowing conversions between scala and protobuf (proto2) formats.
 It can be integrated nicely with editors (e.g. vim / emacs).
 
-* WIP for GRPC emacs flow to work:
-** JSON support
-- generate example json from protobuf/cc
-** GRPC service parsing
-- extend GRPC AST, do not pass it to common AST
 * Future Improvements
+** TODO New ASTs
+*** TODO JSON support
+- generate example json from protobuf/cc
+*** TODO Postgresql create table
 ** Type support
 *** TODO [#A] Scala Map => Entry class
 #+BEGIN_SRC scala
@@ -28,14 +27,11 @@ message FriendAgesEntry{
 #+END_SRC
 *** TODO [#A] Scala tuple => Entry class
 - avoid name conflicts
+*** TODO OneOf (protobuf) support
 *** TODO Handle certain types in ScalaToCommon
-1. ByteString and friends
-2. ZonedDateTime and friends (also when there is =java.time.ZonedDateTime=)
+1. [ ] ByteString and friends
+2. [ ] ZonedDateTime and friends (also when there is =java.time.ZonedDateTime=)
 ** Docs
 *** TODO decide and comment name casing in common AST
-** New formats
-*** TODO Pseudo json support?
-- names with example values
-*** TODO Postgresql create table
-** Misc
-*** TODO [#C] Generate Grpc Service with nice api from proto
+*** TODO Document emacs usage
+** TODO Move to scala3 (fastparse => catsparse?)
