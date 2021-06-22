@@ -29,7 +29,31 @@ class JsonToScalaTest extends AnyFlatSpec with Matchers {
         |    id: Int)""".stripMargin.trim
 
     result.trim() should matchTo(expected.trim())
+  }
 
+  it should "work for nested arrays" in {
+    val example  = """
+            |{
+            |  "ala": 4,
+            |  "ola": "ela",
+            |  "kola" : [[1,2,3], [1,3,0]]
+            |}""".stripMargin.trim
+
+    val result   = Application.jsonToScala(example)
+    val expected =
+      """case class Root (
+        |    ala: Int,
+        |    ola: String,
+        |    kola: List[List[Int]])
+        |
+        |case class Ula (
+        |    id: Int)""".stripMargin.trim
+
+    result.trim() should matchTo(expected.trim())
+  }
+
+  it should "merge objects in array" ignore {
+    fail()
   }
 
 }
