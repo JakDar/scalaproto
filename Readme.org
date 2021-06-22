@@ -5,9 +5,14 @@ It can be integrated nicely with editors (e.g. vim / emacs).
 
 * Future Improvements
 ** TODO New ASTs
-*** TODO JSON support
-- generate example json from protobuf/cc
+*** TODO JSON support (protobuf related)
+1. [ ] Parse by lib (circe? ujson?)
+1. [ ] From/to common - to work with protobuf things encoding
+
 *** TODO Postgresql create table
+** TODO Get rid of scala AST in favor of scalameta?
+- [ ] Scala parser could be 'to common'
+- [ ] Scala generator would be replaced by "from common"
 ** Type support
 *** TODO [#A] Scala Map => Entry class
 #+BEGIN_SRC scala

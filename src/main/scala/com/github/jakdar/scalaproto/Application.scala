@@ -9,6 +9,8 @@ import com.github.jakdar.scalaproto.proto2.Proto2Generator
 import com.github.jakdar.scalaproto.scala.ScalaToCommon
 import com.github.jakdar.scalaproto.proto2.Proto2FromCommon
 import com.github.jakdar.scalaproto.scala.ScalaParser
+import com.github.jakdar.scalaproto.json.JsonParser
+import com.github.jakdar.scalaproto.json.JsonToCommon
 
 object Application {
   val proto2FromCommon = new Proto2FromCommon(
@@ -33,6 +35,14 @@ object Application {
     val Parsed.Success(protoAst, _) = parse(code, Proto2Parser.program(_))
     val commonAst                   = protoAst.flatMap(x => Proto2ToCommon.toCommon(x).getOrElse(throw new IllegalStateException("Empty to Common")))
     val scalaAst                    = commonAst.flatMap(ScalaFromCommon.fromCommon)
+    scalaAst.map(ScalaGenerator.generateScala).fold("")(_ + "\n\n" + _)
+  }
+
+  def jsonToScala(code: String): String = {
+    val json = JsonParser.parse(code)
+
+    val commonAst = JsonToCommon.toCommon(json, "Root")
+    val scalaAst  = commonAst.flatMap(ScalaFromCommon.fromCommon)
     scalaAst.map(ScalaGenerator.generateScala).fold("")(_ + "\n\n" + _)
   }
 
