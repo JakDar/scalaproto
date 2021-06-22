@@ -44,16 +44,47 @@ class JsonToScalaTest extends AnyFlatSpec with Matchers {
       """case class Root (
         |    ala: Int,
         |    ola: String,
-        |    kola: List[List[Int]])
-        |
-        |case class Ula (
-        |    id: Int)""".stripMargin.trim
+        |    kola: List[List[Int]])""".stripMargin.trim
 
     result.trim() should matchTo(expected.trim())
   }
 
-  it should "merge objects in array" ignore {
-    fail()
+  it should "merge objects in array" in {
+    val example  = """
+             |{
+             |  "ala": 4,
+             |  "ola": "ela",
+             |  "kola": [
+             |    {
+             |      "time": 5,
+             |      "v1": 5
+             |    },
+             |    {
+             |      "time": 1,
+             |      "v2": "5"
+             |    },
+             |    {
+             |      "time": 1,
+             |      "v3": "5",
+             |      "v4": false
+             |    }
+             |  ]
+             |}""".stripMargin.trim
+
+    val result   = Application.jsonToScala(example)
+    val expected =
+      """case class Root (
+        |    ala: Int,
+        |    ola: String,
+        |    kola: List[RootChild1])
+        |case class RootChild1 (
+        |    time: Int,
+        |    v1: Option[Int],
+        |    v2: Option[Int],
+        |    v3: Option[String],
+        |    v4: Option[Boolean])""".stripMargin.trim
+
+    result.trim() should matchTo(expected.trim())
   }
 
 }

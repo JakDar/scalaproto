@@ -41,7 +41,7 @@ object Application {
   def jsonToScala(code: String): String = {
     val json = JsonParser.parse(code)
 
-    val commonAst = JsonToCommon.toCommon(json, "Root")
+    val (_,commonAst) = JsonToCommon.toCommon(json, "Root")
     val scalaAst  = commonAst.flatMap(ScalaFromCommon.fromCommon)
     scalaAst.map(ScalaGenerator.generateScala).fold("")(_ + "\n\n" + _)
   }
