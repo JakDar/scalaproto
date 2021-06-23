@@ -16,22 +16,25 @@ object JsonToCommon {
       if (arr.isEmpty) {
         Ast.ArrayType(Ast.StringType) -> Nil // fallback :D
       } else {
+        val rootNameTitle = StringUtils.titleCase(rootName)
 
         val (typeIds, innerEntities) = arr.toList.zipWithIndex.map { case (innerJ, idx) =>
-          toCommon(innerJ, StringUtils.titleCase(rootName) + "Child" + idx.toString)
+          toCommon(innerJ, rootNameTitle + "Child" + idx.toString)
         }.unzip
 
         if (typeIds.distinct.size == 1) {
           Ast.ArrayType(typeIds.head) -> innerEntities.flatten
         } else {
-          val allObjects = typeIds.distinct.size == innerEntities.size
-          val default    = Ast.ArrayType(Ast.StringType) -> Nil
+          //HACK - wont work if nested the same field names - reproduce it in tests
+          val (thisLvlEntities, childEntities) = innerEntities.flatten.partition(_.id.value.startsWith(rootNameTitle))
+          val allObjects                       = typeIds.distinct.size == thisLvlEntities.size
+          val default                          = Ast.ArrayType(Ast.StringType) -> Nil
 
           if (allObjects) {
             // TODO:bcm make it work for nested nested objs?
-            mergeClasses(innerEntities.flatten) match {
+            mergeClasses(thisLvlEntities) match { // TODO:bcm  inner entries and thier childres separate
               case None        => default
-              case Some(clazz) => Ast.ArrayType(Ast.CustomSimpleTypeIdentifier(Nil, clazz.id)) -> List(clazz)
+              case Some(clazz) => Ast.ArrayType(Ast.CustomSimpleTypeIdentifier(Nil, clazz.id)) -> (clazz :: childEntities)
             }
           } else default
         }

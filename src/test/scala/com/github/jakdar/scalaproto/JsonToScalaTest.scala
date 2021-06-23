@@ -32,7 +32,7 @@ class JsonToScalaTest extends AnyFlatSpec with Matchers {
   }
 
   it should "work for nested arrays" in {
-    val example  = """
+    val example = """
             |{
             |  "ala": 4,
             |  "ola": "ela",
@@ -50,7 +50,7 @@ class JsonToScalaTest extends AnyFlatSpec with Matchers {
   }
 
   it should "merge objects in array" in {
-    val example  = """
+    val example = """
              |{
              |  "ala": 4,
              |  "ola": "ela",
@@ -88,4 +88,108 @@ class JsonToScalaTest extends AnyFlatSpec with Matchers {
     result.trim() should matchTo(expected.trim())
   }
 
+  it should "merge nested objects in array" in {
+    val example = """
+             |{
+             |  "ala": 4,
+             |  "ola": "ela",
+             |  "kola": [
+             |    {
+             |      "time": 5,
+             |      "v1": 5
+             |    },
+             |    {
+             |      "time": 1,
+             |      "v2":  {
+             |        "ala " : 1,
+             |        "ola": {"xd":3}
+             |      }
+             |    },
+             |    {
+             |      "time": 1,
+             |      "v3": "5",
+             |      "v4": false
+             |    }
+             |  ]
+             |}""".stripMargin.trim
+
+    val result   = Application.jsonToScala(example)
+    val expected =
+      """case class Root (
+        |    ala: Int,
+        |    ola: String,
+        |    kola: List[KolaChild0])
+        |
+        |case class KolaChild0 (
+        |    v1: Option[Int],
+        |    v3: Option[String],
+        |    v4: Option[Boolean],
+        |    v2: Option[V2Child0],
+        |    time: Int)
+        |
+        |case class V2Child0 (
+        |    ala : Int,
+        |    ola : OlaChild0)
+        |
+        |case class OlaChild0 (
+        |    xd: Int)""".stripMargin.trim
+
+    result.trim() should matchTo(expected.trim())
+  }
+
+  it should "work with name collisions 1" in {
+    val example = """
+          {
+            "ala": [
+              {
+                "ala": [
+                  {
+                    "ala": 1
+                  }
+                ]
+              }
+            ]
+          }""".stripMargin.trim
+
+    val result   = Application.jsonToScala(example)
+    val expected =
+      """case class Root (
+        |    ala: List[AlaChild0])
+        |
+        |case class AlaChild0 (
+        |    ala: List[AlaChild1])
+        |
+        |case class AlaChild1 (
+        |    ala: Int)""".stripMargin.trim
+
+    result.trim() should matchTo(expected.trim())
+  }
+
+  it should "work with name collisions 2" in {
+    val example = """
+          {
+            "ala": [
+              {
+                "ala":
+                  {
+                    "ala": 1
+                  }
+
+              }
+            ]
+          }""".stripMargin.trim
+
+    val result   = Application.jsonToScala(example)
+    val expected =
+      """case class Root (
+        |    ala: List[AlaChild0])
+        |
+        |case class AlaChild0 (
+        |    ala: AlaChild1)
+        |
+        |case class AlaChild1 (
+        |    ala: Int)""".stripMargin.trim
+
+    result.trim() should matchTo(expected.trim())
+  }
 }
