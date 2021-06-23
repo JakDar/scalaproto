@@ -61,7 +61,7 @@ class JsonToScalaTest extends AnyFlatSpec with Matchers {
              |    },
              |    {
              |      "time": 1,
-             |      "v2": "5"
+             |      "v2": 5
              |    },
              |    {
              |      "time": 1,
@@ -76,13 +76,14 @@ class JsonToScalaTest extends AnyFlatSpec with Matchers {
       """case class Root (
         |    ala: Int,
         |    ola: String,
-        |    kola: List[RootChild1])
-        |case class RootChild1 (
-        |    time: Int,
+        |    kola: List[KolaChild0])
+        |
+        |case class KolaChild0 (
         |    v1: Option[Int],
-        |    v2: Option[Int],
         |    v3: Option[String],
-        |    v4: Option[Boolean])""".stripMargin.trim
+        |    v4: Option[Boolean],
+        |    v2: Option[Int],
+        |    time: Int)""".stripMargin.trim
 
     result.trim() should matchTo(expected.trim())
   }
