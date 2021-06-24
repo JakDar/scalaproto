@@ -22,10 +22,10 @@ class JsonToScalaTest extends AnyFlatSpec with Matchers {
       """case class Root (
         |    ala: Int,
         |    ola: String,
-        |    ula: Ula,
+        |    ula: RootUla,
         |    kola: List[Boolean])
         |
-        |case class Ula (
+        |case class RootUla (
         |    id: Int)""".stripMargin.trim
 
     result.trim() should matchTo(expected.trim())
@@ -76,9 +76,9 @@ class JsonToScalaTest extends AnyFlatSpec with Matchers {
       """case class Root (
         |    ala: Int,
         |    ola: String,
-        |    kola: List[KolaChild0])
+        |    kola: List[RootkolaArr0])
         |
-        |case class KolaChild0 (
+        |case class RootkolaArr0 (
         |    v1: Option[Int],
         |    v3: Option[String],
         |    v4: Option[Boolean],
@@ -88,7 +88,7 @@ class JsonToScalaTest extends AnyFlatSpec with Matchers {
     result.trim() should matchTo(expected.trim())
   }
 
-  it should "merge nested objects in array" in {
+  it should "merge nested objects in an array" in {
     val example = """
              |{
              |  "ala": 4,
@@ -101,7 +101,7 @@ class JsonToScalaTest extends AnyFlatSpec with Matchers {
              |    {
              |      "time": 1,
              |      "v2":  {
-             |        "ala " : 1,
+             |        "ala" : 1,
              |        "ola": {"xd":3}
              |      }
              |    },
@@ -118,21 +118,22 @@ class JsonToScalaTest extends AnyFlatSpec with Matchers {
       """case class Root (
         |    ala: Int,
         |    ola: String,
-        |    kola: List[KolaChild0])
+        |    kola: List[RootkolaArr0])
         |
-        |case class KolaChild0 (
+        |case class RootkolaArr0 (
         |    v1: Option[Int],
         |    v3: Option[String],
         |    v4: Option[Boolean],
-        |    v2: Option[V2Child0],
+        |    v2: Option[RootkolaArr1V2],
         |    time: Int)
         |
-        |case class V2Child0 (
-        |    ala : Int,
-        |    ola : OlaChild0)
+        |case class RootkolaArr1V2 (
+        |    ala: Int,
+        |    ola: RootkolaArr1V2Ola)
         |
-        |case class OlaChild0 (
+        |case class RootkolaArr1V2Ola (
         |    xd: Int)""".stripMargin.trim
+    // FIXME: why space after that ala
 
     result.trim() should matchTo(expected.trim())
   }
@@ -154,12 +155,12 @@ class JsonToScalaTest extends AnyFlatSpec with Matchers {
     val result   = Application.jsonToScala(example)
     val expected =
       """case class Root (
-        |    ala: List[AlaChild0])
+        |    ala: List[RootalaArr0])
         |
-        |case class AlaChild0 (
-        |    ala: List[AlaChild1])
+        |case class RootalaArr0 (
+        |    ala: List[Rootalaarr0alaArr0])
         |
-        |case class AlaChild1 (
+        |case class Rootalaarr0alaArr0 (
         |    ala: Int)""".stripMargin.trim
 
     result.trim() should matchTo(expected.trim())
@@ -182,12 +183,12 @@ class JsonToScalaTest extends AnyFlatSpec with Matchers {
     val result   = Application.jsonToScala(example)
     val expected =
       """case class Root (
-        |    ala: List[AlaChild0])
+        |    ala: List[RootalaArr0])
         |
-        |case class AlaChild0 (
-        |    ala: AlaChild1)
+        |case class RootalaArr0 (
+        |    ala: RootalaArr0Ala)
         |
-        |case class AlaChild1 (
+        |case class RootalaArr0Ala (
         |    ala: Int)""".stripMargin.trim
 
     result.trim() should matchTo(expected.trim())

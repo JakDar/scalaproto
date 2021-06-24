@@ -6,33 +6,36 @@ import cats.data.NonEmptyList
 object JsonToCommon {
 
   def toCommon(j: ujson.Value, rootName: String): (Ast.TypeIdentifier, Seq[Ast.ClassAst]) = j match {
-    case ujson.Null => ???
+    case ujson.Null => throw new IllegalArgumentException("Unsupported Null toCommon")
 
     case _: ujson.Str  => Ast.StringType  -> Nil
     case _: ujson.Num  => Ast.IntType     -> Nil
     case _: ujson.Bool => Ast.BooleanType -> Nil
 
     case ujson.Arr(arr) => // HACK: using only first array element and defaulting to string on empty
+      val default = Ast.ArrayType(Ast.StringType) -> Nil
+
       if (arr.isEmpty) {
-        Ast.ArrayType(Ast.StringType) -> Nil // fallback :D
+        default
       } else {
-        val rootNameTitle = StringUtils.titleCase(rootName)
+        val rootNameTitle = StringUtils.titleCase(rootName) + "Arr"
 
         val (typeIds, innerEntities) = arr.toList.zipWithIndex.map { case (innerJ, idx) =>
-          toCommon(innerJ, rootNameTitle + "Child" + idx.toString)
+          toCommon(innerJ, rootNameTitle + idx.toString)
         }.unzip
 
         if (typeIds.distinct.size == 1) {
           Ast.ArrayType(typeIds.head) -> innerEntities.flatten
         } else {
           //HACK - wont work if nested the same field names - reproduce it in tests
-          val (thisLvlEntities, childEntities) = innerEntities.flatten.partition(_.id.value.startsWith(rootNameTitle))
+          // val (thisLvlEntities, childEntities) = innerEntities.flatten.partition(_.id.value.startsWith(rootNameTitle))
+          val objIds = typeIds.collect { case Ast.CustomSimpleTypeIdentifier(_, id) => id }.toSet
+
+          val (thisLvlEntities, childEntities) = innerEntities.flatten.partition(e => objIds.contains(e.id))
           val allObjects                       = typeIds.distinct.size == thisLvlEntities.size
-          val default                          = Ast.ArrayType(Ast.StringType) -> Nil
 
           if (allObjects) {
-            // TODO:bcm make it work for nested nested objs?
-            mergeClasses(thisLvlEntities) match { // TODO:bcm  inner entries and thier childres separate
+            mergeClasses(thisLvlEntities) match {
               case None        => default
               case Some(clazz) => Ast.ArrayType(Ast.CustomSimpleTypeIdentifier(Nil, clazz.id)) -> (clazz :: childEntities)
             }
@@ -42,7 +45,7 @@ object JsonToCommon {
 
     case ujson.Obj(value) =>
       val objContent = value.map { case (k, v) =>
-        val (vType, nestedEntites: List[Ast.ClassAst]) = toCommon(v, StringUtils.titleCase(k))
+        val (vType, nestedEntites: List[Ast.ClassAst]) = toCommon(v, rootName + StringUtils.titleCase(k))
         val id                                         = Ast.Identifier(k)
         (id, vType, nestedEntites)
       }
