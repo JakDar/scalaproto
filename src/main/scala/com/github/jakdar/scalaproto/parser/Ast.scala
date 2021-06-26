@@ -43,6 +43,8 @@ object Ast {
   sealed trait AstEntity {
     def parents: List[CustomTypeIdentifier]
 
+    def id: Identifier
+
     def maybeEnum = this match {
       case o: ObjectAst => Some(o)
       case _            => None
