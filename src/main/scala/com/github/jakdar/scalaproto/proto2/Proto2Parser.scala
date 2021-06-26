@@ -6,8 +6,19 @@ import fastparse._
 
 import ScalaWhitespace._
 import language.postfixOps
+import com.github.jakdar.scalaproto.parser.Parser
+import fastparse.Parsed
 
-object Proto2Parser {
+object Proto2Parser extends Parser[AstEntity] {
+
+  override def parse(code: String): Either[Parser.ParseError, Seq[AstEntity]] = {
+
+    fastparse.parse(code, program(_)) match {
+      case ex: Parsed.Failure       => Left(Parser.ParseError.GenericErr(s"Parsing proto failed with $ex").widen)
+      case Parsed.Success(value, _) => Right(value)
+    }
+
+  }
 
   def identifier[_: P]: P[Ast.Identifier] =
     P(CharsWhileIn("0-9a-zA-Z_") !).map(Identifier(_)) // TODO:bcm not start with 0-9

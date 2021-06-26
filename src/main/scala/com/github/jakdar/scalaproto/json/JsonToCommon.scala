@@ -2,10 +2,18 @@ package com.github.jakdar.scalaproto.json
 import com.github.jakdar.scalaproto.parser.Ast
 import com.github.jakdar.scalaproto.util.StringUtils
 import cats.data.NonEmptyList
+import com.github.jakdar.scalaproto.parser.ToCommon
+import ujson.Obj
 
-object JsonToCommon {
+object JsonToCommon extends ToCommon[ujson.Obj]{
 
-  def toCommon(j: ujson.Value, rootName: String): (Ast.TypeIdentifier, Seq[Ast.ClassAst]) = j match {
+  override def toCommon(other: Obj): Either[ToCommon.Error,Seq[Ast.AstEntity]] = {
+    val  (_,res) = innerToCommon(other, "Root")
+    Right(res)
+  }
+
+
+  def innerToCommon(j: ujson.Value, rootName: String): (Ast.TypeIdentifier, Seq[Ast.ClassAst]) = j match {
     case ujson.Null => throw new IllegalArgumentException("Unsupported Null toCommon")
 
     case _: ujson.Str  => Ast.StringType  -> Nil
@@ -21,7 +29,7 @@ object JsonToCommon {
         val rootNameTitle = StringUtils.titleCase(rootName) + "Arr"
 
         val (typeIds, innerEntities) = arr.toList.zipWithIndex.map { case (innerJ, idx) =>
-          toCommon(innerJ, rootNameTitle + idx.toString)
+          innerToCommon(innerJ, rootNameTitle + idx.toString)
         }.unzip
 
         if (typeIds.distinct.size == 1) {
@@ -45,7 +53,7 @@ object JsonToCommon {
 
     case ujson.Obj(value) =>
       val objContent = value.map { case (k, v) =>
-        val (vType, nestedEntites: List[Ast.ClassAst]) = toCommon(v, rootName + StringUtils.titleCase(k))
+        val (vType, nestedEntites: List[Ast.ClassAst]) = innerToCommon(v, rootName + StringUtils.titleCase(k))
         val id                                         = Ast.Identifier(k)
         (id, vType, nestedEntites)
       }

@@ -20,7 +20,7 @@ import com.github.jakdar.scalaproto.parser.Ast.ObjectAst
 
 object ScalaFromCommon extends FromCommon[Ast.AstEntity] {
 
-  override def fromCommon(ast: CommonAst.AstEntity): List[Ast.AstEntity] = ast match {
+  override def fromCommon(ast: Seq[CommonAst.AstEntity]): Seq[Ast.AstEntity] = ast.flatMap {
     case c: ClassAst  => classToScala(c) :: Nil
     case e: ObjectAst => enumToScala(e)
   }
@@ -76,7 +76,7 @@ object ScalaFromCommon extends FromCommon[Ast.AstEntity] {
       case o: CommonAst.ObjectAst => o.copy(parents = List(CommonAst.CustomSimpleTypeIdentifier(Nil, objCommon.id)))
     }
 
-    val inner = objCommon.definitions.flatMap((innerWithExtends _).andThen(fromCommon _))
+    val inner = objCommon.definitions.flatMap((innerWithExtends _).andThen((fromCommon _).compose(List(_))))
     val obj   = Ast.ObjectAst(id = Ast.Identifier(objCommon.id.value), definitions = inner, parents = Nil)
 
     if (objCommon.definitions.isEmpty) {

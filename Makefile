@@ -21,5 +21,6 @@ just-install:
 install: build just-install
 
 test:
-	scalaproto "to-proto" "case class Entity(id: Long, name: String)"
-	scalaproto "to-scala" "message Entity{ required string ala = 1;}"
+	scalaproto "scala-to-proto2" "case class Entity(id: Long, name: String)"
+	scalaproto "proto2-to-scala" "message Entity{ required string ala = 1;}"
+	scalaproto "proto2-to-json" "message Entity{ required string ala = 1;}"

@@ -1,7 +1,11 @@
 package com.github.jakdar.scalaproto.proto2
 import Ast._
+import com.github.jakdar.scalaproto.parser.Generator
 
-object Proto2Generator {
+object Proto2Generator extends Generator[AstEntity] {
+
+  override def generate(s: Seq[AstEntity]): String = s.map(generateAstEntity(_)).fold("")(_ + "\n\n" + _)
+
   val indent = (0 until 4).map(_ => " ").mkString
 
   def generateAstEntity(ast: AstEntity): String = {

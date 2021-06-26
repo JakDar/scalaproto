@@ -2,8 +2,18 @@ package com.github.jakdar.scalaproto.scala
 
 import cats.data.NonEmptyList
 import scala.meta._
+import com.github.jakdar.scalaproto.parser.Parser
+import scala.meta.parsers.Parsed
 
-object ScalaParser {
+object ScalaParser extends Parser[Ast.AstEntity] {
+
+  override def parse(code: String): Either[Parser.ParseError, Seq[Ast.AstEntity]] = {
+    code.parse[Source] match {
+      case e: Parsed.Error        => Left(Parser.ParseError.GenericErr(s"Couldnt parse error due to $e"))
+      case Parsed.Success(source) => Right(source.children.map(treeToAst(_)))
+    }
+  }
+
   //REVIEW: go directly to /from CommonAst removing need of scala.Ast?
 
   def treeToAst(t: Tree): Ast.AstEntity = t match {
@@ -56,8 +66,5 @@ object ScalaParser {
 
     Ast.ObjectAst(id = Ast.Identifier(t.name.value), definitions = innerDefs, parents = Nil) // TODO:bcm  parents
   }
-
-  def parse(s: String): Seq[Ast.AstEntity] =
-    s.parse[Source].get.children.map(treeToAst(_))
 
 }

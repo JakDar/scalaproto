@@ -1,10 +1,14 @@
 package com.github.jakdar.scalaproto.scala
 import Ast._
+import com.github.jakdar.scalaproto.parser.Generator
 
-object ScalaGenerator {
+object ScalaGenerator extends Generator[AstEntity] {
+
+  override def generate(s: Seq[AstEntity]): String = s.map(generateEntity(_)).reduce(_ + "\n\n" + _)
+
   val indent = (0 until 4).map(_ => " ").mkString
 
-  def generateScala(ast: AstEntity): String = ast match {
+  def generateEntity(ast: AstEntity): String = ast match {
     case a: Clazz     => generateClass(a)
     case t: Trait     => generateTrait(t)
     case a: ObjectAst => generateObject(a)
@@ -35,7 +39,7 @@ object ScalaGenerator {
 
   def generateObject(o: ObjectAst): String = {
 
-    val enumFields = o.definitions.map(generateScala).map(indent + _).fold("")(_ + "\n" + _)
+    val enumFields = o.definitions.map(generateEntity).map(indent + _).fold("")(_ + "\n" + _)
 
     if (o.definitions.isEmpty) {
       s"case object ${o.id.value}${parentsToString(o.parents)}" // TODO:bcm  - toCammel

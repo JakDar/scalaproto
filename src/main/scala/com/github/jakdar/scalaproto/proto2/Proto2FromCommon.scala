@@ -9,11 +9,13 @@ import Proto2FromCommon.Options
 
 class Proto2FromCommon(options: Options) extends FromCommon[Ast.AstEntity] {
 
-  override def fromCommon(other: CommonAst.AstEntity): List[Ast.AstEntity] =
-    (other match {
-      case c: ClassAst  => List(messageFromCommon(c))
-      case e: ObjectAst => List(enumFromCommon(e))
-    }).map(Proto2Homomorphisms.correctNumbers)
+  override def fromCommon(other: Seq[CommonAst.AstEntity]): Seq[Ast.AstEntity] =
+    other
+      .flatMap {
+        case c: ClassAst  => List(messageFromCommon(c))
+        case e: ObjectAst => List(enumFromCommon(e))
+      }
+      .map(Proto2Homomorphisms.correctNumbers)
 
   private def enumFromCommon(e: CommonAst.ObjectAst): Ast.EnumAst = {
     def fixCasing(s: String) =

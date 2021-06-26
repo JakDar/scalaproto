@@ -1,18 +1,14 @@
 package com.github.jakdar.scalaproto
 
+import com.github.jakdar.scalaproto.scala.ScalaParser
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import com.github.jakdar.scalaproto.scala.ScalaParser
-import com.github.jakdar.scalaproto.json.JsonFromCommon
-import com.github.jakdar.scalaproto.scala.ScalaToCommon
 
 class ScalaToJsonTest extends AnyFlatSpec with Matchers {
 
   def scalaToJson(code: String): Seq[ujson.Obj] = {
-    val scalaAst  =
-      ScalaParser.parse(code)
-    val commonAst = scalaAst.flatMap(x => ScalaToCommon.toCommon(x).getOrElse(throw new IllegalStateException("Empty to Common")))
-    JsonFromCommon.fromCommon(commonAst)
+    val scalaAst = ScalaParser.parse(code)
+    Application.convertAst(scalaAst.getOrElse(???), Application.scalaSupport, Application.jsonSupport).getOrElse(???)
   }
 
   "scala to json" should "work in basic case " in {
