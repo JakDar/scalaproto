@@ -6,6 +6,8 @@ import org.scalatest.matchers.should.Matchers
 
 class JsonToScalaTest extends AnyFlatSpec with Matchers {
 
+  def jsonToScala(code: String): String = Application.convert(code, Application.jsonSupport, Application.scalaSupport)
+
   "json to scala" should "work in basic case " in {
 
     val example  = """
@@ -17,7 +19,7 @@ class JsonToScalaTest extends AnyFlatSpec with Matchers {
             |  },
             |  "kola" : [ true, false ]
             |}""".stripMargin.trim
-    val result   = Application.jsonToScala(example)
+    val result   = jsonToScala(example)
     val expected =
       """case class Root (
         |    ala: Int,
@@ -39,7 +41,7 @@ class JsonToScalaTest extends AnyFlatSpec with Matchers {
             |  "kola" : [[1,2,3], [1,3,0]]
             |}""".stripMargin.trim
 
-    val result   = Application.jsonToScala(example)
+    val result   = jsonToScala(example)
     val expected =
       """case class Root (
         |    ala: Int,
@@ -71,7 +73,7 @@ class JsonToScalaTest extends AnyFlatSpec with Matchers {
              |  ]
              |}""".stripMargin.trim
 
-    val result   = Application.jsonToScala(example)
+    val result   = jsonToScala(example)
     val expected =
       """case class Root (
         |    ala: Int,
@@ -113,7 +115,7 @@ class JsonToScalaTest extends AnyFlatSpec with Matchers {
              |  ]
              |}""".stripMargin.trim
 
-    val result   = Application.jsonToScala(example)
+    val result   = jsonToScala(example)
     val expected =
       """case class Root (
         |    ala: Int,
@@ -152,7 +154,7 @@ class JsonToScalaTest extends AnyFlatSpec with Matchers {
             ]
           }""".stripMargin.trim
 
-    val result   = Application.jsonToScala(example)
+    val result   = jsonToScala(example)
     val expected =
       """case class Root (
         |    ala: List[RootalaArr0])
@@ -180,7 +182,7 @@ class JsonToScalaTest extends AnyFlatSpec with Matchers {
             ]
           }""".stripMargin.trim
 
-    val result   = Application.jsonToScala(example)
+    val result   = jsonToScala(example)
     val expected =
       """case class Root (
         |    ala: List[RootalaArr0])

@@ -5,13 +5,12 @@ import cats.data.NonEmptyList
 import com.github.jakdar.scalaproto.parser.ToCommon
 import ujson.Obj
 
-object JsonToCommon extends ToCommon[ujson.Obj]{
+object JsonToCommon extends ToCommon[ujson.Obj] {
 
-  override def toCommon(other: Obj): Either[ToCommon.Error,Seq[Ast.AstEntity]] = {
-    val  (_,res) = innerToCommon(other, "Root")
+  override def toCommon(other: Obj): Either[ToCommon.Error, Seq[Ast.AstEntity]] = {
+    val (_, res) = innerToCommon(other, "Root")
     Right(res)
   }
-
 
   def innerToCommon(j: ujson.Value, rootName: String): (Ast.TypeIdentifier, Seq[Ast.ClassAst]) = j match {
     case ujson.Null => throw new IllegalArgumentException("Unsupported Null toCommon")

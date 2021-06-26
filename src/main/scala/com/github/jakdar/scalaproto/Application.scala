@@ -41,6 +41,7 @@ object Application {
   val jsonSupport = ConversionSupport(JsonGenerator, JsonParser, JsonToCommon, JsonFromCommon)
 
   def convert[S, D](code: String, source: ConversionSupport[S], dest: ConversionSupport[D]) = {
+    // FIXME: log errors
     val fromAst = source.parser.parse(code).getOrElse(???)
     val destAst = convertAst(fromAst, source, dest).getOrElse(???)
     val result  = dest.generator.generate(destAst)
@@ -52,11 +53,6 @@ object Application {
       dest.fromCommon.fromCommon(commonAst.flatten)
     }
   }
-
-  def scalaToProto(code: String): String = convert(code, scalaSupport, proto2Support)
-  def protoToScala(code: String): String = convert(code, proto2Support, scalaSupport)
-  def jsonToScala(code: String): String  = convert(code, jsonSupport, scalaSupport)
-  def scalaToJson(code: String): String  = convert(code, scalaSupport, jsonSupport)
 
   def protoFixNumbers(code: String): String = {
     val Parsed.Success(parsed, _) = parse(code, Proto2Parser.program(_))

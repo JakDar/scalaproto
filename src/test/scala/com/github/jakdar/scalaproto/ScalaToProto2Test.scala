@@ -6,6 +6,8 @@ import org.scalatest.matchers.should.Matchers
 
 class ScalaToProto2Test extends AnyFlatSpec with Matchers {
 
+  def scalaToProto(code: String): String = Application.convert(code, Application.scalaSupport, Application.proto2Support)
+
   "scala to proto" should "work in basic case, event with trailing comma" in {
 
     val example = """
@@ -25,7 +27,7 @@ class ScalaToProto2Test extends AnyFlatSpec with Matchers {
 
 """.trim()
 
-    val result = Application.scalaToProto(example)
+    val result = scalaToProto(example)
 
     val expected = """|message Ala {
                       |    optional string id = 1;
@@ -67,7 +69,7 @@ class ScalaToProto2Test extends AnyFlatSpec with Matchers {
            |time :Option[ZonedDateTime]
            |)
 """.stripMargin.trim()
-    val result  = Application.scalaToProto(example)
+    val result  = scalaToProto(example)
 
     val expected = """|enum Kulka {
                       |    ALA_MAKOTA = 1;
@@ -91,7 +93,7 @@ class ScalaToProto2Test extends AnyFlatSpec with Matchers {
 
     val example = "case class Entity(id: Long, name: String)"
 
-    val result = Application.scalaToProto(example)
+    val result = scalaToProto(example)
 
     val expected = """|message Entity {
                       |    required int64 id = 1;
@@ -119,7 +121,7 @@ class ScalaToProto2Test extends AnyFlatSpec with Matchers {
            |time :Option[AnotherId]
            |)
 """.stripMargin.trim()
-    val result  = Application.scalaToProto(example) // NOTE: by default assumes id is string
+    val result  = scalaToProto(example) // NOTE: by default assumes id is string
 
     val expected = """|enum Kulka {
                       |    ALA_MAKOTA = 1;

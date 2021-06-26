@@ -5,7 +5,7 @@ import com.github.jakdar.scalaproto.parser.Ast.ClassAst
 import com.github.jakdar.scalaproto.parser.Ast.ObjectAst
 import com.github.jakdar.scalaproto.parser.FromCommon
 
-object JsonFromCommon extends FromCommon[ujson.Obj]{
+object JsonFromCommon extends FromCommon[ujson.Obj] {
 
   def fromCommon(entities: Seq[Ast.AstEntity]): List[ujson.Obj] = {
     val typeIdToEntity = entities.map(e => Ast.CustomSimpleTypeIdentifier(Nil, e.id) -> e).toMap

@@ -6,6 +6,8 @@ import org.scalatest.matchers.should.Matchers
 
 class Proto2ToScalaTest extends AnyFlatSpec with Matchers {
 
+  def protoToScala(code: String): String = Application.convert(code, Application.proto2Support, Application.scalaSupport)
+
   "proto to scala" should "work in basic case " in {
 
     val example  = """
@@ -33,7 +35,7 @@ class Proto2ToScalaTest extends AnyFlatSpec with Matchers {
             OLA_MAPSA = 2;
            }
 """.trim()
-    val result   = Application.protoToScala(example)
+    val result   = protoToScala(example)
     val expected = """|case class Ala (
                       |    ala: String,
                       |    ola: List[Int],
