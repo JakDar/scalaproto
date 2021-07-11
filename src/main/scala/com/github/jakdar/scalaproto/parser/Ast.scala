@@ -45,12 +45,12 @@ object Ast {
 
     def id: Identifier
 
-    def maybeEnum = this match {
+    def maybeObj = this match {
       case o: ObjectAst => Some(o)
       case _            => None
     }
 
-    def isEnum = this match {
+    def isEnumEntry = this match {
       case obj: ObjectAst => obj.definitions.isEmpty
       case _              => false
     }

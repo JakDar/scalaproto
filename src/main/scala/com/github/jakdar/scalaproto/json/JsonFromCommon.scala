@@ -23,7 +23,10 @@ object JsonFromCommon extends FromCommon[ujson.Obj] {
 
           named match {
             case Some(c: ClassAst)  => classAstToValue(c)
-            case Some(o: ObjectAst) => throw new IllegalArgumentException(s"Object To json not supported yet for obj $o")
+            case Some(o: ObjectAst) if(o.definitions.nonEmpty && o.definitions.forall(_.isEnumEntry)) =>
+              ujson.Str(o.definitions.head.id.value)
+            case Some(o: ObjectAst) =>
+              throw new IllegalArgumentException(s"Object To json not supported yet for obj $o")
             case None               => throw new IllegalArgumentException(s"Unknown object $a")
           }
 
