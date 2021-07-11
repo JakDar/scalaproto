@@ -29,7 +29,7 @@ object Proto2Parser extends Parser[AstEntity] {
 
   def argrepeat[_: P]: P[Ast.ArgRepeat] = P(optional | repeated | required)
 
-  def typePath[_: P] = P((identifier ~ ".").rep() ~ identifier).map { case (path, typee) =>
+  def typePath[_: P] = P(".").? ~ P((identifier ~ ".").rep() ~ identifier).map { case (path, typee) =>
     TypePath(path.toList, TypeIdentifier(typee))
   }
 

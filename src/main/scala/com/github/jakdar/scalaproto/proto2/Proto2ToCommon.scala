@@ -90,6 +90,7 @@ object Proto2ToCommon extends ToCommon[Ast.AstEntity] {
     case "double" => CommonAst.DoubleType
     case "bool"   => CommonAst.BooleanType
     case "string" => CommonAst.StringType
+    case "bytes"  => CommonAst.ArrayType(CommonAst.ByteType)
     case other    => CommonAst.CustomSimpleTypeIdentifier(packagePath = t.init.map(p => CommonAst.Identifier(p.value)), CommonAst.Identifier(other))
   }
 }

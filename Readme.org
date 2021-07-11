@@ -43,4 +43,5 @@ message FriendAgesEntry{
 ** TODO Move to scala3 (fastparse => catsparse?)
 ** TODO Make it work with GraalVM
 * Fixes
-ToScala - escape reserved chars
+- [ ] ToScala - escape reserved chars
+- [ ] proto make it parse grpcurl
