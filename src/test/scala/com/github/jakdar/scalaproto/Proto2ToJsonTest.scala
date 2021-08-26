@@ -50,4 +50,36 @@ class Proto2ToJsonTest extends AnyFlatSpec with Matchers {
 
   }
 
+  it should "convert oneofs" in {
+
+    val example  = """
+
+      message Ala {
+          required int32 alaId = 1;
+          oneof ola {
+             string ela = 2;
+             Kura kura = 3;
+          }
+      }
+
+      message Kura {
+          required string a = 1;
+      }
+""".trim()
+    val result   = protoToJson(example)
+    val expected = ujson
+      .read("""
+          |{
+          |  "alaId": 1,
+          |  "ela": "string",
+          |  "kura": {
+          |    "a": "string"
+          |  }
+          |}""".stripMargin)
+      .asInstanceOf[ujson.Obj]
+
+    result.head shouldBe expected
+
+  }
+
 }

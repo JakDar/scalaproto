@@ -30,9 +30,10 @@ message FriendAgesEntry{
   required string value = 2;
 }
 #+END_SRC
-*** TODO [#A] Scala tuple => Entry class
+*** TODO [#C] Scala tuple => Entry class
 - avoid name conflicts
-*** TODO OneOf (protobuf) support
+*** STRT [#B] OneOf (protobuf) support
+- should create fields with names of variants
 *** TODO Handle certain types in ScalaToCommon
 1. [ ] ByteString and friends
 2. [ ] ZonedDateTime and friends (also when there is =java.time.ZonedDateTime=)

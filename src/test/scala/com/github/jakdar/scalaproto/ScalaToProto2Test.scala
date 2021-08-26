@@ -140,6 +140,10 @@ class ScalaToProto2Test extends AnyFlatSpec with Matchers {
     result.trim() should matchTo(expected.trim())
   }
 
+  it should "convert sealed traits with classes to oneofs" ignore {
+    fail()
+  }
+
   it should "convert certain predefined types well" ignore {
     fail()
   }
