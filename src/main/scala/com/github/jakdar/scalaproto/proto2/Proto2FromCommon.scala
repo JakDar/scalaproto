@@ -4,8 +4,10 @@ import com.github.jakdar.scalaproto.parser.Ast.ClassAst
 import com.github.jakdar.scalaproto.parser.Ast.ObjectAst
 import com.github.jakdar.scalaproto.parser.FromCommon
 import com.github.jakdar.scalaproto.parser.{Ast => CommonAst}
+import cats.syntax.alternative.catsSyntaxAlternativeSeparate
 import com.google.common.base.CaseFormat
 import Proto2FromCommon.Options
+import com.github.jakdar.scalaproto.util.StringUtils
 
 class Proto2FromCommon(options: Options) extends FromCommon[Ast.AstEntity] {
 
@@ -17,18 +19,68 @@ class Proto2FromCommon(options: Options) extends FromCommon[Ast.AstEntity] {
       }
       .map(Proto2Homomorphisms.correctNumbers)
 
-  private def enumFromCommon(e: CommonAst.ObjectAst): Ast.EnumAst = {
+  private def enumFromCommon(e: CommonAst.ObjectAst): Ast.AstEntity = {
     def fixCasing(s: String) =
       if (!s.filter(_.isLetter).forall(_.isUpper)) {
         CaseFormat.UPPER_CAMEL.to(CaseFormat.UPPER_UNDERSCORE, s)
       } else s
 
-    val defs = e.definitions.map {
-      case c: CommonAst.ObjectAst => Ast.EnumLine(name = Ast.Identifier(fixCasing(c.id.value)), 0)
-      case _                      => ???
-    }
+    if (e.enumEntries.forall(_.isRight)) {
 
-    Ast.EnumAst(name = Ast.Identifier(e.id.value), values = defs)
+      val defs = e.enumEntries.flatMap(_.toOption).map(c => Ast.EnumLine(name = Ast.Identifier(fixCasing(c.id.value)), 0))
+
+      Ast.EnumAst(name = Ast.Identifier(e.id.value), values = defs)
+    } else {
+
+      // TODO:bcm here
+      // val (entries,classes)
+
+      val (oneOfEntires, nestedMsgs) = e.enumEntries.zipWithIndex.map {
+
+        case (Left(c: CommonAst.ClassAst), idx) =>
+          val allArgs = c.argLists.toList.flatMap(_.args)
+
+          if (allArgs.size == 1 && (typeIdToProto _).tupled(allArgs.head).repeat == Ast.ArgRepeat.Required) {
+
+            val (fieldName, fieldType) = allArgs.head
+            val mockLine               = typeIdToProto(fieldName, fieldType)
+
+            val entry = Ast.OneofEntry(
+              identifier = Ast.Identifier(StringUtils.titleToPascal(c.id.value)),
+              typePath = mockLine.typePath,
+              number = idx + 1
+            )
+
+            (entry, None)
+
+          } else {
+
+            val msg   = messageFromCommon(c)
+            val entry = Ast.OneofEntry(
+              identifier = Ast.Identifier(StringUtils.titleToPascal(c.id.value)),
+              typePath = Ast.TypePath(init = Nil, last = Ast.TypeIdentifier(msg.name)),
+              number = idx + 1
+            )
+            (entry, Some(msg))
+          }
+
+        case (Right(value), idx) => // case object-like
+          val msg   = Ast.Message(Ast.Identifier(value.id.value), Nil)
+          val entry = Ast.OneofEntry(
+            identifier = Ast.Identifier(StringUtils.titleToPascal(value.id.value)),
+            typePath = Ast.TypePath(init = Nil, last = Ast.TypeIdentifier(msg.name)),
+            number = idx + 1
+          )
+          (entry, Some(msg))
+
+      }.separate
+
+      // todoue: Oneof
+      val oneof =
+        Ast.OneofField(identifier = Ast.Identifier("is"), entries = oneOfEntires)
+
+      Ast.Message(name = Ast.Identifier(e.id.value), entries = oneof :: nestedMsgs.flatten)
+    }
   }
 
   private def messageFromCommon(m: CommonAst.ClassAst): Ast.Message = {

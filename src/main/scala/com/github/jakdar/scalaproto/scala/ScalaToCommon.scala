@@ -1,10 +1,14 @@
 package com.github.jakdar.scalaproto.scala
 
-import com.github.jakdar.scalaproto.parser.{Ast => CommonAst}
+import cats.instances.either.catsStdInstancesForEither
+import cats.instances.list.catsStdInstancesForList
+import cats.syntax.alternative.catsSyntaxAlternativeSeparate
+import cats.syntax.traverse.toTraverseOps
 import com.github.jakdar.scalaproto.parser.ToCommon
-import com.github.jakdar.scalaproto.scala.Ast.SimpleTypeIdentifier
+import com.github.jakdar.scalaproto.parser.{Ast => CommonAst}
 import com.github.jakdar.scalaproto.scala.Ast.HigherTypeIdentifer
-import com.github.jakdar.scalaproto.scala.Ast.ObjectAst
+import com.github.jakdar.scalaproto.scala.Ast.SimpleTypeIdentifier
+import mouse.boolean.booleanSyntaxMouse
 
 object ScalaToCommon extends ToCommon[Ast.AstEntity] {
 
@@ -20,19 +24,20 @@ object ScalaToCommon extends ToCommon[Ast.AstEntity] {
   }
 
   private def objectToCommon(o: Ast.ObjectAst): Either[ToCommon.Error, List[CommonAst.ObjectAst]] = {
-    val isEnum = o.definitions.forall(_.isCaseObject)
 
-    if (isEnum) {
-      val defs = o.definitions.map {
-        case ObjectAst(id, _, _) => CommonAst.ObjectAst(CommonAst.Identifier(id.value), definitions = Nil, parents = Nil)
-        case other               => throw new IllegalStateException(s"Unhandled state $other")
-      }
+    val (enums, nonEnums: List[Either[ToCommon.Error, List[CommonAst.AstEntity]]]) = o.definitions.map {
+      case c: Ast.Clazz     => (c.parents.exists(_.typeId.singleType.exists(_.id == o.id))).either(Left(classToCommon(c)), Right(classToCommon(c) :: Nil))
+      case c: Ast.ObjectAst =>
+        (c.parents.exists(_.typeId.singleType.exists(_.id == o.id))).either(Right(objectToEnumValue(c)), objectToCommon(c))
+      case _: Ast.Trait     => Right(Right(Nil))
+    }.separate
 
-      Right(List(CommonAst.ObjectAst(id = CommonAst.Identifier(o.id.value), definitions = defs, parents = Nil)))
-    } else {
-      Left(ToCommon.Error.NotSupportedEnumtoCommon)
-    }
+    val defs = nonEnums.traverse(identity).getOrElse(???).flatten // TODO:bcm
+
+    Right(List(CommonAst.ObjectAst(id = CommonAst.Identifier(o.id.value), enumEntries = enums, definitions = defs, parents = Nil)))
   }
+
+  def objectToEnumValue(o: Ast.ObjectAst) = CommonAst.EnumValue(CommonAst.Identifier(o.id.value), parents = Nil)
 
   private def typeToCommon(t: Ast.TypePath): CommonAst.TypeIdentifier = {
 

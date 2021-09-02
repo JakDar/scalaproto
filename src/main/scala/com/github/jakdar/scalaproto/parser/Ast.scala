@@ -57,8 +57,17 @@ object Ast {
 
   }
 
+  // TODO:bcm  model it(enums) behind  rust-like AST
+
   case class ClassAst(id: Identifier, argLists: NonEmptyList[Fields], parents: List[CustomTypeIdentifier]) extends AstEntity
-  case class ObjectAst(id: Identifier, definitions: List[AstEntity], parents: List[CustomTypeIdentifier])
-      extends AstEntity // TODO:bcm should empty enum represent enumValue? doubt it
+
+  case class EnumValue(id: Identifier, parents: List[CustomTypeIdentifier])
+
+  case class ObjectAst(
+      id: Identifier,
+      enumEntries: List[Either[ClassAst, EnumValue]],
+      definitions: List[AstEntity],
+      parents: List[CustomTypeIdentifier]
+  ) extends AstEntity
 
 }

@@ -140,8 +140,62 @@ class ScalaToProto2Test extends AnyFlatSpec with Matchers {
     result.trim() should matchTo(expected.trim())
   }
 
-  it should "convert sealed traits with classes to oneofs" ignore {
-    fail()
+  it should "convert sealed traits with classes to oneofs" in {
+    val example = """
+           |sealed trait Kulka
+           |
+           |object Kulka {
+           |case object AlaMakota extends Kulka
+           |case class EloId(id:String) extends Kulka
+           |case class Lol(id:Option[String]) extends Kulka
+           |case class Bigger(id:String, ala:Int) extends Kulka
+           |}
+           |
+           |
+           |case class Ala(
+           | field:Int,
+           |    id:MyId,
+           |ola:List[AnId],
+           |time :Option[Kulka]
+           |)
+""".stripMargin.trim()
+    val result  = scalaToProto(example)
+
+    val expected = """|message Kulka {
+                      |    oneof is {
+                      |        AlaMakota alaMakota = 1;
+                      |        string eloId = 2;
+                      |        Lol lol = 3;
+                      |        Bigger bigger = 4;
+                      |    }
+                      |
+                      |
+                      |message AlaMakota {
+                      |}
+                      |
+                      |
+                      |message Lol {
+                      |    optional string id = 1;
+                      |}
+                      |
+                      |
+                      |message Bigger {
+                      |    required string id = 1;
+                      |    required int32 ala = 2;
+                      |}
+                      |
+                      |}
+                      |
+                      |
+                      |
+                      |message Ala {
+                      |    required int32 field = 1;
+                      |    required string id = 2;
+                      |    repeated string ola = 3;
+                      |    optional Kulka time = 4;
+                      |}""".stripMargin
+
+    result.trim() should matchTo(expected.trim())
   }
 
   it should "convert certain predefined types well" ignore {

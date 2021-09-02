@@ -28,9 +28,10 @@ object Proto2ToCommon extends ToCommon[Ast.AstEntity] {
       if (s.filter(_.isLetter).forall(_.isUpper)) {
         CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, s)
       } else s
-    val defs                 = e.values.map(line => CommonAst.ObjectAst(CommonAst.Identifier(fixCasing(line.name.value)), definitions = Nil, parents = Nil))
+    val defs                 =
+      e.values.map(line => CommonAst.ObjectAst(CommonAst.Identifier(fixCasing(line.name.value)), enumEntries = Nil, definitions = Nil, parents = Nil))
 
-    CommonAst.ObjectAst(id = CommonAst.Identifier(e.name.value), definitions = defs, parents = Nil) // TODO:bcm snake case to cammel here?
+    CommonAst.ObjectAst(id = CommonAst.Identifier(e.name.value), enumEntries = Nil, definitions = defs, parents = Nil)
   }
 
   private def messageToCommon(m: Message): NonEmptyList[CommonAst.AstEntity] = {
@@ -54,9 +55,10 @@ object Proto2ToCommon extends ToCommon[Ast.AstEntity] {
         val oneOfId = List(m.name.value, oneOf.identifier.value).map(StringUtils.titleCase).mkString
         val typeId  = CommonAst.Identifier(oneOfId)
         val fieldId = CommonAst.Identifier(oneOf.identifier.value)
+        // TODO:bcm  here enum
 
         Ior.Both(
-          List(CommonAst.ObjectAst(id = typeId, definitions = entries, parents = Nil)), // title case
+          List(CommonAst.ObjectAst(id = typeId, enumEntries = Nil, definitions = entries, parents = Nil)), // title case
           (fieldId, CommonAst.CustomSimpleTypeIdentifier(Nil, typeId))
         )
 
