@@ -1,13 +1,11 @@
 package com.github.jakdar.scalaproto.json
 
+import cats.data.NonEmptyList
+import cats.syntax.either.catsSyntaxEitherId
 import com.github.jakdar.scalaproto.parser.Ast
 import com.github.jakdar.scalaproto.parser.Ast.ClassAst
 import com.github.jakdar.scalaproto.parser.Ast.ObjectAst
 import com.github.jakdar.scalaproto.parser.FromCommon
-import com.github.jakdar.scalaproto.proto2
-import cats.data.NonEmptyList
-import com.github.jakdar.scalaproto.util.StringUtils
-import cats.syntax.either.catsSyntaxEitherId
 
 object JsonFromCommon extends FromCommon[ujson.Obj] {
 
@@ -15,13 +13,15 @@ object JsonFromCommon extends FromCommon[ujson.Obj] {
     val typeIdToEntity = entities.map(e => Ast.CustomSimpleTypeIdentifier(Nil, e.id) -> e).toMap
 
     def classAstToValue(c: ClassAst) =
-      ujson.Obj.from(c.argLists.toList.flatMap(_.args).flatMap { case (id, typeId) =>
-        toValue(typeId) match {
-          case Right(values) => values
-          case Left(value)   => List((id.value, value))
-        }
+      ujson.Obj.from(classFieldsToJsonArgList(c))
 
-      })
+    //FIXME: dont accept class, just fields
+    def classFieldsToJsonArgList(c: ClassAst) = c.argLists.toList.flatMap(_.args).flatMap { case (id, typeId) =>
+      toValue(typeId) match {
+        case Right(values) => values
+        case Left(value)   => List((id.value, value))
+      }
+    }
 
     def toValue(typeId: Ast.TypeIdentifier): Either[ujson.Value, List[(String, ujson.Value)]] = {
       typeId match {
@@ -32,18 +32,17 @@ object JsonFromCommon extends FromCommon[ujson.Obj] {
           val named = typeIdToEntity.get(a)
 
           named match {
-            case Some(c: ClassAst)                                                                   => classAstToValue(c).asLeft
+            case Some(c: ClassAst)                                                               => classAstToValue(c).asLeft
             case Some(o: ObjectAst) if o.enumEntries.nonEmpty && o.enumEntries.forall(_.isRight) => // enum
               ujson.Str(o.definitions.head.id.value).asLeft
-            case Some(o: ObjectAst)                                                                  =>
+            case Some(o: ObjectAst)                                                              =>
               // Returns Fields we should add to parent document
               List(o.enumEntries.map {
-                case Left(clazz)      => StringUtils.titleToPascal(clazz.id.value) -> classAstToValue(clazz)
+                case Left(clazz)      => classFieldsToJsonArgList(clazz)
                 case Right(enumValue) =>
-                  StringUtils.titleToPascal(enumValue.id.value) -> classAstToValue(
-                    Ast.ClassAst(enumValue.id, argLists = NonEmptyList.of(Ast.Fields.empty), parents = Nil)
-                  )
-              }).flatten.asRight
+                  val mockClass = Ast.ClassAst(enumValue.id, argLists = NonEmptyList.of(Ast.Fields.empty), parents = Nil)
+                  classFieldsToJsonArgList(mockClass)
+              }).flatten.flatten.asRight
 
             case None => throw new IllegalArgumentException(s"Unknown object $a")
           }

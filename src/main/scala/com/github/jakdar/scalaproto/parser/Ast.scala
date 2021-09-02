@@ -40,7 +40,7 @@ object Ast {
     def nonEmpty = !isEmpty
   }
 
-  object Fields{
+  object Fields {
     val empty = new Fields(Nil)
   }
 
