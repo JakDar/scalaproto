@@ -76,13 +76,18 @@ object ScalaFromCommon extends FromCommon[Ast.AstEntity] {
       case o: CommonAst.ObjectAst => o.copy(parents = List(CommonAst.CustomSimpleTypeIdentifier(Nil, objCommon.id)))
     }
 
-    val inner = objCommon.definitions.flatMap((innerWithExtends _).andThen((fromCommon _).compose(List(_))))
-    val obj   = Ast.ObjectAst(id = Ast.Identifier(objCommon.id.value), definitions = inner, parents = Nil)
+    val innerEnums = objCommon.enumEntries.flatMap {
+      case Right(enumValue) => List(Ast.ObjectAst(id = Ast.Identifier(enumValue.id.value), definitions = Nil, parents = Nil)) // TODO:bcm  add parents
+      case Left(clazz)      => (innerWithExtends _).andThen((fromCommon _).compose(List(_)))(clazz)
+    }
 
-    if (objCommon.definitions.isEmpty) {
-      List(obj)
-    } else {
+    val inner = objCommon.definitions.flatMap((innerWithExtends _).andThen((fromCommon _).compose(List(_))))
+    val obj   = Ast.ObjectAst(id = Ast.Identifier(objCommon.id.value), definitions = innerEnums ++ inner, parents = Nil)
+
+    if (objCommon.enumEntries.nonEmpty) { // TODO:bcm  wtf - enums fail there?
       List(sealedTrait, obj)
+    } else {
+      List(obj)
     }
 
   }

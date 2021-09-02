@@ -33,7 +33,7 @@ object JsonFromCommon extends FromCommon[ujson.Obj] {
 
           named match {
             case Some(c: ClassAst)                                                                   => classAstToValue(c).asLeft
-            case Some(o: ObjectAst) if o.definitions.nonEmpty && o.definitions.forall(_.isEnumEntry) =>
+            case Some(o: ObjectAst) if o.enumEntries.nonEmpty && o.enumEntries.forall(_.isRight) => // enum
               ujson.Str(o.definitions.head.id.value).asLeft
             case Some(o: ObjectAst)                                                                  =>
               // Returns Fields we should add to parent document

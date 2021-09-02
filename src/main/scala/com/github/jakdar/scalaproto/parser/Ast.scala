@@ -54,11 +54,6 @@ object Ast {
       case _            => None
     }
 
-    def isEnumEntry = this match {
-      case obj: ObjectAst => obj.definitions.isEmpty
-      case _              => false
-    }
-
   }
 
   // TODO:bcm  model it(enums) behind  rust-like AST

@@ -29,9 +29,9 @@ object Proto2ToCommon extends ToCommon[Ast.AstEntity] {
         CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, s)
       } else s
     val defs                 =
-      e.values.map(line => CommonAst.ObjectAst(CommonAst.Identifier(fixCasing(line.name.value)), enumEntries = Nil, definitions = Nil, parents = Nil))
+      e.values.map(line => CommonAst.EnumValue(CommonAst.Identifier(fixCasing(line.name.value)), parents = Nil))
 
-    CommonAst.ObjectAst(id = CommonAst.Identifier(e.name.value), enumEntries = Nil, definitions = defs, parents = Nil)
+    CommonAst.ObjectAst(id = CommonAst.Identifier(e.name.value), enumEntries = defs.map(Right(_)), definitions = Nil, parents = Nil)
   }
 
   private def messageToCommon(m: Message): NonEmptyList[CommonAst.AstEntity] = {

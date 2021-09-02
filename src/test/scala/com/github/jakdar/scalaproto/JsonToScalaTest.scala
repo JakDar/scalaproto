@@ -135,7 +135,6 @@ class JsonToScalaTest extends AnyFlatSpec with Matchers {
         |
         |case class RootkolaArr1V2Ola (
         |    xd: Int)""".stripMargin.trim
-    // FIXME: why space after that ala
 
     result.trim() should matchTo(expected.trim())
   }
