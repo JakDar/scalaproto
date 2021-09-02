@@ -19,7 +19,7 @@ object ScalaToCommon extends ToCommon[Ast.AstEntity] {
   }
 
   private def classToCommon(c: Ast.Clazz): CommonAst.ClassAst = {
-    val args = c.argLists.map(_.args.map { case (id, typePath) => (CommonAst.Identifier(id.value), typeToCommon(typePath)) }).map(CommonAst.Fields)
+    val args = c.argLists.map(_.args.map { case (id, typePath) => (CommonAst.Identifier(id.value), typeToCommon(typePath)) }).map(CommonAst.Fields(_))
     CommonAst.ClassAst(id = CommonAst.Identifier(c.id.value), argLists = args, parents = Nil)
   }
 

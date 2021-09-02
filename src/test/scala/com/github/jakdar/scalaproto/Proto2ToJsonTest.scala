@@ -49,7 +49,7 @@ class Proto2ToJsonTest extends AnyFlatSpec with Matchers {
 
   }
 
-  it should "convert oneofs" ignore {
+  it should "convert oneofs" in {
 
     val example  = """
 

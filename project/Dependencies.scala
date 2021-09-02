@@ -16,7 +16,8 @@ object Dependencies {
     "com.lihaoyi"     %% "fastparse" % FastParseVersion,
     "com.google.guava" % "guava"     % GuavaVersion,
     "org.scalameta"   %% "scalameta" % "4.4.11",
-    "com.lihaoyi"     %% "ujson"     % "1.4.0"
+    "com.lihaoyi"     %% "ujson"     % "1.4.0",
+    "com.lihaoyi" %% "pprint" % "0.6.6"
   )
 
   private val testDependencies = Seq(

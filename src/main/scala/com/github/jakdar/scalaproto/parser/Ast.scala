@@ -40,6 +40,10 @@ object Ast {
     def nonEmpty = !isEmpty
   }
 
+  object Fields{
+    val empty = new Fields(Nil)
+  }
+
   sealed trait AstEntity {
     def parents: List[CustomTypeIdentifier]
 

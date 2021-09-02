@@ -4,6 +4,9 @@ import com.github.jakdar.scalaproto.parser.Ast
 import com.github.jakdar.scalaproto.parser.Ast.ClassAst
 import com.github.jakdar.scalaproto.parser.Ast.ObjectAst
 import com.github.jakdar.scalaproto.parser.FromCommon
+import com.github.jakdar.scalaproto.proto2
+import cats.data.NonEmptyList
+import com.github.jakdar.scalaproto.util.StringUtils
 
 object JsonFromCommon extends FromCommon[ujson.Obj] {
 
@@ -11,28 +14,35 @@ object JsonFromCommon extends FromCommon[ujson.Obj] {
     val typeIdToEntity = entities.map(e => Ast.CustomSimpleTypeIdentifier(Nil, e.id) -> e).toMap
 
     def classAstToValue(c: ClassAst) =
-      ujson.Obj.from(c.argLists.toList.flatMap(_.args).map { case (id, typeId) => (id.value, toValue(typeId)) })
+      ujson.Obj.from(c.argLists.toList.flatMap(_.args).flatMap { case (id, typeId) => toValue(id, typeId) })
 
-    def toValue(typeId: Ast.TypeIdentifier): ujson.Value = {
+    def toValue(id: Ast.Identifier, typeId: Ast.TypeIdentifier): List[(String, ujson.Value)] = {
       typeId match {
-        case Ast.ByteType | Ast.FloatType | Ast.DoubleType | Ast.ShortType | Ast.IntType | Ast.LongType => ujson.Num(1.0)
-        case Ast.StringType                                                                             => ujson.Str("string")
-        case Ast.BooleanType                                                                            => ujson.Bool(false)
+        case Ast.ByteType | Ast.FloatType | Ast.DoubleType | Ast.ShortType | Ast.IntType | Ast.LongType => id.value -> ujson.Num(1.0) :: Nil
+        case Ast.StringType                                                                             => id.value -> ujson.Str("string") :: Nil
+        case Ast.BooleanType                                                                            => id.value -> ujson.Bool(false) :: Nil
         case a: Ast.CustomSimpleTypeIdentifier                                                          =>
           val named = typeIdToEntity.get(a)
 
           named match {
-            case Some(c: ClassAst)                                                                   => classAstToValue(c)
+            case Some(c: ClassAst)                                                                   => id.value -> classAstToValue(c) :: Nil
             case Some(o: ObjectAst) if o.definitions.nonEmpty && o.definitions.forall(_.isEnumEntry) =>
-              ujson.Str(o.definitions.head.id.value)
+              id.value -> ujson.Str(o.definitions.head.id.value) :: Nil
             case Some(o: ObjectAst)                                                                  =>
-              throw new IllegalArgumentException(s"Object To json not supported yet for obj $o")
-            case None                                                                                => throw new IllegalArgumentException(s"Unknown object $a")
+              List(o.enumEntries.map {
+                case Left(clazz)      => StringUtils.titleToPascal(clazz.id.value) -> classAstToValue(clazz)
+                case Right(enumValue) =>
+                  StringUtils.titleToPascal(enumValue.id.value) -> classAstToValue(
+                    Ast.ClassAst(enumValue.id, argLists = NonEmptyList.of(Ast.Fields.empty), parents = Nil)
+                  )
+              }).flatten
+
+            case None => throw new IllegalArgumentException(s"Unknown object $a")
           }
 
         case id: Ast.CustomHigherTypeIdentifer => throw new IllegalArgumentException(s"CustomHigherTypeIdentifier not supported yet $id")
-        case Ast.OptionType(inner)             => toValue(inner)
-        case Ast.ArrayType(inner)              => ujson.Arr.from(List(toValue(inner)))
+        case Ast.OptionType(inner)             =>  toValue(id,inner)
+        case Ast.ArrayType(inner)              => id.value -> ujson.Arr.from(List(toValue(id,inner))) :: Nil
       }
 
     }

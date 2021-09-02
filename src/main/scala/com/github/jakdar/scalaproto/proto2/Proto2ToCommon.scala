@@ -40,25 +40,23 @@ object Proto2ToCommon extends ToCommon[Ast.AstEntity] {
       case f: Ast.FieldLine      =>
         Ior.Right((CommonAst.Identifier(f.identifier.value), typeToCommon(f.typePath, f.repeat)))
 
-      // case _: Ast.AstEntity      => ???
       case oneOf: Ast.OneofField =>
         val entries = oneOf.entries.map { e =>
           val entryId = List(m.name.value, oneOf.identifier.value, e.identifier.value).map(StringUtils.titleCase).mkString
 
           CommonAst.ClassAst(
-            id = CommonAst.Identifier(entryId), // TODO:bcm  title case
+            id = CommonAst.Identifier(entryId),
             argLists = NonEmptyList.of(CommonAst.Fields(List((CommonAst.Identifier(e.identifier.value), typeIdentifierToCommon(e.typePath))))),
-            parents = Nil                       // check
+            parents = Nil
           )
         }
 
         val oneOfId = List(m.name.value, oneOf.identifier.value).map(StringUtils.titleCase).mkString
         val typeId  = CommonAst.Identifier(oneOfId)
         val fieldId = CommonAst.Identifier(oneOf.identifier.value)
-        // TODO:bcm  here enum
 
         Ior.Both(
-          List(CommonAst.ObjectAst(id = typeId, enumEntries = Nil, definitions = entries, parents = Nil)), // title case
+          List(CommonAst.ObjectAst(id = typeId, enumEntries = entries.map(Left(_)), definitions = Nil, parents = Nil)), // title case
           (fieldId, CommonAst.CustomSimpleTypeIdentifier(Nil, typeId))
         )
 
