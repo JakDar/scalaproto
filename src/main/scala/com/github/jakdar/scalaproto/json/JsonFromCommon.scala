@@ -7,6 +7,7 @@ import com.github.jakdar.scalaproto.parser.FromCommon
 import com.github.jakdar.scalaproto.proto2
 import cats.data.NonEmptyList
 import com.github.jakdar.scalaproto.util.StringUtils
+import cats.syntax.either.catsSyntaxEitherId
 
 object JsonFromCommon extends FromCommon[ujson.Obj] {
 
@@ -14,40 +15,52 @@ object JsonFromCommon extends FromCommon[ujson.Obj] {
     val typeIdToEntity = entities.map(e => Ast.CustomSimpleTypeIdentifier(Nil, e.id) -> e).toMap
 
     def classAstToValue(c: ClassAst) =
-      ujson.Obj.from(c.argLists.toList.flatMap(_.args).flatMap { case (id, typeId) => toValue(id, typeId) })
+      ujson.Obj.from(c.argLists.toList.flatMap(_.args).flatMap { case (id, typeId) =>
+        toValue(typeId) match {
+          case Right(values) => values
+          case Left(value)   => List((id.value, value))
+        }
 
-    def toValue(id: Ast.Identifier, typeId: Ast.TypeIdentifier): List[(String, ujson.Value)] = {
+      })
+
+    def toValue(typeId: Ast.TypeIdentifier): Either[ujson.Value, List[(String, ujson.Value)]] = {
       typeId match {
-        case Ast.ByteType | Ast.FloatType | Ast.DoubleType | Ast.ShortType | Ast.IntType | Ast.LongType => id.value -> ujson.Num(1.0) :: Nil
-        case Ast.StringType                                                                             => id.value -> ujson.Str("string") :: Nil
-        case Ast.BooleanType                                                                            => id.value -> ujson.Bool(false) :: Nil
+        case Ast.ByteType | Ast.FloatType | Ast.DoubleType | Ast.ShortType | Ast.IntType | Ast.LongType => ujson.Num(1.0).asLeft
+        case Ast.StringType                                                                             => ujson.Str("string").asLeft
+        case Ast.BooleanType                                                                            => ujson.Bool(false).asLeft
         case a: Ast.CustomSimpleTypeIdentifier                                                          =>
           val named = typeIdToEntity.get(a)
 
           named match {
-            case Some(c: ClassAst)                                                                   => id.value -> classAstToValue(c) :: Nil
+            case Some(c: ClassAst)                                                                   => classAstToValue(c).asLeft
             case Some(o: ObjectAst) if o.definitions.nonEmpty && o.definitions.forall(_.isEnumEntry) =>
-              id.value -> ujson.Str(o.definitions.head.id.value) :: Nil
+              ujson.Str(o.definitions.head.id.value).asLeft
             case Some(o: ObjectAst)                                                                  =>
+              // Returns Fields we should add to parent document
               List(o.enumEntries.map {
                 case Left(clazz)      => StringUtils.titleToPascal(clazz.id.value) -> classAstToValue(clazz)
                 case Right(enumValue) =>
                   StringUtils.titleToPascal(enumValue.id.value) -> classAstToValue(
                     Ast.ClassAst(enumValue.id, argLists = NonEmptyList.of(Ast.Fields.empty), parents = Nil)
                   )
-              }).flatten
+              }).flatten.asRight
 
             case None => throw new IllegalArgumentException(s"Unknown object $a")
           }
 
         case id: Ast.CustomHigherTypeIdentifer => throw new IllegalArgumentException(s"CustomHigherTypeIdentifier not supported yet $id")
-        case Ast.OptionType(inner)             =>  toValue(id,inner)
-        case Ast.ArrayType(inner)              => id.value -> ujson.Arr.from(List(toValue(id,inner))) :: Nil
+        case Ast.OptionType(inner)             => toValue(inner)
+        case Ast.ArrayType(inner)              =>
+          val innerRes = toValue(inner) match {
+            case Right(values) => ujson.Obj.from(values)
+            case Left(value)   => value
+          }
+
+          ujson.Arr.from(List(innerRes)).asLeft
       }
 
     }
 
     entities.collect { case c: Ast.ClassAst => classAstToValue(c) }.toList
   }
-
 }

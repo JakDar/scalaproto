@@ -37,7 +37,7 @@ object Proto2ToCommon extends ToCommon[Ast.AstEntity] {
   private def messageToCommon(m: Message): NonEmptyList[CommonAst.AstEntity] = {
     import com.github.jakdar.scalaproto.proto2.Ast
     val objsAndArgs = m.entries.map {
-      case f: Ast.FieldLine      =>
+      case f: Ast.FieldLine =>
         Ior.Right((CommonAst.Identifier(f.identifier.value), typeToCommon(f.typePath, f.repeat)))
 
       case oneOf: Ast.OneofField =>
