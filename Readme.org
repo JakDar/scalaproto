@@ -5,10 +5,6 @@ It can be integrated nicely with editors (e.g. vim / emacs).
 
 * Future Improvements
 ** TODO New ASTs
-*** TODO JSON support (protobuf related)
-1. [ ] Parse by lib (circe? ujson?)
-1. [ ] From/to common - to work with protobuf things encoding
-
 *** TODO Postgresql create table
 ** TODO Get rid of scala AST in favor of scalameta?
 - [ ] Scala parser could be 'to common'
@@ -32,17 +28,15 @@ message FriendAgesEntry{
 #+END_SRC
 *** TODO [#C] Scala tuple => Entry class
 - avoid name conflicts
-*** STRT [#B] OneOf (protobuf) support
-- should create fields with names of variants
-*** TODO Handle certain types in ScalaToCommon
+*** TODO Predefined Type mappings in ScalaToCommon
 1. [ ] ByteString and friends
 2. [ ] ZonedDateTime and friends (also when there is =java.time.ZonedDateTime=)
 ** Docs/UI
-*** TODO decide and comment name casing in common AST
 *** TODO Document emacs usage
-*** TODO Add CLI
-** TODO Move to scala3 (fastparse => catsparse?)
-** TODO Make it work with GraalVM
+*** TODO Add a proper CLI
+** Technical improvements
+*** TODO Move to scala3 (fastparse => catsparse?)
+*** TODO Make it work with GraalVM
 * Fixes
 - [ ] ToScala - escape reserved chars
 - [ ] proto make it parse grpcurl

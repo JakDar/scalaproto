@@ -25,7 +25,7 @@ object Application {
       generator: Generator[AstEntity],
       parser: Parser[AstEntity],
       toCommon: ToCommon[AstEntity],
-      fromCommon: FromCommon[AstEntity]
+      fromCommon: FromCommon[AstEntity],
   )
 
   val scalaSupport  = ConversionSupport(ScalaGenerator, ScalaParser, ScalaToCommon, ScalaFromCommon)
@@ -35,7 +35,7 @@ object Application {
     Proto2ToCommon,
     new Proto2FromCommon(
       Proto2FromCommon.Options(assumeIdType = Some(proto2.Ast.stringTypeIdentifier))
-    )
+    ),
   )
 
   val jsonSupport = ConversionSupport(JsonGenerator, JsonParser, JsonToCommon, JsonFromCommon)

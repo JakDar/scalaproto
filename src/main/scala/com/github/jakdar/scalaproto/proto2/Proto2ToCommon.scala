@@ -47,7 +47,7 @@ object Proto2ToCommon extends ToCommon[Ast.AstEntity] {
           CommonAst.ClassAst(
             id = CommonAst.Identifier(entryId),
             argLists = NonEmptyList.of(CommonAst.Fields(List((CommonAst.Identifier(e.identifier.value), typeIdentifierToCommon(e.typePath))))),
-            parents = Nil
+            parents = Nil,
           )
         }
 
@@ -57,7 +57,7 @@ object Proto2ToCommon extends ToCommon[Ast.AstEntity] {
 
         Ior.Both(
           List(CommonAst.ObjectAst(id = typeId, enumEntries = entries.map(Left(_)), definitions = Nil, parents = Nil)), // title case
-          (fieldId, CommonAst.CustomSimpleTypeIdentifier(Nil, typeId))
+          (fieldId, CommonAst.CustomSimpleTypeIdentifier(Nil, typeId)),
         )
 
       case ala: Ast.AstEntity => Ior.Left(toCommon(ala).getOrElse(???))

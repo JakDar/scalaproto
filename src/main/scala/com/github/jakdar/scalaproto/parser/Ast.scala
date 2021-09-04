@@ -28,7 +28,7 @@ object Ast {
   case class CustomHigherTypeIdentifer(
       outerPackagePath: List[Identifier],
       outer: Identifier,
-      inner: NonEmptyList[TypeIdentifier]
+      inner: NonEmptyList[TypeIdentifier],
   ) //NOTE: inner is NEL to support Either[L,R] etc
       extends HigherTypeIdentifier
       with CustomTypeIdentifier
@@ -66,7 +66,7 @@ object Ast {
       id: Identifier,
       enumEntries: List[Either[ClassAst, EnumValue]],
       definitions: List[AstEntity],
-      parents: List[CustomTypeIdentifier]
+      parents: List[CustomTypeIdentifier],
   ) extends AstEntity
 
 }

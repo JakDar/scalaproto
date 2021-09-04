@@ -50,18 +50,18 @@ object ScalaFromCommon extends FromCommon[Ast.AstEntity] {
       case CustomHigherTypeIdentifer(outerPackagePath, outer, inner) =>
         Ast.TypePath(
           packagePath = outerPackagePath.map(id => Ast.Identifier(id.value)),
-          typeId = Ast.HigherTypeIdentifer(id = Ast.Identifier(outer.value), internal = inner.map(typeIdentifierToScala))
+          typeId = Ast.HigherTypeIdentifer(id = Ast.Identifier(outer.value), internal = inner.map(typeIdentifierToScala)),
         )
       case OptionType(inner)                                         =>
         Ast.TypePath(
           packagePath = Nil,
-          typeId = Ast.HigherTypeIdentifer(id = Ast.Identifier("Option"), internal = NonEmptyList.of(typeIdentifierToScala(inner)))
+          typeId = Ast.HigherTypeIdentifer(id = Ast.Identifier("Option"), internal = NonEmptyList.of(typeIdentifierToScala(inner))),
         )
 
       case ArrayType(inner) =>
         Ast.TypePath(
           packagePath = Nil,
-          typeId = Ast.HigherTypeIdentifer(id = Ast.Identifier("List"), internal = NonEmptyList.of(typeIdentifierToScala(inner)))
+          typeId = Ast.HigherTypeIdentifer(id = Ast.Identifier("List"), internal = NonEmptyList.of(typeIdentifierToScala(inner))),
         )
 
     }

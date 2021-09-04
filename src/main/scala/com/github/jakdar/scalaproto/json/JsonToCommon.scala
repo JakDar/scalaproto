@@ -63,7 +63,7 @@ object JsonToCommon extends ToCommon[ujson.Obj] {
 
       (
         Ast.CustomSimpleTypeIdentifier(Nil, id),
-        Ast.ClassAst(id = id, argLists = NonEmptyList.of(Ast.Fields(fields)), parents = Nil) :: nestedEntites
+        Ast.ClassAst(id = id, argLists = NonEmptyList.of(Ast.Fields(fields)), parents = Nil) :: nestedEntites,
       )
   }
 

@@ -48,7 +48,7 @@ class Proto2FromCommon(options: Options) extends FromCommon[Ast.AstEntity] {
             val entry = Ast.OneofEntry(
               identifier = Ast.Identifier(StringUtils.titleToPascal(c.id.value)),
               typePath = mockLine.typePath,
-              number = idx + 1
+              number = idx + 1,
             )
 
             (entry, None)
@@ -59,7 +59,7 @@ class Proto2FromCommon(options: Options) extends FromCommon[Ast.AstEntity] {
             val entry = Ast.OneofEntry(
               identifier = Ast.Identifier(StringUtils.titleToPascal(c.id.value)),
               typePath = Ast.TypePath(init = Nil, last = Ast.TypeIdentifier(msg.name)),
-              number = idx + 1
+              number = idx + 1,
             )
             (entry, Some(msg))
           }
@@ -69,7 +69,7 @@ class Proto2FromCommon(options: Options) extends FromCommon[Ast.AstEntity] {
           val entry = Ast.OneofEntry(
             identifier = Ast.Identifier(StringUtils.titleToPascal(value.id.value)),
             typePath = Ast.TypePath(init = Nil, last = Ast.TypeIdentifier(msg.name)),
-            number = idx + 1
+            number = idx + 1,
           )
           (entry, Some(msg))
 
@@ -98,7 +98,7 @@ class Proto2FromCommon(options: Options) extends FromCommon[Ast.AstEntity] {
         Ast.ArgRepeat.Required,
         Ast.TypePath(Nil, Ast.TypeIdentifier(Ast.Identifier(tpe))),
         identifier = Ast.Identifier(id.value),
-        number = 0
+        number = 0,
       )
 
     typeId match {
@@ -117,7 +117,7 @@ class Proto2FromCommon(options: Options) extends FromCommon[Ast.AstEntity] {
               Ast.ArgRepeat.Required,
               Ast.TypePath(packagePath.map(tId => Ast.Identifier(tId.value)), Ast.TypeIdentifier(Ast.Identifier(typeId.value))),
               identifier = Ast.Identifier(id.value),
-              number = 0
+              number = 0,
             )
         }
 

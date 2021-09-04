@@ -40,13 +40,13 @@ object ScalaParser extends Parser[Ast.AstEntity] {
         val typeId: Ast.SimpleTypeIdentifier = select.typeId.singleType.getOrElse(throw new IllegalArgumentException("Expected simple type"))
         Ast.TypePath(
           packagePath = select.packagePath,
-          typeId = Ast.HigherTypeIdentifer(id = typeId.id, internal = NonEmptyList.fromListUnsafe(internal.map(typeToAst)))
+          typeId = Ast.HigherTypeIdentifer(id = typeId.id, internal = NonEmptyList.fromListUnsafe(internal.map(typeToAst))),
         )
 
       case Type.Select(ref, name) =>
         Ast.TypePath(
           packagePath = ref.toString().split(".").map(Ast.Identifier).toList,
-          typeId = Ast.SimpleTypeIdentifier(Ast.Identifier(name.value))
+          typeId = Ast.SimpleTypeIdentifier(Ast.Identifier(name.value)),
         )
 
       case Type.Name(name) => Ast.TypePath(packagePath = Nil, typeId = Ast.SimpleTypeIdentifier(Ast.Identifier(name)))
