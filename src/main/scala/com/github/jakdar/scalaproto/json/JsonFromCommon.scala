@@ -1,6 +1,5 @@
 package com.github.jakdar.scalaproto.json
 
-import cats.data.NonEmptyList
 import cats.syntax.either.catsSyntaxEitherId
 import com.github.jakdar.scalaproto.parser.Ast
 import com.github.jakdar.scalaproto.parser.Ast.ClassAst
@@ -13,15 +12,15 @@ object JsonFromCommon extends FromCommon[ujson.Obj] {
     val typeIdToEntity = entities.map(e => Ast.CustomSimpleTypeIdentifier(Nil, e.id) -> e).toMap
 
     def classAstToValue(c: ClassAst) =
-      ujson.Obj.from(classFieldsToJsonArgList(c))
+      ujson.Obj.from(classFieldsToJsonArgList(c.argLists.toList.flatMap(_.args)))
 
-    //FIXME: dont accept class, just fields
-    def classFieldsToJsonArgList(c: ClassAst) = c.argLists.toList.flatMap(_.args).flatMap { case (id, typeId) =>
-      toValue(typeId) match {
-        case Right(values) => values
-        case Left(value)   => List((id.value, value))
+    def classFieldsToJsonArgList(argList: List[(Ast.Identifier, Ast.TypeIdentifier)]) =
+      argList.flatMap { case (id, typeId) =>
+        toValue(typeId) match {
+          case Right(values) => values
+          case Left(value)   => List((id.value, value))
+        }
       }
-    }
 
     def toValue(typeId: Ast.TypeIdentifier): Either[ujson.Value, List[(String, ujson.Value)]] = {
       typeId match {
@@ -38,10 +37,8 @@ object JsonFromCommon extends FromCommon[ujson.Obj] {
             case Some(o: ObjectAst)                                                              =>
               // Returns Fields we should add to parent document
               List(o.enumEntries.map {
-                case Left(clazz)      => classFieldsToJsonArgList(clazz)
-                case Right(enumValue) =>
-                  val mockClass = Ast.ClassAst(enumValue.id, argLists = NonEmptyList.of(Ast.Fields.empty), parents = Nil)
-                  classFieldsToJsonArgList(mockClass)
+                case Left(clazz) => classFieldsToJsonArgList(clazz.argLists.toList.flatMap(_.args))
+                case Right(_)    => Nil // FIXME test & wtf why this?
               }).flatten.flatten.asRight
 
             case None => throw new IllegalArgumentException(s"Unknown object $a")

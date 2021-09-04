@@ -198,8 +198,27 @@ class ScalaToProto2Test extends AnyFlatSpec with Matchers {
     result.trim() should matchTo(expected.trim())
   }
 
-  it should "convert certain predefined types well" ignore {
-    fail()
+  it should "convert certain predefined types well" in {
+
+    val example = """
+        |case class Ala(
+        |    id:Option[String],
+        |    ola:Array[Byte],
+        |    ula:Option[ByteString],
+        |    time :Option[java.time.ZonedDateTime]
+        |)""".stripMargin.trim()
+
+    val result = scalaToProto(example)
+
+    val expected = """|message Ala {
+                      |    optional string id = 1;
+                      |    required bytes ola = 2;
+                      |    optional bytes ula = 3;
+                      |    optional int64 time = 4;
+                      |}""".stripMargin
+
+    result.trim() should matchTo(expected.trim())
+
   }
 
 }

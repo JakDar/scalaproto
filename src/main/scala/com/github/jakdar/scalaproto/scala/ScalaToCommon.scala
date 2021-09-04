@@ -52,6 +52,7 @@ object ScalaToCommon extends ToCommon[Ast.AstEntity] {
       case SimpleTypeIdentifier(Ast.Identifier("Boolean"))                                   => CommonAst.BooleanType
       case SimpleTypeIdentifier(Ast.Identifier("Short"))                                     => CommonAst.ShortType
       case SimpleTypeIdentifier(Ast.Identifier("Byte"))                                      => CommonAst.ByteType
+      case SimpleTypeIdentifier(Ast.Identifier("ByteString"))                                => CommonAst.ArrayType(CommonAst.ByteType)
       case SimpleTypeIdentifier(id)                                                          => CommonAst.CustomSimpleTypeIdentifier(packagePath, CommonAst.Identifier(id.value))
 
       case HigherTypeIdentifer(Ast.Identifier("Option" | "Optional"), internal) if internal.size == 1 =>

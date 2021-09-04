@@ -10,7 +10,7 @@ It can be integrated nicely with editors (e.g. vim / emacs).
 - [ ] Scala parser could be 'to common'
 - [ ] Scala generator would be replaced by "from common"
 ** Type support
-*** TODO [#A] Scala Map => Entry class
+*** TODO [#A] Scala Map => Entry classes
 #+BEGIN_SRC scala
 case class Ala(ola:Int, firendAges: Map[String,Int])
 #+END_SRC
@@ -28,9 +28,6 @@ message FriendAgesEntry{
 #+END_SRC
 *** TODO [#C] Scala tuple => Entry class
 - avoid name conflicts
-*** TODO Predefined Type mappings in ScalaToCommon
-1. [ ] ByteString and friends
-2. [ ] ZonedDateTime and friends (also when there is =java.time.ZonedDateTime=)
 ** Docs/UI
 *** TODO Document emacs usage
 *** TODO Add a proper CLI

@@ -107,8 +107,8 @@ class Proto2FromCommon(options: Options) extends FromCommon[Ast.AstEntity] {
       case CommonAst.FloatType | CommonAst.DoubleType                => primitive("double")
       case CommonAst.StringType                                      => primitive("string")
       case CommonAst.BooleanType                                     => primitive("bool")
-      case CommonAst.ShortType | CommonAst.ByteType                  => ???
-      // case CommonAst.ArrayType(CommonAst.ByteType)    => primitive("bytes") // TODO:bcm
+      case CommonAst.ShortType | CommonAst.ByteType                  => primitive("i32")
+      case CommonAst.ArrayType(CommonAst.ByteType)                   => primitive("bytes")
       case CommonAst.CustomSimpleTypeIdentifier(packagePath, typeId) =>
         (options.assumeIdType, typeId.value.endsWith("Id")) match {
           case (Some(idType), true) => primitive(idType.id.value)
