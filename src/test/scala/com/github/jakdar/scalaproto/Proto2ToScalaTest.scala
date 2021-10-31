@@ -36,32 +36,25 @@ class Proto2ToScalaTest extends AnyFlatSpec with Matchers {
            }
 """.trim()
     val result   = protoToScala(example)
-    val expected = """|case class Ala (
-                      |    ala: String,
-                      |    ola: List[Int],
-                      |    ula: Option[Long])
+    val expected = """|
+                      |case class Ala(ala: String, ola: List[Int], ula: Option[Long])
                       |
-                      |case class Ola (
-                      |    ala: Option[String],
-                      |    ola: List[Int],
-                      |    ela: OlaEla,
-                      |    ula: Option[Boolean])
+                      |case class Ola(ala: Option[String], ola: List[Int], ela: OlaEla, ula: Option[Boolean])
                       |
                       |sealed trait OlaEla
                       |
                       |object OlaEla {
-                      |    case class OlaElaKoala (
-                      |    koala: String) extends OlaEla
-                      |    case class OlaElaPanda (
-                      |    panda: Int) extends OlaEla
+                      |  case class OlaElaKoala(koala: String) extends OlaEla
+                      |  case class OlaElaPanda(panda: Int) extends OlaEla
                       |}
                       |
                       |sealed trait AlaMakota
                       |
                       |object AlaMakota {
-                      |    case object AlaMakota
-                      |    case object OlaMapsa
+                      |  case object AlaMakota extends AlaMaota
+                      |  case object OlaMapsa extends AlaMaota
                       |}""".stripMargin
+
 
     result.trim() should matchTo(expected.trim())
 

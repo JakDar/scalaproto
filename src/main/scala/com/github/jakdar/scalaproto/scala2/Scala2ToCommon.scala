@@ -1,4 +1,4 @@
-package com.github.jakdar.scalaproto.scala
+package com.github.jakdar.scalaproto.scala2
 
 import cats.data.NonEmptyList
 import cats.instances.list.catsStdInstancesForList
@@ -10,9 +10,9 @@ import mouse.boolean.booleanSyntaxMouse
 
 import scala.meta._
 
-object ScalaMetaToCommon extends ToCommon[Tree] {
+object Scala2ToCommon extends ToCommon[Stat] {
 
-  override def toCommon(other: Tree): Either[ToCommon.Error, Seq[parser.Ast.AstEntity]] = Right(treeToAst(other))
+  override def toCommon(other: Stat): Either[ToCommon.Error, Seq[parser.Ast.AstEntity]] = Right(treeToAst(other))
 
   def treeToAst(t: Tree): List[CommonAst.AstEntity] = t match {
     case c: Defn.Class  => classToCommon(c) :: Nil

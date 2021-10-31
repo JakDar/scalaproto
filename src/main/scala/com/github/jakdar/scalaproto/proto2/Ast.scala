@@ -29,7 +29,7 @@ object Ast {
 
   case class EnumAst(name: Identifier, values: List[EnumLine]) extends AstEntity
 
-  case class OneofField(identifier: Identifier, entries: List[OneofEntry]) extends MessageEntry // TODO:bcm  support it furtsher
+  case class OneofField(identifier: Identifier, entries: List[OneofEntry]) extends MessageEntry
   case class OneofEntry(typePath: TypePath, identifier: Identifier, number: Int)
 
   case class FieldLine(repeat: ArgRepeat, typePath: TypePath, identifier: Identifier, number: Int) extends MessageEntry

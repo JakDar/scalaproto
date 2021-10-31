@@ -1,13 +1,13 @@
-package com.github.jakdar.scalaproto.scala
+package com.github.jakdar.scalaproto.scala2
 import scala.meta._
 import com.github.jakdar.scalaproto.parser.FromCommon
 import com.github.jakdar.scalaproto.parser.Ast
 
-object ScalaMetaFromCommon extends FromCommon[Tree] {
+object Scala2FromCommon extends FromCommon[Stat] {
   val emptyTemplate = Template(early = List(), inits = List(), self = Self(name = Name(""), decltpe = None), stats = List(), derives = List())
   val noConstructor = Ctor.Primary(mods = Nil, name = Name(""), paramss = Nil)
 
-  override def fromCommon(ast: Seq[Ast.AstEntity]): Seq[Tree] = ast.flatMap {
+  override def fromCommon(ast: Seq[Ast.AstEntity]): Seq[Stat] = ast.flatMap {
     case c: Ast.ClassAst  => classToScala(c) :: Nil
     case e: Ast.ObjectAst => enumToScala(e)
   }
@@ -20,7 +20,7 @@ object ScalaMetaFromCommon extends FromCommon[Tree] {
     )
 
     val ctor = Ctor.Primary(mods = Nil, name = Name(""), paramss = paramss)
-    Defn.Class(mods = Nil, name = Type.Name(clazz.id.value), tparams = Nil, ctor = ctor, templ = emptyTemplate)
+    Defn.Class(mods = List(Mod.Case()), name = Type.Name(clazz.id.value), tparams = Nil, ctor = ctor, templ = emptyTemplate)
   }
 
   private def typeIdentifierToScala(t: Ast.TypeIdentifier): Type = {
@@ -61,7 +61,7 @@ object ScalaMetaFromCommon extends FromCommon[Tree] {
   }
 
   private def enumToScala(objCommon: Ast.ObjectAst): List[Stat] = {
-    val sealedTrait = Defn.Trait(mods = List(), name = Type.Name(objCommon.id.value), Nil, ctor = noConstructor, templ = emptyTemplate)
+    val sealedTrait = Defn.Trait(mods = List(Mod.Sealed()), name = Type.Name(objCommon.id.value), Nil, ctor = noConstructor, templ = emptyTemplate)
 
     def innerWithExtends(d: Ast.AstEntity): Ast.AstEntity = d match {
       case c: Ast.ClassAst  => c.copy(parents = List(Ast.CustomSimpleTypeIdentifier(Nil, objCommon.id)))
@@ -74,9 +74,8 @@ object ScalaMetaFromCommon extends FromCommon[Tree] {
           List(Defn.Object(List(Mod.Case()), name = Term.Name(enumValue.id.value), templ = emptyTemplate)) // TODO:bcm  add parents
         case Left(clazz)      => (innerWithExtends _).andThen((fromCommon _).compose(List(_)))(clazz)
       }
-      .map(_.asInstanceOf[Stat])
 
-    val inner = objCommon.definitions.flatMap((innerWithExtends _).andThen((fromCommon _).compose(List(_)))).map(_.asInstanceOf[Stat])
+    val inner = objCommon.definitions.flatMap((innerWithExtends _).andThen((fromCommon _).compose(List(_))))
 
     val obj = Defn.Object(mods = Nil, name = Term.Name(objCommon.id.value), templ = emptyTemplate.copy(stats = innerEnums ++ inner))
 

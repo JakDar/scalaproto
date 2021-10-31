@@ -21,15 +21,11 @@ class JsonToScalaTest extends AnyFlatSpec with Matchers {
             |}""".stripMargin.trim
     val result   = jsonToScala(example)
     val expected =
-      """case class Root (
-        |    ala: Int,
-        |    ola: String,
-        |    ula: RootUla,
-        |    kola: List[Boolean])
+      """case class Root(ala: Int, ola: String, ula: RootUla, kola: List[Boolean])
         |
-        |case class RootUla (
-        |    id: Int)""".stripMargin.trim
+        |case class RootUla(id: Int)""".stripMargin.trim
 
+    pprint.pprintln(result)
     result.trim() should matchTo(expected.trim())
   }
 
@@ -43,10 +39,7 @@ class JsonToScalaTest extends AnyFlatSpec with Matchers {
 
     val result   = jsonToScala(example)
     val expected =
-      """case class Root (
-        |    ala: Int,
-        |    ola: String,
-        |    kola: List[List[Int]])""".stripMargin.trim
+      "case class Root(ala: Int, ola: String, kola: List[List[Int]])"
 
     result.trim() should matchTo(expected.trim())
   }
@@ -75,17 +68,9 @@ class JsonToScalaTest extends AnyFlatSpec with Matchers {
 
     val result   = jsonToScala(example)
     val expected =
-      """case class Root (
-        |    ala: Int,
-        |    ola: String,
-        |    kola: List[RootkolaArr0])
+      """case class Root(ala: Int, ola: String, kola: List[RootkolaArr0])
         |
-        |case class RootkolaArr0 (
-        |    v1: Option[Int],
-        |    v3: Option[String],
-        |    v4: Option[Boolean],
-        |    v2: Option[Int],
-        |    time: Int)""".stripMargin.trim
+        |case class RootkolaArr0(v1: Option[Int], v3: Option[String], v4: Option[Boolean], v2: Option[Int], time: Int)""".stripMargin.trim
 
     result.trim() should matchTo(expected.trim())
   }
@@ -117,24 +102,13 @@ class JsonToScalaTest extends AnyFlatSpec with Matchers {
 
     val result   = jsonToScala(example)
     val expected =
-      """case class Root (
-        |    ala: Int,
-        |    ola: String,
-        |    kola: List[RootkolaArr0])
+      """case class Root(ala: Int, ola: String, kola: List[RootkolaArr0])
         |
-        |case class RootkolaArr0 (
-        |    v1: Option[Int],
-        |    v3: Option[String],
-        |    v4: Option[Boolean],
-        |    v2: Option[RootkolaArr1V2],
-        |    time: Int)
+        |case class RootkolaArr0(v1: Option[Int], v3: Option[String], v4: Option[Boolean], v2: Option[RootkolaArr1V2], time: Int)
         |
-        |case class RootkolaArr1V2 (
-        |    ala: Int,
-        |    ola: RootkolaArr1V2Ola)
+        |case class RootkolaArr1V2(ala: Int, ola: RootkolaArr1V2Ola)
         |
-        |case class RootkolaArr1V2Ola (
-        |    xd: Int)""".stripMargin.trim
+        |case class RootkolaArr1V2Ola(xd: Int)""".stripMargin.trim
 
     result.trim() should matchTo(expected.trim())
   }
@@ -155,14 +129,11 @@ class JsonToScalaTest extends AnyFlatSpec with Matchers {
 
     val result   = jsonToScala(example)
     val expected =
-      """case class Root (
-        |    ala: List[RootalaArr0])
+      """case class Root(ala: List[RootalaArr0])
         |
-        |case class RootalaArr0 (
-        |    ala: List[Rootalaarr0alaArr0])
+        |case class RootalaArr0(ala: List[Rootalaarr0alaArr0])
         |
-        |case class Rootalaarr0alaArr0 (
-        |    ala: Int)""".stripMargin.trim
+        |case class Rootalaarr0alaArr0(ala: Int)""".stripMargin.trim
 
     result.trim() should matchTo(expected.trim())
   }
@@ -183,14 +154,11 @@ class JsonToScalaTest extends AnyFlatSpec with Matchers {
 
     val result   = jsonToScala(example)
     val expected =
-      """case class Root (
-        |    ala: List[RootalaArr0])
+      """case class Root(ala: List[RootalaArr0])
         |
-        |case class RootalaArr0 (
-        |    ala: RootalaArr0Ala)
+        |case class RootalaArr0(ala: RootalaArr0Ala)
         |
-        |case class RootalaArr0Ala (
-        |    ala: Int)""".stripMargin.trim
+        |case class RootalaArr0Ala(ala: Int)""".stripMargin.trim
 
     result.trim() should matchTo(expected.trim())
   }
