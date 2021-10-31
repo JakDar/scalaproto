@@ -51,8 +51,8 @@ class Proto2ToScalaTest extends AnyFlatSpec with Matchers {
                       |sealed trait AlaMakota
                       |
                       |object AlaMakota {
-                      |  case object AlaMakota extends AlaMaota
-                      |  case object OlaMapsa extends AlaMaota
+                      |  case object AlaMakota extends AlaMakota
+                      |  case object OlaMapsa extends AlaMakota
                       |}""".stripMargin
 
 

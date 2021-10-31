@@ -18,9 +18,13 @@ object Scala2FromCommon extends FromCommon[Stat] {
         Term.Param(mods = Nil, name = Name(id.value), decltpe = Some(typeIdentifierToScala(typeId)), default = None)
       }
     )
+    val templ   = emptyTemplate.copy(inits = clazz.parents.collect { case Ast.CustomSimpleTypeIdentifier(packagePath, id) =>
+      Init(tpe = foldPath(packagePath, id), name = Name(""), argss = Nil)
+    //NOTE: ignoring higher type id for now
+    })
 
     val ctor = Ctor.Primary(mods = Nil, name = Name(""), paramss = paramss)
-    Defn.Class(mods = List(Mod.Case()), name = Type.Name(clazz.id.value), tparams = Nil, ctor = ctor, templ = emptyTemplate)
+    Defn.Class(mods = List(Mod.Case()), name = Type.Name(clazz.id.value), tparams = Nil, ctor = ctor, templ = templ)
   }
 
   private def typeIdentifierToScala(t: Ast.TypeIdentifier): Type = {
@@ -71,7 +75,8 @@ object Scala2FromCommon extends FromCommon[Stat] {
     val innerEnums = objCommon.enumEntries
       .flatMap {
         case Right(enumValue) =>
-          List(Defn.Object(List(Mod.Case()), name = Term.Name(enumValue.id.value), templ = emptyTemplate)) // TODO:bcm  add parents
+          val extendsTemplate = emptyTemplate.copy(inits = List(Init(tpe = Type.Name(objCommon.id.value), name = Name(""), argss = Nil)))
+          List(Defn.Object(List(Mod.Case()), name = Term.Name(enumValue.id.value), templ = extendsTemplate))
         case Left(clazz)      => (innerWithExtends _).andThen((fromCommon _).compose(List(_)))(clazz)
       }
 
