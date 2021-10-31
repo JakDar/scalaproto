@@ -1,13 +1,13 @@
 package com.github.jakdar.scalaproto
 
-import com.github.jakdar.scalaproto.scala.ScalaParser
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
+import com.github.jakdar.scalaproto.scala.ScalaMetaParser
 
 class ScalaToJsonTest extends AnyFlatSpec with Matchers {
 
   def scalaToJson(code: String): Seq[ujson.Obj] = {
-    val scalaAst = ScalaParser.parse(code)
+    val scalaAst = ScalaMetaParser.parse(code)
     Application.convertAst(scalaAst.getOrElse(???), Application.scalaSupport, Application.jsonSupport).getOrElse(???)
   }
 

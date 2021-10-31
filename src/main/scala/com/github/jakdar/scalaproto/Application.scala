@@ -14,11 +14,8 @@ import com.github.jakdar.scalaproto.proto2.Proto2Generator
 import com.github.jakdar.scalaproto.proto2.Proto2Homomorphisms
 import com.github.jakdar.scalaproto.proto2.Proto2Parser
 import com.github.jakdar.scalaproto.proto2.Proto2ToCommon
-import com.github.jakdar.scalaproto.scala.ScalaFromCommon
-import com.github.jakdar.scalaproto.scala.ScalaGenerator
-import com.github.jakdar.scalaproto.scala.ScalaParser
-import com.github.jakdar.scalaproto.scala.ScalaToCommon
 import fastparse._
+import com.github.jakdar.scalaproto.scala.{ScalaMetaFromCommon, ScalaMetaGenerator, ScalaMetaParser, ScalaMetaToCommon}
 
 object Application {
   case class ConversionSupport[AstEntity](
@@ -28,7 +25,7 @@ object Application {
       fromCommon: FromCommon[AstEntity],
   )
 
-  val scalaSupport  = ConversionSupport(ScalaGenerator, ScalaParser, ScalaToCommon, ScalaFromCommon)
+  val scalaSupport  = ConversionSupport(ScalaMetaGenerator, ScalaMetaParser, ScalaMetaToCommon, ScalaMetaFromCommon)
   val proto2Support = ConversionSupport(
     Proto2Generator,
     Proto2Parser,
