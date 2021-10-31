@@ -6,9 +6,6 @@ It can be integrated nicely with editors (e.g. vim / emacs).
 * Future Improvements
 ** TODO New ASTs
 *** TODO Postgresql create table
-** TODO Get rid of scala AST in favor of scalameta?
-- [ ] Scala parser could be 'to common'
-- [ ] Scala generator would be replaced by "from common"
 ** Type support
 *** TODO [#A] Scala Map => Entry classes
 #+BEGIN_SRC scala
