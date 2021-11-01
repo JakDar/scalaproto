@@ -14,7 +14,6 @@ import com.github.jakdar.scalaproto.proto2.Proto2Generator
 import com.github.jakdar.scalaproto.proto2.Proto2Homomorphisms
 import com.github.jakdar.scalaproto.proto2.Proto2Parser
 import com.github.jakdar.scalaproto.proto2.Proto2ToCommon
-import fastparse._
 import com.github.jakdar.scalaproto.scala2.{Scala2FromCommon, Scala2Generator, Scala2Parser, Scala2ToCommon}
 
 object Application {
@@ -28,7 +27,7 @@ object Application {
   val scalaSupport = ConversionSupport(Scala2Generator, Scala2Parser, Scala2ToCommon, Scala2FromCommon)
 
   val proto2FromCommon = new Proto2FromCommon(Proto2FromCommon.Options(assumeIdType = Some(proto2.Ast.stringTypeIdentifier)))
-  val proto2Support = ConversionSupport(Proto2Generator, Proto2Parser, Proto2ToCommon, proto2FromCommon)
+  val proto2Support    = ConversionSupport(Proto2Generator, Proto2Parser, Proto2ToCommon, proto2FromCommon)
 
   val jsonSupport = ConversionSupport(JsonGenerator, JsonParser, JsonToCommon, JsonFromCommon)
 
@@ -47,9 +46,11 @@ object Application {
   }
 
   def protoFixNumbers(code: String): String = {
-    val Parsed.Success(parsed, _) = parse(code, Proto2Parser.program(_))
-    val withFixedNumbers          = parsed.map(Proto2Homomorphisms.correctNumbers)
-    withFixedNumbers.map(Proto2Generator.generateAstEntity(_)).fold("")(_ + "\n" + _)
+
+    val parsed = Proto2Parser.program.parse(code).getOrElse(throw new Exception("Failed parsing"))._2
+
+    val withFixedNumbers = parsed.map(Proto2Homomorphisms.correctNumbers)
+    withFixedNumbers.map(Proto2Generator.generateAstEntity(_)).toList.fold("")(_ + "\n" + _)
   }
 
 }

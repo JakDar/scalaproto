@@ -6,7 +6,9 @@ It can be integrated nicely with editors (e.g. vim / emacs).
 * Future Improvements
 ** TODO New ASTs
 *** TODO Postgresql create table
-** Type support
+Might be useful:
+https://chriscoffey.github.io/programming/parsing-sql-ddl-schema/
+** Scala Type support
 *** TODO [#A] Scala Map => Entry classes
 #+BEGIN_SRC scala
 case class Ala(ola:Int, firendAges: Map[String,Int])
@@ -29,8 +31,6 @@ message FriendAgesEntry{
 *** TODO Document emacs usage
 *** TODO Add a proper CLI
 ** Technical improvements
-*** TODO Move to scala3 (fastparse => catsparse?)
 *** TODO Make it work with GraalVM
 * Fixes
-- [ ] ToScala - escape reserved chars
 - [ ] proto make it parse grpcurl

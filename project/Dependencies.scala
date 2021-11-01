@@ -1,7 +1,7 @@
 object Dependencies {
   import sbt._
   val ScalaTestVersion = "3.2.9"
-  val FastParseVersion = "2.3.2"
+  val CatsParseVersion = "0.3.4"
   val CatsVersion      = "2.6.1"
   val MouseVersion     = "1.0.4"
   val GuavaVersion     = "30.1.1-jre"
@@ -14,16 +14,16 @@ object Dependencies {
   )
 
   private val miscDependencies = Seq(
-    "com.lihaoyi"     %% "fastparse" % FastParseVersion,
-    "com.google.guava" % "guava"     % GuavaVersion,
-    "org.scalameta"   %% "scalameta" % ScalametaVersion,
-    "com.lihaoyi"     %% "ujson"     % "1.4.0",
-    "com.lihaoyi"     %% "pprint"    % "0.6.6",
+    "org.typelevel"   %% "cats-parse" % CatsParseVersion,
+    "com.google.guava" % "guava"      % GuavaVersion,
+    "org.scalameta"   %% "scalameta"  % ScalametaVersion,
+    "com.lihaoyi"     %% "ujson"      % "1.4.0",
+    "com.lihaoyi"     %% "pprint"     % "0.6.6",
   )
 
   private val testDependencies = Seq(
     "org.scalatest"          %% "scalatest"       % ScalaTestVersion % Test,
-    "com.softwaremill.diffx" %% "diffx-scalatest" % DiffxVersion     % Test,
+    "com.softwaremill.diffx" %% "diffx-scalatest" % DiffxVersion     % Test, // no scala3
   )
 
   val all: Seq[ModuleID] = Seq(

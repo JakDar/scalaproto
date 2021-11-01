@@ -1,54 +1,82 @@
 package com.github.jakdar.scalaproto.proto2
 
-import com.github.jakdar.scalaproto.parser.Common
-import Ast._, Common._
-import fastparse._
+import cats.data.NonEmptyList
+import cats.parse.{Parser => P, _}
+import cats.syntax.apply._
+import com.github.jakdar.scalaproto.parser
 
-import ScalaWhitespace._
-import language.postfixOps
-import com.github.jakdar.scalaproto.parser.Parser
-import fastparse.Parsed
+import Ast._
 
-object Proto2Parser extends Parser[AstEntity] {
+object Proto2Parser extends parser.Parser[AstEntity] {
+  // TODO  cleanup - especially whitespace
+  override def parse(code: String): Either[parser.Parser.ParseError, Seq[AstEntity]] = {
 
-  override def parse(code: String): Either[Parser.ParseError, Seq[AstEntity]] = {
-
-    fastparse.parse(code, program(_)) match {
-      case ex: Parsed.Failure       => Left(Parser.ParseError.GenericErr(s"Parsing proto failed with $ex").widen)
-      case Parsed.Success(value, _) => Right(value)
+    program.parse(code) match {
+      case Left(ex)          => Left(parser.Parser.ParseError.GenericErr(s"Parsing proto failed with $ex").widen)
+      case Right((_, value)) => Right(value.toList)
     }
 
   }
 
-  def identifier[_: P]: P[Ast.Identifier] =
-    P(CharsWhileIn("0-9a-zA-Z_") !).map(Identifier(_)) // TODO:bcm not start with 0-9
+  val whitespace: P[Unit] = P.charIn(" \t\r\n").void
+  val whitespaces0        = whitespace.rep0.void
+  val whitespaces         = whitespace.rep.void
+  val spaces              = P.charsWhile(_.isSpaceChar).void // TODO:bcm  nonempty
+  val newline             = P.char('\n')
 
-  def repeated[_: P] = P("repeated").map(_ => ArgRepeat.Repeated)
-  def required[_: P] = P("required").map(_ => ArgRepeat.Required)
-  def optional[_: P] = P("optional").map(_ => ArgRepeat.Optional)
+  def identifier: P[Ast.Identifier] =
+    P.charsWhile(c => c.isLetterOrDigit || c == '_').map(Identifier(_)) // TODO:bcm not start with 0-9
 
-  def argrepeat[_: P]: P[Ast.ArgRepeat] = P(optional | repeated | required)
+  def repeated = P.string("repeated").as(ArgRepeat.Repeated)
+  def required = P.string("required").as(ArgRepeat.Required)
+  def optional = P.string("optional").as(ArgRepeat.Optional)
 
-  def typePath[_: P] = P(".").? ~ P((identifier ~ ".").rep() ~ identifier).map { case (path, typee) =>
-    TypePath(path.toList, TypeIdentifier(typee))
+  def argrepeat: P[Ast.ArgRepeat] = P.defer(optional | repeated | required)
+
+  def typePath: P[Ast.TypePath] = (P.char('.').?.with1 ~ ((identifier ~ P.char('.')).backtrack.rep0.with1 ~ identifier)).map {
+    case (_, (path, tpe)) =>
+      Ast.TypePath(path.map(_._1).toList, Ast.TypeIdentifier(tpe))
   }
 
-  def fieldline[_: P] = P(argrepeat ~ typePath ~ identifier ~ "=" ~ Common.Num ~ ";" ~ WS.? ~ Newline.rep()).map(FieldLine.tupled)
+  def fieldline: P[FieldLine] =
+    (argrepeat, spaces, typePath, spaces, identifier, P.char('=').surroundedBy(spaces.?), Numbers.digits, P.char(';').surroundedBy(spaces.?)).tupled
+      .map { // TODO:bcm  check strailing whitespace + optional whitespce before chat
+        case (argrepeat, _, typePath, _, id, _, num, _) => FieldLine(argrepeat, typePath, id, num.toInt)
+      }
 
-  def oneofEntry[_: P] = P(typePath ~ identifier ~ "=" ~ Common.Num ~ ";" ~ WS.? ~ Newline.rep()).map(OneofEntry.tupled)
-  def oneofField[_: P] = P("oneof" ~ identifier ~ "{" ~ WS.? ~ Newline.rep() ~ oneofEntry.rep() ~ "}").map { case (id, fields) =>
-    OneofField(id, fields.toList)
+  def oneofEntry: P[OneofEntry] =
+    (typePath, spaces, identifier, P.char('=').surroundedBy(spaces.?), Numbers.digits, P.char(';').surroundedBy(spaces.?)).tupled.map {
+      case (typePath, _, id, _, num, _) => OneofEntry(typePath, id, num.toInt)
+    }
+
+  def oneofField = (
+    P.string("oneof").void,
+    identifier.surroundedBy(whitespaces0),
+    P.char('{'),
+    oneofEntry.surroundedBy(whitespaces0).rep,
+    P.char('}'),
+  ).tupled.map { case (_, id, _, entries, _) =>
+    Ast.OneofField(id, entries.toList)
   }
 
-  def messageEntry[_: P]: P[MessageEntry] = P((fieldline | message | enum | oneofField))
+  def messageEntry: P[MessageEntry] = P.defer((fieldline | message | enum | oneofField))
 
-  def message[_: P] = P("message" ~ identifier ~ "{" ~ messageEntry.rep() ~ "}" ~ WS.? ~ Newline.?).map { case (id, fields) =>
-    Message(id, fields.toList)
-  }
+  def message: P[Ast.Message] =
+    ((P.string("message"), identifier.surroundedBy(whitespaces0), P.char('{')).tupled ~ (messageEntry.surroundedBy(whitespaces0).rep0.with1 ~ P.char(
+      '}'
+    ))).map { case ((_, id, _), (entries, _)) =>
+      Ast.Message(id, entries.toList)
+    }
 
-  def enumline[_: P] = P(identifier ~ "=" ~ Common.Num ~ ";").map(EnumLine.tupled)
+  def enumline: P[EnumLine] =
+    (identifier, P.char('=').surroundedBy(whitespaces0), Numbers.digits, P.char(';').surroundedBy(whitespaces0)).tupled.map { case (id, _, num, _) =>
+      EnumLine(id, num.toInt)
+    }
 
-  def enum[_: P] = P("enum" ~ identifier ~ "{" ~ enumline.rep() ~ "}").map { case (id, lines) => EnumAst(id, lines.toList) }
+  def enum: P[EnumAst] =
+    (P.string("enum"), identifier.surroundedBy(whitespaces0), P.char('{'), enumline.surroundedBy(whitespaces0).rep, P.char('}')).tupled.map {
+      case (_, id, _, lines, _) => EnumAst(id, lines.toList)
+    }
 
-  def program[_: P]: P[Seq[AstEntity]] = P((message | enum).rep() ~ End)
+  def program: P[NonEmptyList[AstEntity]] = P.defer((message | enum).surroundedBy(whitespaces0).rep)
 }

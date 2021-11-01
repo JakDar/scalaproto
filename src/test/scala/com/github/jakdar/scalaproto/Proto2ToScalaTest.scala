@@ -55,7 +55,6 @@ class Proto2ToScalaTest extends AnyFlatSpec with Matchers {
                       |  case object OlaMapsa extends AlaMakota
                       |}""".stripMargin
 
-
     result.trim() should matchTo(expected.trim())
 
   }
