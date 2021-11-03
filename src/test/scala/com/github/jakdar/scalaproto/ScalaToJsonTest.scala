@@ -1,18 +1,15 @@
 package com.github.jakdar.scalaproto
 
-import org.scalatest.flatspec.AnyFlatSpec
-import org.scalatest.matchers.should.Matchers
 import com.github.jakdar.scalaproto.scala2.Scala2Parser
 
-class ScalaToJsonTest extends AnyFlatSpec with Matchers {
+class ScalaToJsonTest extends munit.FunSuite {
 
   def scalaToJson(code: String): Seq[ujson.Obj] = {
     val scalaAst = Scala2Parser.parse(code)
     Application.convertAst(scalaAst.getOrElse(???), Application.scalaSupport, Application.jsonSupport).getOrElse(???)
   }
 
-  "scala to json" should "work in basic case " in {
-
+  test("scala to json work in basic case ") {
     val example =
       """case class Mama (
         |    ala: Int,
@@ -36,7 +33,7 @@ class ScalaToJsonTest extends AnyFlatSpec with Matchers {
             |}""".stripMargin)
       .asInstanceOf[ujson.Obj]
 
-    result.head shouldBe expected
+    assertEquals(result.head, expected)
   }
 
 }

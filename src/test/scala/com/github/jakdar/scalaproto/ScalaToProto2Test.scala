@@ -1,14 +1,9 @@
 package com.github.jakdar.scalaproto
 
-import com.softwaremill.diffx.scalatest.DiffMatcher._
-import org.scalatest.flatspec.AnyFlatSpec
-import org.scalatest.matchers.should.Matchers
-
-class ScalaToProto2Test extends AnyFlatSpec with Matchers {
-
+class ScalaToProto2Test extends munit.FunSuite {
   def scalaToProto(code: String): String = Application.convert(code, Application.scalaSupport, Application.proto2Support)
 
-  "scala to proto" should "work in basic case, event with trailing comma" in {
+  test("work in basic case, event with trailing comma") {
 
     val example = """
             case class Ala(
@@ -43,11 +38,11 @@ class ScalaToProto2Test extends AnyFlatSpec with Matchers {
                       |    optional int32 ola = 3;
                       |}""".stripMargin
 
-    result.trim() should matchTo(expected.trim())
+    assertEquals(result.trim(), expected.trim())
 
   }
 
-  it should "work with enums too" in {
+  test("work with enums too") {
 
     val example = """
            |sealed trait Kulka
@@ -85,11 +80,10 @@ class ScalaToProto2Test extends AnyFlatSpec with Matchers {
                       |    optional int64 time = 3;
                       |}""".stripMargin
 
-    result.trim() should matchTo(expected.trim())
-
+    assertEquals(result.trim(), expected.trim())
   }
 
-  it should "work in simple cases" in {
+  test("work in simple cases") {
 
     val example = "case class Entity(id: Long, name: String)"
 
@@ -100,11 +94,11 @@ class ScalaToProto2Test extends AnyFlatSpec with Matchers {
                       |    required string name = 2;
                       |}""".stripMargin.trim()
 
-    result.trim() should matchTo(expected)
+    assertEquals(result.trim, expected)
 
   }
 
-  it should "assume id types if configured to do so" in {
+  test("assume id types if configured to do so") {
     val example = """
            |sealed trait Kulka
            |
@@ -137,10 +131,10 @@ class ScalaToProto2Test extends AnyFlatSpec with Matchers {
                       |    optional string time = 4;
                       |}""".stripMargin
 
-    result.trim() should matchTo(expected.trim())
+    assertEquals(result.trim(), expected.trim())
   }
 
-  it should "convert sealed traits with classes to oneofs" in {
+  test("convert sealed traits with classes to oneofs") {
     val example = """
            |sealed trait Kulka
            |
@@ -195,10 +189,10 @@ class ScalaToProto2Test extends AnyFlatSpec with Matchers {
                       |    optional Kulka time = 4;
                       |}""".stripMargin
 
-    result.trim() should matchTo(expected.trim())
+    assertEquals(result.trim(), expected.trim())
   }
 
-  it should "convert certain predefined types well" in {
+  test("convert certain predefined types well") {
 
     val example = """
         |case class Ala(
@@ -217,8 +211,7 @@ class ScalaToProto2Test extends AnyFlatSpec with Matchers {
                       |    optional int64 time = 4;
                       |}""".stripMargin
 
-    result.trim() should matchTo(expected.trim())
-
+    assertEquals(result.trim(), expected.trim())
   }
 
 }

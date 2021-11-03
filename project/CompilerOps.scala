@@ -30,6 +30,7 @@ object CompilerOps {
     // "-Ywarn-dead-code",                  // Warn when dead code is identified.
     // "-Ywarn-extra-implicit", // TODO:bcm             // Warn when more than one implicit parameter section is defined.
     // "-Ywarn-numeric-widen",              // Warn when numerics are widened.
+    "-Ywarn-unused",           // Warn if an implicit parameter is unused.
     // "-Ywarn-unused:implicits",           // Warn if an implicit parameter is unused.
     // "-Ywarn-unused:imports",             // Warn if an import selector is not referenced.
     // "-Ywarn-unused:locals",              // Warn if a local definition is unused.
@@ -40,8 +41,6 @@ object CompilerOps {
     // "-Ymacro-annotations"
   )
   // format: on
-
-
 
 // [info] -Xlint:deprecation            -> -deprecation
 // [info] -Xlint:adapted-args           -> X

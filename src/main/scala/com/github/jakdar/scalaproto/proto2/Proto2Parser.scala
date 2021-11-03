@@ -21,8 +21,8 @@ object Proto2Parser extends parser.Parser[AstEntity] {
   val whitespace: P[Unit] = P.charIn(" \t\r\n").void
   val whitespaces0        = whitespace.rep0.void
   val whitespaces         = whitespace.rep.void
-  val spaces: P[Unit]              = P.charsWhile(_.isSpaceChar).void // TODO:bcm  nonempty
-  val newline: P[Unit]             = P.char('\n')
+  val spaces: P[Unit]     = P.charsWhile(_.isSpaceChar).void // TODO:bcm  nonempty
+  val newline: P[Unit]    = P.char('\n')
 
   def identifier: P[Ast.Identifier] =
     P.charsWhile(c => c.isLetterOrDigit || c == '_').map(Identifier(_)) // TODO:bcm not start with 0-9
@@ -59,7 +59,7 @@ object Proto2Parser extends parser.Parser[AstEntity] {
     Ast.OneofField(id, entries.toList)
   }
 
-  def messageEntry: P[MessageEntry] = P.defer((fieldline | message | enum | oneofField))
+  def messageEntry: P[MessageEntry] = P.defer((fieldline | message | `enum` | oneofField))
 
   def message: P[Ast.Message] =
     ((P.string("message"), identifier.surroundedBy(whitespaces0), P.char('{')).tupled ~ (messageEntry.surroundedBy(whitespaces0).rep0.with1 ~ P.char(
@@ -73,10 +73,10 @@ object Proto2Parser extends parser.Parser[AstEntity] {
       EnumLine(id, num.toInt)
     }
 
-  def enum: P[EnumAst] =
+  def `enum`: P[EnumAst] =
     (P.string("enum"), identifier.surroundedBy(whitespaces0), P.char('{'), enumline.surroundedBy(whitespaces0).rep, P.char('}')).tupled.map {
       case (_, id, _, lines, _) => EnumAst(id, lines.toList)
     }
 
-  def program: P[NonEmptyList[AstEntity]] = P.defer((message | enum).surroundedBy(whitespaces0).rep)
+  def program: P[NonEmptyList[AstEntity]] = P.defer((message | `enum`).surroundedBy(whitespaces0).rep)
 }

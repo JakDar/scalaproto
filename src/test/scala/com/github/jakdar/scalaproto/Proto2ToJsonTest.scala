@@ -1,17 +1,15 @@
 package com.github.jakdar.scalaproto
 
-import org.scalatest.flatspec.AnyFlatSpec
-import org.scalatest.matchers.should.Matchers
 import com.github.jakdar.scalaproto.proto2.Proto2Parser
 
-class Proto2ToJsonTest extends AnyFlatSpec with Matchers {
+class Proto2ToJsonTest extends munit.FunSuite {
 
   def protoToJson(code: String): Seq[ujson.Obj] = {
     val protoAst = Proto2Parser.parse(code)
     Application.convertAst(protoAst.getOrElse(???), Application.proto2Support, Application.jsonSupport).getOrElse(???)
   }
 
-  "proto to json" should "work in basic case " in {
+  test("proto to json should work in basic case ") {
 
     val example  = """
 
@@ -45,11 +43,11 @@ class Proto2ToJsonTest extends AnyFlatSpec with Matchers {
 """.stripMargin)
       .asInstanceOf[ujson.Obj]
 
-    result.head shouldBe expected
+    assertEquals(result.head, expected)
 
   }
 
-  it should "convert oneofs" in {
+  test("convert oneofs") {
 
     val example  = """
 
@@ -77,8 +75,7 @@ class Proto2ToJsonTest extends AnyFlatSpec with Matchers {
           |}""".stripMargin)
       .asInstanceOf[ujson.Obj]
 
-    result.head shouldBe expected
-
+    assertEquals(result.head, expected)
   }
 
 }

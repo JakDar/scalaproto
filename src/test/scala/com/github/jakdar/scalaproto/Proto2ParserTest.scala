@@ -1,19 +1,15 @@
 package com.github.jakdar.scalaproto
 
-import org.scalatest.flatspec.AnyFlatSpec
 import com.github.jakdar.scalaproto.proto2.Proto2Parser
-import com.softwaremill.diffx.scalatest.DiffMatcher._
-import com.softwaremill.diffx.generic.auto._
 
 import cats.parse.Parser.{Error => ParseError}
 import com.github.jakdar.scalaproto.proto2.Ast
-import org.scalatest.matchers.should.Matchers
 
-class Proto2ParserTest() extends AnyFlatSpec with Matchers {
+class Proto2ParserTest() extends munit.FunSuite {
 
   def id: String => Ast.Identifier = Ast.Identifier.apply _
 
-  "line parsing" should "work" in {
+  test("line parsing should work") {
 
     val res: Either[cats.parse.Parser.Error, Ast.FieldLine] = Proto2Parser.fieldline
       .parse(
@@ -25,10 +21,10 @@ class Proto2ParserTest() extends AnyFlatSpec with Matchers {
       Ast.FieldLine(Ast.ArgRepeat.Required, Ast.TypePath(Nil, Ast.TypeIdentifier(Ast.Identifier("int32"))), Ast.Identifier("alaId"), 1)
     )
 
-    res should matchTo(expected)
+    assertEquals(res, expected)
   }
 
-  "message parsing" should "work" in {
+  test("message parsing should work") {
 
     val res: Either[ParseError, Ast.Message] = Proto2Parser.message
       .parse(
@@ -51,7 +47,7 @@ class Proto2ParserTest() extends AnyFlatSpec with Matchers {
       )
     )
 
-    res should matchTo(msg)
+    assertEquals(res, msg)
   }
 
 }

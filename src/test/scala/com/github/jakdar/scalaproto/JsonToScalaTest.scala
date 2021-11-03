@@ -1,15 +1,10 @@
 package com.github.jakdar.scalaproto
 
-import org.scalatest.flatspec.AnyFlatSpec
-import com.softwaremill.diffx.scalatest.DiffMatcher._
-import org.scalatest.matchers.should.Matchers
-
-class JsonToScalaTest extends AnyFlatSpec with Matchers {
+class JsonToScalaTest extends munit.FunSuite {
 
   def jsonToScala(code: String): String = Application.convert(code, Application.jsonSupport, Application.scalaSupport)
 
-  "json to scala" should "work in basic case " in {
-
+  test("json to scala work in basic case") {
     val example  = """
             |{
             |  "ala": 4,
@@ -25,11 +20,10 @@ class JsonToScalaTest extends AnyFlatSpec with Matchers {
         |
         |case class RootUla(id: Int)""".stripMargin.trim
 
-    pprint.pprintln(result)
-    result.trim() should matchTo(expected.trim())
+    assertEquals(result.trim(), expected.trim())
   }
 
-  it should "work for nested arrays" in {
+  test("json to scala work in basic case") {
     val example = """
             |{
             |  "ala": 4,
@@ -41,10 +35,25 @@ class JsonToScalaTest extends AnyFlatSpec with Matchers {
     val expected =
       "case class Root(ala: Int, ola: String, kola: List[List[Int]])"
 
-    result.trim() should matchTo(expected.trim())
+    assertEquals(result.trim(), expected.trim())
   }
 
-  it should "merge objects in array" in {
+  test("work for nested arrays") {
+    val example = """
+            |{
+            |  "ala": 4,
+            |  "ola": "ela",
+            |  "kola" : [[1,2,3], [1,3,0]]
+            |}""".stripMargin.trim
+
+    val result   = jsonToScala(example)
+    val expected =
+      "case class Root(ala: Int, ola: String, kola: List[List[Int]])"
+
+    assertEquals(result.trim(), expected.trim())
+  }
+
+  test("merge objects in array") {
     val example = """
              |{
              |  "ala": 4,
@@ -72,10 +81,10 @@ class JsonToScalaTest extends AnyFlatSpec with Matchers {
         |
         |case class RootkolaArr0(v1: Option[Int], v3: Option[String], v4: Option[Boolean], v2: Option[Int], time: Int)""".stripMargin.trim
 
-    result.trim() should matchTo(expected.trim())
+    assertEquals(result.trim(), expected.trim())
   }
 
-  it should "merge nested objects in an array" in {
+  test("merge nested objects in an array") {
     val example = """
              |{
              |  "ala": 4,
@@ -110,10 +119,10 @@ class JsonToScalaTest extends AnyFlatSpec with Matchers {
         |
         |case class RootkolaArr1V2Ola(xd: Int)""".stripMargin.trim
 
-    result.trim() should matchTo(expected.trim())
+    assertEquals(result.trim(), expected.trim())
   }
 
-  it should "work with name collisions 1" in {
+  test("work with name collisions 1") {
     val example = """
           {
             "ala": [
@@ -135,10 +144,10 @@ class JsonToScalaTest extends AnyFlatSpec with Matchers {
         |
         |case class Rootalaarr0alaArr0(ala: Int)""".stripMargin.trim
 
-    result.trim() should matchTo(expected.trim())
+    assertEquals(result.trim(), expected.trim())
   }
 
-  it should "work with name collisions 2" in {
+  test("work with name collisions 2") {
     val example = """
           {
             "ala": [
@@ -160,6 +169,6 @@ class JsonToScalaTest extends AnyFlatSpec with Matchers {
         |
         |case class RootalaArr0Ala(ala: Int)""".stripMargin.trim
 
-    result.trim() should matchTo(expected.trim())
+    assertEquals(result.trim(), expected.trim())
   }
 }

@@ -1,12 +1,8 @@
 package com.github.jakdar.scalaproto
 
-import com.softwaremill.diffx.scalatest.DiffMatcher._
-import org.scalatest.flatspec.AnyFlatSpec
-import org.scalatest.matchers.should.Matchers
+class ProtoHomomorphismsTest extends munit.FunSuite {
 
-class ProtoHomomorphismsTest extends AnyFlatSpec with Matchers {
-
-  "scala to proto" should "work in basic case " in {
+  test("scala to proto should work in basic case ") {
 
     val example = """
             message Ala{
@@ -65,11 +61,11 @@ required string d = 9;
           |}""".stripMargin
 
     val result = Application.protoFixNumbers(example)
-    result.trim() should matchTo(expected.trim())
+    assertEquals(result.trim, expected.trim())
 
   }
 
-  it should "support nested messages" in {
+  test("support nested messages") {
     val example = """
             message Ala{
                 required string ala =1 ;
@@ -138,7 +134,7 @@ required string d = 9;
           |}""".stripMargin
 
     val result = Application.protoFixNumbers(example)
-    result.trim() should matchTo(expected.trim())
+    assertEquals(result.trim, expected.trim())
 
   }
 

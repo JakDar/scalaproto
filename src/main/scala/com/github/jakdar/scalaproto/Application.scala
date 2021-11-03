@@ -16,7 +16,7 @@ import com.github.jakdar.scalaproto.proto2.Proto2Parser
 import com.github.jakdar.scalaproto.proto2.Proto2ToCommon
 import com.github.jakdar.scalaproto.scala2.{Scala2FromCommon, Scala2Generator, Scala2Parser, Scala2ToCommon}
 import com.github.jakdar.scalaproto.proto2.Ast
-import scala.meta.Stat
+import _root_.scala.meta.Stat
 import ujson.Obj
 
 object Application {
@@ -29,8 +29,8 @@ object Application {
 
   val scalaSupport: ConversionSupport[Stat] = ConversionSupport(Scala2Generator, Scala2Parser, Scala2ToCommon, Scala2FromCommon)
 
-  val proto2FromCommon = new Proto2FromCommon(Proto2FromCommon.Options(assumeIdType = Some(proto2.Ast.stringTypeIdentifier)))
-  val proto2Support: ConversionSupport[Ast.AstEntity]    = ConversionSupport(Proto2Generator, Proto2Parser, Proto2ToCommon, proto2FromCommon)
+  val proto2FromCommon                                = new Proto2FromCommon(Proto2FromCommon.Options(assumeIdType = Some(proto2.Ast.stringTypeIdentifier)))
+  val proto2Support: ConversionSupport[Ast.AstEntity] = ConversionSupport(Proto2Generator, Proto2Parser, Proto2ToCommon, proto2FromCommon)
 
   val jsonSupport: ConversionSupport[Obj] = ConversionSupport(JsonGenerator, JsonParser, JsonToCommon, JsonFromCommon)
 
@@ -42,7 +42,7 @@ object Application {
     result
   }
 
-  def convertAst[S, D](ast: Seq[S], source: ConversionSupport[S], dest: ConversionSupport[D]): Either[ToCommon.Error,Seq[D]] = {
+  def convertAst[S, D](ast: Seq[S], source: ConversionSupport[S], dest: ConversionSupport[D]): Either[ToCommon.Error, Seq[D]] = {
     ast.traverse(source.toCommon.toCommon(_)).map { commonAst =>
       dest.fromCommon.fromCommon(commonAst.flatten)
     }

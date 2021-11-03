@@ -36,7 +36,7 @@ object Ast {
   case class ArrayType(inner: TypeIdentifier)  extends HigherTypeIdentifier
 
   case class Fields(args: List[(Identifier, TypeIdentifier)]) {
-    def isEmpty  = args.isEmpty
+    def isEmpty           = args.isEmpty
     def nonEmpty: Boolean = !isEmpty
   }
 
