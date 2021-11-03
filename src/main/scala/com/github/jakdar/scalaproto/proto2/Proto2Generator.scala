@@ -6,7 +6,7 @@ object Proto2Generator extends Generator[AstEntity] {
 
   override def generate(s: Seq[AstEntity]): String = s.map(generateAstEntity(_)).fold("")(_ + "\n\n" + _)
 
-  val indent = (0 until 4).map(_ => " ").mkString
+  val indent: String = (0 until 4).map(_ => " ").mkString
 
   def generateAstEntity(ast: AstEntity): String = {
     ast match {
@@ -15,7 +15,7 @@ object Proto2Generator extends Generator[AstEntity] {
     }
   }
 
-  def generateEnum(e: EnumAst) = {
+  def generateEnum(e: EnumAst): String = {
 
     val values = e.values
       .map { case EnumLine(name, number) =>
@@ -30,7 +30,7 @@ object Proto2Generator extends Generator[AstEntity] {
 
   }
 
-  def generateMessage(m: Message) = {
+  def generateMessage(m: Message): String = {
 
     val formattedFields = m.entries
       .collect {

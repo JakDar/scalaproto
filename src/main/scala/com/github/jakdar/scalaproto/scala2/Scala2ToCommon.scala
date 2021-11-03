@@ -21,7 +21,7 @@ object Scala2ToCommon extends ToCommon[Stat] {
     case other          => throw new IllegalArgumentException(s"Cannot convert $other")
   }
 
-  def classToCommon(t: Defn.Class) =
+  def classToCommon(t: Defn.Class): CommonAst.ClassAst =
     t match {
       case Defn.Class(_, name, _, constructor, _) =>
         val argLists = NonEmptyList
@@ -44,9 +44,9 @@ object Scala2ToCommon extends ToCommon[Stat] {
     List(CommonAst.ObjectAst(id = id, enumEntries = enums, definitions = defs, parents = Nil))
   }
 
-  def objectToEnumValue(o: Defn.Object) = CommonAst.EnumValue(CommonAst.Identifier(o.name.value), parents = Nil)
+  def objectToEnumValue(o: Defn.Object): CommonAst.EnumValue = CommonAst.EnumValue(CommonAst.Identifier(o.name.value), parents = Nil)
 
-  def firstParentName(t: Tree) = (t match {
+  def firstParentName(t: Tree): Option[String] = (t match {
     case c: Defn.Class  => c.templ
     case c: Defn.Object => c.templ
     case c: Defn.Trait  => c.templ

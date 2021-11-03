@@ -1,7 +1,5 @@
 name := "scalaproto"
 
-addCompilerPlugin(scalafixSemanticdb)
-
 scalaVersion := "2.13.6"
 version := "0.0"
 lazy val `scalaproto` = (project in file("."))

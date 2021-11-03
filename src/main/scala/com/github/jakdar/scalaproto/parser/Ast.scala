@@ -6,7 +6,7 @@ object Ast {
   case class Identifier(value: String)
 
   sealed trait TypeIdentifier {
-    def isSingleType = this match {
+    def isSingleType: Boolean = this match {
       case _: HigherTypeIdentifier => false
       case _                       => true
     }
@@ -37,7 +37,7 @@ object Ast {
 
   case class Fields(args: List[(Identifier, TypeIdentifier)]) {
     def isEmpty  = args.isEmpty
-    def nonEmpty = !isEmpty
+    def nonEmpty: Boolean = !isEmpty
   }
 
   object Fields {
@@ -49,7 +49,7 @@ object Ast {
 
     def id: Identifier
 
-    def maybeObj = this match {
+    def maybeObj: Option[ObjectAst] = this match {
       case o: ObjectAst => Some(o)
       case _            => None
     }

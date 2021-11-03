@@ -132,6 +132,6 @@ class Proto2FromCommon(options: Options) extends FromCommon[Ast.AstEntity] {
 object Proto2FromCommon {
   case class Options(assumeIdType: Option[Ast.TypeIdentifier])
   object Options {
-    val empty = Options(None)
+    val empty: Options = Options(None)
   }
 }

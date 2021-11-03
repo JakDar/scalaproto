@@ -12,7 +12,7 @@ object Proto2Homomorphisms {
       case msg: Message         => Message(msg.name, correctNumbersEntries(msg.entries))
     }
 
-  def correctNumbersEnumLines(lines: List[Ast.EnumLine]) =
+  def correctNumbersEnumLines(lines: List[Ast.EnumLine]): List[Ast.EnumLine] =
     lines.zipWithIndex.map { case (line, idx) => line.copy(number = idx + 1) }
 
   def correctNumbersEntries(lines: List[Ast.MessageEntry]): List[Ast.MessageEntry] = {

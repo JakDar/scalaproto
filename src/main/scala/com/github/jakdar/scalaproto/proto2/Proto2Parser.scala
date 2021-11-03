@@ -21,15 +21,15 @@ object Proto2Parser extends parser.Parser[AstEntity] {
   val whitespace: P[Unit] = P.charIn(" \t\r\n").void
   val whitespaces0        = whitespace.rep0.void
   val whitespaces         = whitespace.rep.void
-  val spaces              = P.charsWhile(_.isSpaceChar).void // TODO:bcm  nonempty
-  val newline             = P.char('\n')
+  val spaces: P[Unit]              = P.charsWhile(_.isSpaceChar).void // TODO:bcm  nonempty
+  val newline: P[Unit]             = P.char('\n')
 
   def identifier: P[Ast.Identifier] =
     P.charsWhile(c => c.isLetterOrDigit || c == '_').map(Identifier(_)) // TODO:bcm not start with 0-9
 
-  def repeated = P.string("repeated").as(ArgRepeat.Repeated)
-  def required = P.string("required").as(ArgRepeat.Required)
-  def optional = P.string("optional").as(ArgRepeat.Optional)
+  def repeated: P[ArgRepeat.Repeated.type] = P.string("repeated").as(ArgRepeat.Repeated)
+  def required: P[ArgRepeat.Required.type] = P.string("required").as(ArgRepeat.Required)
+  def optional: P[ArgRepeat.Optional.type] = P.string("optional").as(ArgRepeat.Optional)
 
   def argrepeat: P[Ast.ArgRepeat] = P.defer(optional | repeated | required)
 
@@ -49,7 +49,7 @@ object Proto2Parser extends parser.Parser[AstEntity] {
       case (typePath, _, id, _, num, _) => OneofEntry(typePath, id, num.toInt)
     }
 
-  def oneofField = (
+  def oneofField: P[OneofField] = (
     P.string("oneof").void,
     identifier.surroundedBy(whitespaces0),
     P.char('{'),

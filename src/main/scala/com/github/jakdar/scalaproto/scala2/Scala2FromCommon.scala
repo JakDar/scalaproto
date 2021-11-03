@@ -4,8 +4,8 @@ import com.github.jakdar.scalaproto.parser.FromCommon
 import com.github.jakdar.scalaproto.parser.Ast
 
 object Scala2FromCommon extends FromCommon[Stat] {
-  val emptyTemplate = Template(early = List(), inits = List(), self = Self(name = Name(""), decltpe = None), stats = List(), derives = List())
-  val noConstructor = Ctor.Primary(mods = Nil, name = Name(""), paramss = Nil)
+  val emptyTemplate: Template = Template(early = List(), inits = List(), self = Self(name = Name(""), decltpe = None), stats = List(), derives = List())
+  val noConstructor: Ctor.Primary = Ctor.Primary(mods = Nil, name = Name(""), paramss = Nil)
 
   override def fromCommon(ast: Seq[Ast.AstEntity]): Seq[Stat] = ast.flatMap {
     case c: Ast.ClassAst  => classToScala(c) :: Nil

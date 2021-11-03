@@ -11,7 +11,7 @@ import org.scalatest.matchers.should.Matchers
 
 class Proto2ParserTest() extends AnyFlatSpec with Matchers {
 
-  def id = Ast.Identifier.apply _
+  def id: String => Ast.Identifier = Ast.Identifier.apply _
 
   "line parsing" should "work" in {
 
