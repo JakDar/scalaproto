@@ -34,7 +34,7 @@ object JsonToCommon extends ToCommon[ujson.Obj] {
         if (typeIds.distinct.size == 1) {
           Ast.ArrayType(typeIds.head) -> innerEntities.flatten
         } else {
-          //HACK - wont work if nested the same field names - reproduce it in tests
+          // HACK - wont work if nested the same field names - reproduce it in tests
           // val (thisLvlEntities, childEntities) = innerEntities.flatten.partition(_.id.value.startsWith(rootNameTitle))
           val objIds = typeIds.collect { case Ast.CustomSimpleTypeIdentifier(_, id) => id }.toSet
 

@@ -8,8 +8,5 @@ trait ToCommon[Other] {
 
 object ToCommon {
   sealed trait Error
-
-  object Error {
-    case object NotSupportedEnumtoCommon extends Error
-  }
+  // no errors for now
 }

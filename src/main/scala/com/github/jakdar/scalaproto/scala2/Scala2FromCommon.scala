@@ -21,7 +21,7 @@ object Scala2FromCommon extends FromCommon[Stat] {
     )
     val templ   = emptyTemplate.copy(inits = clazz.parents.collect { case Ast.CustomSimpleTypeIdentifier(packagePath, id) =>
       Init(tpe = foldPath(packagePath, id), name = Name(""), argss = Nil)
-    //NOTE: ignoring higher type id for now
+    // NOTE: ignoring higher type id for now
     })
 
     val ctor = Ctor.Primary(mods = Nil, name = Name(""), paramss = paramss)

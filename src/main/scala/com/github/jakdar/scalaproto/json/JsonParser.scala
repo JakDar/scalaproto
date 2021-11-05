@@ -13,6 +13,6 @@ object JsonParser extends Parser[ujson.Obj] {
         case other        => throw new IllegalArgumentException(s"Not supported $other")
       })
     }
-    .leftMap(err => Parser.ParseError.GenericErr(err.getMessage()).widen)
+    .leftMap(err => Parser.ParseError.GenericErr(err.getMessage()))
 
 }

@@ -4,12 +4,8 @@ object Ast {
 
   case class Identifier(value: String)
 
-  sealed trait ArgRepeat
-
-  object ArgRepeat {
-    case object Required extends ArgRepeat
-    case object Optional extends ArgRepeat
-    case object Repeated extends ArgRepeat
+  enum ArgRepeat {
+    case Required, Optional, Repeated
   }
 
   case class TypeIdentifier(id: Identifier)

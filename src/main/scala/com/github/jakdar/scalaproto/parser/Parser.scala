@@ -5,11 +5,7 @@ trait Parser[AstEntity] {
 }
 
 object Parser {
-  sealed trait ParseError {
-    def widen: ParseError = this
-  }
-
-  object ParseError {
-    case class GenericErr(error: String) extends ParseError
+  enum ParseError {
+    case GenericErr(error: String)
   }
 }

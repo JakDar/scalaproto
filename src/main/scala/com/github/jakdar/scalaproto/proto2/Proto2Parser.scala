@@ -12,7 +12,7 @@ object Proto2Parser extends parser.Parser[AstEntity] {
   override def parse(code: String): Either[parser.Parser.ParseError, Seq[AstEntity]] = {
 
     program.parse(code) match {
-      case Left(ex)          => Left(parser.Parser.ParseError.GenericErr(s"Parsing proto failed with $ex").widen)
+      case Left(ex)          => Left(parser.Parser.ParseError.GenericErr(s"Parsing proto failed with $ex"))
       case Right((_, value)) => Right(value.toList)
     }
 

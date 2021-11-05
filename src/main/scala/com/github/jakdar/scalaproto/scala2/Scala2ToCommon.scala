@@ -53,7 +53,7 @@ object Scala2ToCommon extends ToCommon[Stat] {
   }).inits.headOption.map(_.tpe).flatMap { case n: Type.Name => Some(n.value); case _ => None }
 
   object TypeConversion {
-    def typeToAst: Type => CommonAst.TypeIdentifier = (basicTypeToAst _) andThen (fillPredefnidedTypes _)
+    def typeToAst: Type => CommonAst.TypeIdentifier               = (basicTypeToAst _) andThen (fillPredefnidedTypes _)
     private def basicTypeToAst(p: Type): CommonAst.TypeIdentifier = {
 
       p match {
@@ -72,7 +72,7 @@ object Scala2ToCommon extends ToCommon[Stat] {
           )
 
         case Type.Select(ref, name) =>
-          val packagePath = ref.toString().split(".").map(CommonAst.Identifier).toList
+          val packagePath = ref.toString().split(".").map(CommonAst.Identifier(_)).toList
           CommonAst.CustomSimpleTypeIdentifier(packagePath = packagePath, id = CommonAst.Identifier(name.value))
 
         case Type.Name(name) =>
