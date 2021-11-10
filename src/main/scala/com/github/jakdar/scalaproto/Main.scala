@@ -1,11 +1,9 @@
 package com.github.jakdar.scalaproto
 
-object Main extends App {
+@scala.main
+def main(mode: String, code: String) = {
 
-  val mode: String = args(0)
-  val code: String = args(1).trim()
-
-  def support(s: String): Application.ConversionSupport[_ <: Object] = s match {
+  def support(s: String) = s match {
     case "json"   => Application.jsonSupport
     case "scala"  => Application.scalaSupport
     case "proto2" => Application.proto2Support
@@ -17,10 +15,10 @@ object Main extends App {
 
   mode match {
     case "fix-proto-numbers" =>
-      print(Application.protoFixNumbers(code))
+      print(Application.protoFixNumbers(code.trim))
 
     case other if other.contains("-to-") =>
-      print(Application.convert(code, support(from), support(to)))
+      print(Application.convert(code.trim, support(from), support(to)))
   }
 
 }
