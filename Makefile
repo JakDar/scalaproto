@@ -13,7 +13,7 @@ build:
 
 just-install:
 	mkdir -p ~/.local/usr/share/scalaproto
-	cp ./target/scala-2.13/scalaproto.jar ~/.local/usr/share/scalaproto/scalaproto.jar
+	cp ./target/scala-3.0.2/scalaproto.jar ~/.local/usr/share/scalaproto/scalaproto.jar
 
 	printf '#!/usr/bin/env sh\njava -jar ~/.local/usr/share/scalaproto/scalaproto.jar "$$@"' > ~/.local/bin/scalaproto
 	chmod u+x ~/.local/bin/scalaproto
