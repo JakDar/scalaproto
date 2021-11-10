@@ -31,10 +31,10 @@ object JsonFromCommon extends FromCommon[ujson.Obj] {
           val named = typeIdToEntity.get(a)
 
           named match {
-            case Some(c: ClassAst)                                                               => classAstToValue(c).asLeft
-            case Some(o: ObjectAst) if o.enumEntries.nonEmpty && o.enumEntries.forall(_.isRight) => // enum
-              ujson.Str(o.definitions.head.id.value).asLeft
-            case Some(o: ObjectAst)                                                              =>
+            case Some(c: ClassAst)                                     => classAstToValue(c).asLeft
+            case Some(o: ObjectAst) if o.enumEntries.exists(_.isRight) => // enum
+              ujson.Str(o.enumEntries.collectFirst { case Right(enumValue) => enumValue.id.value }.get).asLeft
+            case Some(o: ObjectAst)                                    =>
               // Returns Fields we should add to parent document
               List(o.enumEntries.map {
                 case Left(clazz) => classFieldsToJsonArgList(clazz.argLists.toList.flatMap(_.args))

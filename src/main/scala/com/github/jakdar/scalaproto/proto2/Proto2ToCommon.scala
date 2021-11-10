@@ -23,13 +23,8 @@ object Proto2ToCommon extends ToCommon[Ast.AstEntity] {
   }
 
   private def enumToCommon(e: EnumAst): CommonAst.ObjectAst = {
-
-    def fixCasing(s: String) =
-      if (s.filter(_.isLetter).forall(_.isUpper)) {
-        CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, s)
-      } else s
-    val defs                 =
-      e.values.map(line => CommonAst.EnumValue(CommonAst.Identifier(fixCasing(line.name.value)), parents = Nil))
+    val defs =
+      e.values.map(line => CommonAst.EnumValue(CommonAst.Identifier(line.name.value), parents = Nil))
 
     CommonAst.ObjectAst(id = CommonAst.Identifier(e.name.value), enumEntries = defs.map(Right(_)), definitions = Nil, parents = Nil)
   }

@@ -78,4 +78,53 @@ class Proto2ToJsonTest extends munit.FunSuite {
     assertEquals(result.head, expected)
   }
 
+  test("handle enums 1") {
+    val example = """
+      |message Test {
+      |    optional int64 time = 5;
+      |    required MsgFormat format = 6;
+      |    enum MsgFormat {
+      |        FORMAT_A = 1;
+      |        FORMAT_B = 2;
+      |    }
+      |}""".stripMargin.trim
+
+    val result   = protoToJson(example)
+    val expected = ujson
+      .read("""
+          |{
+          |  "time": 1,
+          |  "format": "FORMAT_A"
+          |}""".stripMargin)
+      .asInstanceOf[ujson.Obj]
+
+    assertEquals(result.head, expected)
+
+  }
+
+  test("handle enums 2") {
+
+    val example = """
+      |message Test {
+      |    optional int64 time = 5;
+      |    required MsgFormat format = 6;
+      |}
+      |
+      |    enum MsgFormat {
+      |        FORMAT_A = 1;
+      |        FORMAT_B = 2;
+      |}""".stripMargin.trim
+
+    val result   = protoToJson(example)
+    val expected = ujson
+      .read("""
+          |{
+          |  "time": 1,
+          |  "format": "FORMAT_A"
+          |}""".stripMargin)
+      .asInstanceOf[ujson.Obj]
+
+    assertEquals(result.head, expected)
+  }
+
 }

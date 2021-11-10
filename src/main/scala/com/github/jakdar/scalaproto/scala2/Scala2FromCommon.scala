@@ -2,6 +2,7 @@ package com.github.jakdar.scalaproto.scala2
 import scala.meta._
 import com.github.jakdar.scalaproto.parser.FromCommon
 import com.github.jakdar.scalaproto.parser.Ast
+import com.google.common.base.CaseFormat
 
 object Scala2FromCommon extends FromCommon[Stat] {
   val emptyTemplate: Template     =
@@ -68,6 +69,11 @@ object Scala2FromCommon extends FromCommon[Stat] {
   private def enumToScala(objCommon: Ast.ObjectAst): List[Stat] = {
     val sealedTrait = Defn.Trait(mods = List(Mod.Sealed()), name = Type.Name(objCommon.id.value), Nil, ctor = noConstructor, templ = emptyTemplate)
 
+    def fixCasing(s: String) = // HACK: for changing enum casing from proto to scala
+      if (s.filter(_.isLetter).forall(_.isUpper)) {
+        CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, s)
+      } else s
+
     def innerWithExtends(d: Ast.AstEntity): Ast.AstEntity = d match {
       case c: Ast.ClassAst  => c.copy(parents = List(Ast.CustomSimpleTypeIdentifier(Nil, objCommon.id)))
       case o: Ast.ObjectAst => o.copy(parents = List(Ast.CustomSimpleTypeIdentifier(Nil, objCommon.id)))
@@ -77,7 +83,7 @@ object Scala2FromCommon extends FromCommon[Stat] {
       .flatMap {
         case Right(enumValue) =>
           val extendsTemplate = emptyTemplate.copy(inits = List(Init(tpe = Type.Name(objCommon.id.value), name = Name(""), argss = Nil)))
-          List(Defn.Object(List(Mod.Case()), name = Term.Name(enumValue.id.value), templ = extendsTemplate))
+          List(Defn.Object(List(Mod.Case()), name = Term.Name(fixCasing(enumValue.id.value)), templ = extendsTemplate))
         case Left(clazz)      => (innerWithExtends _).andThen((fromCommon _).compose(List(_)))(clazz)
       }
 
