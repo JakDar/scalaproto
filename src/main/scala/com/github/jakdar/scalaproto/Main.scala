@@ -20,5 +20,4 @@ def main(mode: String, code: String) = {
     case other if other.contains("-to-") =>
       print(Application.convert(code.trim, support(from), support(to)))
   }
-
 }

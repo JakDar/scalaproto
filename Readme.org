@@ -3,6 +3,8 @@
 Scalaproto is a simple cli allowing conversions between scala and protobuf (proto2) formats.
 It can be integrated nicely with editors (e.g. vim / emacs).
 
+https://docs.scala-lang.org/scala3/new-in-scala3.html
+
 * Future Improvements
 ** TODO New ASTs
 *** TODO Postgresql create table
@@ -32,5 +34,17 @@ message FriendAgesEntry{
 *** TODO Add a proper CLI
 ** Technical improvements
 *** TODO Make it work with GraalVM
+** Add nix package?
+** TODO Proto2 language features
+- [ ] map field (add map to common?)
+- [ ] reserved?
 * Fixes
-- [ ] proto make it parse grpcurl
+** TODO add Id mode to sclaproto convert
+:PROPERTIES:
+:CAPTURE_TIME: [2021-12-01 Wed]
+:END:
+:LOGBOOK:
+CLOCK: [2021-12-02 Thu 21:38]--[2021-12-02 Thu 21:39] =>  0:01
+:END:
+
+- if "to scala" then for all fields add case class InboxId or sth

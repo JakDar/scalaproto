@@ -11,7 +11,9 @@ object Proto2Parser extends parser.Parser[AstEntity] {
   // TODO  cleanup - especially whitespace
   override def parse(code: String): Either[parser.Parser.ParseError, Seq[AstEntity]] = {
 
-    program.parse(code) match {
+    val codeWithoutComments = code.split("\n").filterNot(_.trim.startsWith("//")).mkString("\n")
+
+    program.parse(codeWithoutComments) match {
       case Left(ex)          => Left(parser.Parser.ParseError.GenericErr(s"Parsing proto failed with $ex"))
       case Right((_, value)) => Right(value.toList)
     }

@@ -10,7 +10,6 @@ class Proto2ToJsonTest extends munit.FunSuite {
   }
 
   test("proto to json should work in basic case ") {
-
     val example  = """
 
       message Ala {
@@ -46,6 +45,46 @@ class Proto2ToJsonTest extends munit.FunSuite {
     assertEquals(result.head, expected)
 
   }
+
+  test("proto to json ignores comments") {
+    val example  = """
+
+      message Ala {
+          // Ala is nice
+          required int32 alaId = 1;
+          repeated Ola olas = 2;
+      }
+
+      message Ola {
+          required string olaId = 1;
+          required string text = 2;
+          optional bytes tracing = 100;
+      }
+""".trim()
+    val result   = protoToJson(example)
+    val expected = ujson
+      .read("""
+{
+  "alaId": 1,
+  "olas": [
+    {
+      "olaId": "string",
+      "text": "string",
+      "tracing": [
+        1
+      ]
+    }
+  ]
+}
+
+""".stripMargin)
+      .asInstanceOf[ujson.Obj]
+
+    assertEquals(result.head, expected)
+
+  }
+
+
 
   test("convert oneofs") {
 
