@@ -1,18 +1,18 @@
-{ stdenv, lib, graalvm8, sbt }:
+{ stdenv, lib, fetchFromGitHub, graalvm11, sbt }:
 
 stdenv.mkDerivation rec{
   pname = "scalaproto";
   version = "0.1";
 
 
-  src = lib.fetchFromGitHub {
+  src = fetchFromGitHub {
     owner = "JakDar";
     repo = "scalaproto";
     rev = "master"; # or just "master"
-    sha256 = lib.fakeSha256;
+    sha256 = "sha256-SrfJQQ1Pj/i3UZaxJlYR/Znu2L/UFYYOLDUFasO7uTo=";
   };
 
-  buildInputs = [ sbt graalvm8 ];
+  buildInputs = [ (sbt.override { jre = graalvm11; }) graalvm11 ];
 
   buildPhase = ''
     cd ${src}
@@ -41,7 +41,7 @@ stdenv.mkDerivation rec{
     description = "Scalaproto - converter between json, proto & scalala.";
     homepage = https://github.com/JakDar/scalaproto;
     license = licenses.mit;
-    platforms = graalvm8.meta.platforms;
+    platforms = graalvm11.meta.platforms;
     maintainers = with maintainers; [ ];
   };
 }
