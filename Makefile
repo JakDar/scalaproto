@@ -1,6 +1,3 @@
-build-native:
-	export PATH=/usr/lib/jvm/java-11-graalvm/bin:${PATH};export JAVA_PATH=/usr/lib/jvm/java-11-graalvm; sbt graalvm-native-image:packageBin
-
 just-install-native:
 	mkdir -p ~/.local/bin
 	cp target/graalvm-native-image/com.github.jakdar.scalaproto ~/.local/bin/scalaproto
@@ -20,16 +17,23 @@ just-install:
 
 install: build just-install
 
+release:
+	echo "bump version"
+	echo "sbt assembly"
+	echo "bump package.nix & commit"
+	echo "release"
+	echo "Push"
+
 test:
 	time scalaproto "scala-to-json" "case class Entity(id: Long, name: String)"
-	time ./scalaproto "scala-to-json" "case class Entity(id: Long, name: String)"
+	time ./result/bin/scalaproto "scala-to-json" "case class Entity(id: Long, name: String)"
 	echo "NEXT"
 	time scalaproto "scala-to-proto2" "case class Entity(id: Long, name: String)"
-	time ./scalaproto "scala-to-proto2" "case class Entity(id: Long, name: String)"
+	time ./result/bin/scalaproto "scala-to-proto2" "case class Entity(id: Long, name: String)"
 	echo "NEXT"
 	time scalaproto "proto2-to-scala" "message Entity{ required string ala = 1;}"
-	time ./scalaproto "proto2-to-scala" "message Entity{ required string ala = 1;}"
+	time ./result/bin/scalaproto "proto2-to-scala" "message Entity{ required string ala = 1;}"
 	echo "NEXT"
 	time scalaproto "proto2-to-json" "message Entity{ required string ala = 1;}"
-	time ./scalaproto "proto2-to-json" "message Entity{ required string ala = 1;}"
+	time ./result/bin/scalaproto "proto2-to-json" "message Entity{ required string ala = 1;}"
 	echo "NEXT"

@@ -6,36 +6,32 @@ It can be integrated nicely with editors (e.g. vim / Emacs).
 https://docs.scala-lang.org/scala3/new-in-scala3.html
 
 * Future Improvements
-** New ASTs
-*** TODO Postgresql create table
-Might be useful:
-https://chriscoffey.github.io/programming/parsing-sql-ddl-schema/
-** Scala Type support
-*** TODO [#C] Scala tuple => Entry class
-- avoid name conflicts
-** Docs/UI
-*** TODO Document emacs usage
-*** TODO Add a proper CLI
-** Technical improvements
-*** TODO Make it work with GraalVM
-*** TODO Package for nix
-** TODO Proto2 language features
+1. New ASTs
+   - Postgresql create table
+       Might be useful:
+       https://chriscoffey.github.io/programming/parsing-sql-ddl-schema/
+2. Scala Type support
+  Scala tuple => Entry class
+   - avoid name conflicts
+3. Docs/UI
+- [ ] Document Emacs usage (add scalaproto.el?)
+- [ ] Add a proper CLI
+4. Technical improvements
+- [ ] Make it work with GraalVM
+- [ ] Package for nix
+4. Support Proto2 language features
 - [ ] map field (add map to common?)
 - [ ] reserved?
 * Fixes
-** TODO add Id mode to sclaproto convert
-:PROPERTIES:
-:CAPTURE_TIME: [2021-12-01 Wed]
-:END:
-:LOGBOOK:
-CLOCK: [2021-12-02 Thu 21:38]--[2021-12-02 Thu 21:39] =>  0:01
-:END:
-
-- if "to scala" then for all fields add case class InboxId or sth
+- add Id mode to sclaproto convert
+  if ~to-scala~ then for all fields with name suffix Id add case class ~FieldId~ etc
 * Ideas
-** Can scalaproto be repleaced by tree-sitter?
-https://github.com/tree-sitter
+-  Can scalaproto be repleaced by tree-sitter?
+    https://github.com/tree-sitter
 
-Tree edit:
-https://github.com/ethan-leba/tree-edit
-https://yewtu.be/watch?v=FwDsuz0waIY
+    I could be rewritten in rust.
+    https://rfdonnelly.github.io/posts/using-tree-sitter-parsers-in-rust/
+
+    Tree edit:
+    https://github.com/ethan-leba/tree-edit
+    https://yewtu.be/watch?v=FwDsuz0waIY
