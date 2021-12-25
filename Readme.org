@@ -1,32 +1,16 @@
 #+TITLE: Readme
 
 Scalaproto is a simple cli allowing conversions between scala and protobuf (proto2) formats.
-It can be integrated nicely with editors (e.g. vim / emacs).
+It can be integrated nicely with editors (e.g. vim / Emacs).
 
 https://docs.scala-lang.org/scala3/new-in-scala3.html
 
 * Future Improvements
-** TODO New ASTs
+** New ASTs
 *** TODO Postgresql create table
 Might be useful:
 https://chriscoffey.github.io/programming/parsing-sql-ddl-schema/
 ** Scala Type support
-*** TODO [#A] Scala Map => Entry classes
-#+BEGIN_SRC scala
-case class Ala(ola:Int, firendAges: Map[String,Int])
-#+END_SRC
-
-#+BEGIN_SRC protobuf
-message Ala {
-  required int32 ola = 1;
-  repeated FriendAgesEntry friendAges = 2;
-}
-
-message FriendAgesEntry{
-  required string key = 1;
-  required string value = 2;
-}
-#+END_SRC
 *** TODO [#C] Scala tuple => Entry class
 - avoid name conflicts
 ** Docs/UI
@@ -34,7 +18,7 @@ message FriendAgesEntry{
 *** TODO Add a proper CLI
 ** Technical improvements
 *** TODO Make it work with GraalVM
-** Add nix package?
+*** TODO Package for nix
 ** TODO Proto2 language features
 - [ ] map field (add map to common?)
 - [ ] reserved?
@@ -48,3 +32,10 @@ CLOCK: [2021-12-02 Thu 21:38]--[2021-12-02 Thu 21:39] =>  0:01
 :END:
 
 - if "to scala" then for all fields add case class InboxId or sth
+* Ideas
+** Can scalaproto be repleaced by tree-sitter?
+https://github.com/tree-sitter
+
+Tree edit:
+https://github.com/ethan-leba/tree-edit
+https://yewtu.be/watch?v=FwDsuz0waIY
