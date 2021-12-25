@@ -1,0 +1,45 @@
+name: Release
+on: workflow_dispatch
+jobs:
+  build_release:
+    name: build_release
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      # - name: setup scala
+      #   uses: olafurpg/setup-scala@v13
+      - name: setup nix
+        uses: cachix/install-nix-action@v15
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+      # FIXME: pin things
+      - name: install sbt + graalvm
+        run: nix-channel --update && nix-env -i graalvm11-ce sbt -f '<nixpkgs>'
+      - name: version
+        run: echo "::set-output name=version::$(bash ./bump.sh)"
+        id: version
+      - name: build artifacts
+        run: sbt test assembly
+      - name: Move JAR top-level
+        run: mv ./target/scala-3.0.2/scalaproto.jar scalaproto.jar
+      - name: Build native image
+        run: |
+          native-image "-H:+ReportExceptionStackTraces" --initialize-at-build-time  \
+          "-H:Log=registerResource:" --verbose --no-fallback --no-server \
+          -jar scalaproto.jar
+
+          mv scalaproto scalaproto-linux
+      - name: update versions and hashes
+        run: bash ./bump.sh --hash
+      - name: Commit version bump
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Version ${{ steps.version.outputs.version }}
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.version.outputs.version }}
+          files: |
+            scalaproto.jar
+            scalaproto-linux

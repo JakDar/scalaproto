@@ -9,3 +9,6 @@ sbt-cache/
 .metals/
 .bloop/
 metals.sbt
+*.jar
+scalaproto-linux
+scalaproto.build_artifacts.txt
