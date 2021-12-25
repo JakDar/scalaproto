@@ -9,10 +9,10 @@ stdenv.mkDerivation rec{
     owner = "JakDar";
     repo = "scalaproto";
     rev = "master"; # or just "master"
-    sha256 = "sha256-SrfJQQ1Pj/i3UZaxJlYR/Znu2L/UFYYOLDUFasO7uTo=";
+    sha256 = "sha256-kV2L9cdTZiWnpiFwjCbeVXbMPtGnLGVumqlalAk12qA=";
   };
 
-  buildInputs = [ (sbt.override { jre = graalvm11; }) graalvm11 ];
+  buildInputs = [ sbt graalvm11 ];
 
   buildPhase = ''
     cd ${src}
