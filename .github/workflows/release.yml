@@ -1,0 +1,50 @@
+name: Release
+on:
+  push:
+    tags:
+      - 'rc*'
+jobs:
+  build_release:
+    name: build_release
+    runs-on: ubuntu-20.04
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+        with:
+          ref: feat/release-ci
+      - name: setup scala
+        uses: olafurpg/setup-scala@v13
+      - name: setup nix
+        uses: cachix/install-nix-action@v15
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+      - name: version
+        run: echo "::set-output name=version::$(bash ./bump.sh)"
+        id: version
+      - name: build artifacts
+        run: sbt test assembly
+      - name: update hash
+        run: bash ./bump.sh --hash
+      - name: release
+        uses: actions/create-release@v1
+        id: create_release
+        with:
+          draft: false
+          prerelease: false
+          release_name: ${{ steps.version.outputs.version }}
+          tag_name: ${{ github.ref }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: upload jar
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./target/scala-3.0.2/scalaproto.jar
+          asset_name: scalaproto.jar
+          asset_content_type: application/java-archive
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Version bump
