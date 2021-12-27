@@ -5,7 +5,7 @@ It can be integrated nicely with editors (e.g. vim / Emacs).
 
 https://docs.scala-lang.org/scala3/new-in-scala3.html
 
-* Future Improvements
+* Functionality Improvements
 1. New ASTs
    - Postgresql create table
        Might be useful:
@@ -14,16 +14,20 @@ https://docs.scala-lang.org/scala3/new-in-scala3.html
   Scala tuple => Entry class
    - avoid name conflicts
 3. Docs/UI
-- [ ] Document Emacs usage (add scalaproto.el?)
-- [ ] Add a proper CLI
-4. Technical improvements
-- [ ] Make it work with GraalVM
-- [ ] Package for nix
-4. Support Proto2 language features
-- [ ] map field (add map to common?)
-- [ ] reserved?
+4. [ ] Document Emacs usage (add scalaproto.el?)
+5. [ ] Add a proper CLI
+6. Support Proto2 language features
+7. [ ] map field (add map to common?)
+8. [ ] reserved?
+* Technical improvements
+- [-] Make it work with GraalVM
+  Done through nix
+- [-] Package for nix
+    Maybe some [[https://github.com/marketplace/actions/install-nix][gh actions]]?
+- [ ] Release Github action
+
 * Fixes
-- add Id mode to sclaproto convert
+- add Id mode
   if ~to-scala~ then for all fields with name suffix Id add case class ~FieldId~ etc
 * Ideas
 -  Can scalaproto be repleaced by tree-sitter?
