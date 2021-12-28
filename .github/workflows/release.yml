@@ -1,8 +1,5 @@
 name: Release
-on:
-  push:
-    tags:
-      - 'rc*'
+on: workflow_dispatch
 jobs:
   build_release:
     name: build_release
@@ -10,8 +7,6 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v2
-        with:
-          ref: feat/release-ci
       - name: setup scala
         uses: olafurpg/setup-scala@v13
       - name: setup nix
