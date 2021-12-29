@@ -2,10 +2,10 @@
 
 stdenv.mkDerivation rec {
   pname = "scalaproto";
-  version = "0.0";
+  version = "0.1";
   src = fetchurl {
     url = "https://github.com/JakDar/${pname}/releases/download/${version}/${pname}-linux";
-    sha256 = "sha256-uzIqTFwPGEjT+j/xhh6kttCBYScCh01WFM9InDd+qBQ=";
+    sha256 = "sha256-z3cenpfEIG8vJYtkoqcIu2rAyPnEVDWrUMvvbB8pYxM=";
   };
 
 
