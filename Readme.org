@@ -15,11 +15,6 @@ It can be integrated nicely with editors (e.g. vim / Emacs).
    - [ ] map field (add map to common?)
    - [ ] reserved?
 * Technical improvements
-- [X] Make it work with GraalVM (nixified)
-- [X] Package for nix
-    Maybe some [[https://github.com/marketplace/actions/install-nix][gh actions]]?
-- [?] CI - commit before release
-- [ ] CI - build & release native image
 - [ ] Make code more scala3-like ([[https://docs.scala-lang.org/scala3/new-in-scala3.html][features]])
 * Ideas
 -  Can scalaproto be replaced by [[https://github.com/tree-sitter][tree-sitter]]?
