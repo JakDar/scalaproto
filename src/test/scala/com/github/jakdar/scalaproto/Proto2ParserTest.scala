@@ -50,4 +50,22 @@ class Proto2ParserTest() extends munit.FunSuite {
     assertEquals(res, msg)
   }
 
+  test("parsing empty message") {
+
+    val res: Either[ParseError, Ast.Message] = Proto2Parser.message
+      .parse(
+        """
+      message Ala {
+      }
+""".trim()
+      )
+      .map(_._2)
+
+    val msg: Either[ParseError, Ast.Message] = Right(
+      Ast.Message(name = Ast.Identifier("Ala"), entries = Nil)
+    )
+
+    assertEquals(res, msg)
+  }
+
 }

@@ -84,8 +84,6 @@ class Proto2ToJsonTest extends munit.FunSuite {
 
   }
 
-
-
   test("convert oneofs") {
 
     val example  = """

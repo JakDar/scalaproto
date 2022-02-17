@@ -35,7 +35,7 @@ object Application {
   val jsonSupport: ConversionSupport[Obj] = ConversionSupport(JsonGenerator, JsonParser, JsonToCommon, JsonFromCommon)
 
   def convert[S, D](code: String, source: ConversionSupport[S], dest: ConversionSupport[D]): String = {
-    // FIXME: log errors
+    // FIXME: handle errors
     val fromAst = source.parser.parse(code).getOrElse(???)
     val destAst = convertAst(fromAst, source, dest).getOrElse(???)
     val result  = dest.generator.generate(destAst)
@@ -49,7 +49,6 @@ object Application {
   }
 
   def protoFixNumbers(code: String): String = {
-
     val parsed = Proto2Parser.program.parse(code).getOrElse(throw new Exception("Failed parsing"))._2
 
     val withFixedNumbers = parsed.map(Proto2Homomorphisms.correctNumbers)
