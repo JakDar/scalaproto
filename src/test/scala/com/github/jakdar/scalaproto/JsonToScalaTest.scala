@@ -2,7 +2,7 @@ package com.github.jakdar.scalaproto
 
 class JsonToScalaTest extends munit.FunSuite {
 
-  def jsonToScala(code: String): String = Application.convert(code, Application.jsonSupport, Application.scalaSupport)
+  def jsonToScala(code: String): String = Application.convert(code, Application.jsonSupport, Application.scalaSupport).getOrElse(???)
 
   test("json to scala work in basic case") {
     val example  = """

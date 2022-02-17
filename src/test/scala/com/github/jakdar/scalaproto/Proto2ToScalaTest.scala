@@ -2,7 +2,7 @@ package com.github.jakdar.scalaproto
 
 class Proto2ToScalaTest extends munit.FunSuite {
 
-  def protoToScala(code: String): String = Application.convert(code, Application.proto2Support, Application.scalaSupport)
+  def protoToScala(code: String): String = Application.convert(code, Application.proto2Support, Application.scalaSupport).getOrElse(???)
 
   test("work in basic case") {
 

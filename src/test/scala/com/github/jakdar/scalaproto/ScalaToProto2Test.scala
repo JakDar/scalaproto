@@ -1,7 +1,7 @@
 package com.github.jakdar.scalaproto
 
 class ScalaToProto2Test extends munit.FunSuite {
-  def scalaToProto(code: String): String = Application.convert(code, Application.scalaSupport, Application.proto2Support)
+  def scalaToProto(code: String): String = Application.convert(code, Application.scalaSupport, Application.proto2Support).getOrElse(???)
 
   test("work in basic case, event with trailing comma") {
 

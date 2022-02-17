@@ -17,7 +17,10 @@ def main(mode: String, code: String) = {
     case "fix-proto-numbers" =>
       print(Application.protoFixNumbers(code.trim))
 
+    case other if other.startsWith("auto-to-") =>
+      print(Application.autoConvert(code.trim, support(to)).getOrElse(???))
+
     case other if other.contains("-to-") =>
-      print(Application.convert(code.trim, support(from), support(to)))
+      print(Application.convert(code.trim, support(from), support(to)).getOrElse(???))
   }
 }

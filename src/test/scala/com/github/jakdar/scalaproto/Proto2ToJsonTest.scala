@@ -4,10 +4,8 @@ import com.github.jakdar.scalaproto.proto2.Proto2Parser
 
 class Proto2ToJsonTest extends munit.FunSuite {
 
-  def protoToJson(code: String): Seq[ujson.Obj] = {
-    val protoAst = Proto2Parser.parse(code)
-    Application.convertAst(protoAst.getOrElse(???), Application.proto2Support, Application.jsonSupport).getOrElse(???)
-  }
+  def protoToJson(code: String): Seq[ujson.Obj] =
+    Util.toDestAst(code, Application.proto2Support, Application.jsonSupport).getOrElse(???)
 
   test("proto to json should work in basic case ") {
     val example  = """

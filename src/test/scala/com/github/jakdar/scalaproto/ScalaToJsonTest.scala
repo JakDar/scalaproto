@@ -4,10 +4,8 @@ import com.github.jakdar.scalaproto.scala2.Scala2Parser
 
 class ScalaToJsonTest extends munit.FunSuite {
 
-  def scalaToJson(code: String): Seq[ujson.Obj] = {
-    val scalaAst = Scala2Parser.parse(code)
-    Application.convertAst(scalaAst.getOrElse(???), Application.scalaSupport, Application.jsonSupport).getOrElse(???)
-  }
+  def scalaToJson(code: String): Seq[ujson.Obj] =
+    Util.toDestAst(code, Application.scalaSupport, Application.jsonSupport).getOrElse(???)
 
   test("scala to json work in basic case ") {
     val example =

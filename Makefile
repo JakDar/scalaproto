@@ -19,3 +19,4 @@ test:
 	time scalaproto "scala-to-proto2" "case class Entity(id: Long, name: String)"
 	time scalaproto "proto2-to-scala" "message Entity{ required string ala = 1;}"
 	time scalaproto "proto2-to-json" "message Entity{ required string ala = 1;}"
+	time scalaproto "auto-to-json" "message Entity{ required string ala = 1;}"

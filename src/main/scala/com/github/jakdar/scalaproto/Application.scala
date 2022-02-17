@@ -16,8 +16,11 @@ import com.github.jakdar.scalaproto.proto2.Proto2Parser
 import com.github.jakdar.scalaproto.proto2.Proto2ToCommon
 import com.github.jakdar.scalaproto.scala2.{Scala2FromCommon, Scala2Generator, Scala2Parser, Scala2ToCommon}
 import com.github.jakdar.scalaproto.proto2.Ast
+import com.github.jakdar.scalaproto.parser.{Ast => CommonAst}
 import _root_.scala.meta.Stat
 import ujson.Obj
+import com.github.jakdar.scalaproto.parser.Parser.ParseError
+import scala.annotation.tailrec
 
 object Application {
   case class ConversionSupport[AstEntity](
@@ -25,7 +28,17 @@ object Application {
       parser: Parser[AstEntity],
       toCommon: ToCommon[AstEntity],
       fromCommon: FromCommon[AstEntity],
-  )
+  ) {
+    def parseToCommon(
+        code: String
+    ): Either[ParseError | ToCommon.Error, Seq[CommonAst.AstEntity]] =
+      parser.parse(code) match {
+        case Left(error) => Left(error)
+        case Right(ok)   => ok.flatTraverse(toCommon.toCommon)
+      }
+
+    def generateFromCommon: Seq[CommonAst.AstEntity] => String = generator.generate compose fromCommon.fromCommon
+  }
 
   val scalaSupport: ConversionSupport[Stat] = ConversionSupport(Scala2Generator, Scala2Parser, Scala2ToCommon, Scala2FromCommon)
 
@@ -34,18 +47,21 @@ object Application {
 
   val jsonSupport: ConversionSupport[Obj] = ConversionSupport(JsonGenerator, JsonParser, JsonToCommon, JsonFromCommon)
 
-  def convert[S, D](code: String, source: ConversionSupport[S], dest: ConversionSupport[D]): String = {
-    // FIXME: handle errors
-    val fromAst = source.parser.parse(code).getOrElse(???)
-    val destAst = convertAst(fromAst, source, dest).getOrElse(???)
-    val result  = dest.generator.generate(destAst)
-    result
-  }
+  def convert[S, D](code: String, source: ConversionSupport[S], dest: ConversionSupport[D]): Either[ParseError | ToCommon.Error, String] =
+    source.parseToCommon(code).map(dest.generateFromCommon)
 
-  def convertAst[S, D](ast: Seq[S], source: ConversionSupport[S], dest: ConversionSupport[D]): Either[ToCommon.Error, Seq[D]] = {
-    ast.traverse(source.toCommon.toCommon(_)).map { commonAst =>
-      dest.fromCommon.fromCommon(commonAst.flatten)
-    }
+  def autoConvert[D](code: String, dest: ConversionSupport[D]): Either[ParseError | ToCommon.Error, String] = {
+    def autoToCommon(acc: List[ConversionSupport[_]]): Either[ParseError | ToCommon.Error, Seq[CommonAst.AstEntity]] =
+      acc match {
+        case Nil          => throw new IllegalArgumentException("Nil shouldn't happen here")
+        case head :: Nil  => head.parseToCommon(code)
+        case head :: tail => head.parseToCommon(code).orElse(autoToCommon(tail))
+      }
+
+    autoToCommon(
+      List(jsonSupport, proto2Support, scalaSupport)
+    ).map(dest.generateFromCommon)
+
   }
 
   def protoFixNumbers(code: String): String = {
