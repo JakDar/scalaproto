@@ -6,10 +6,9 @@ import com.github.jakdar.scalaproto.parser.FromCommon
 import com.github.jakdar.scalaproto.parser.{Ast => CommonAst}
 import cats.syntax.alternative.catsSyntaxAlternativeSeparate
 import com.google.common.base.CaseFormat
-import Proto2FromCommon.Options
 import com.github.jakdar.scalaproto.util.StringUtils
 
-class Proto2FromCommon(options: Options) extends FromCommon[Ast.AstEntity] {
+object Proto2FromCommon extends FromCommon[Ast.AstEntity] {
 
   override def fromCommon(other: Seq[CommonAst.AstEntity]): Seq[Ast.AstEntity] =
     other
@@ -110,16 +109,12 @@ class Proto2FromCommon(options: Options) extends FromCommon[Ast.AstEntity] {
       case CommonAst.ShortType | CommonAst.ByteType                  => primitive("i32")
       case CommonAst.ArrayType(CommonAst.ByteType)                   => primitive("bytes")
       case CommonAst.CustomSimpleTypeIdentifier(packagePath, typeId) =>
-        (options.assumeIdType, typeId.value.endsWith("Id")) match {
-          case (Some(idType), true) => primitive(idType.id.value)
-          case _                    =>
-            Ast.FieldLine(
-              Ast.ArgRepeat.Required,
-              Ast.TypePath(packagePath.map(tId => Ast.Identifier(tId.value)), Ast.TypeIdentifier(Ast.Identifier(typeId.value))),
-              identifier = Ast.Identifier(id.value),
-              number = 0,
-            )
-        }
+        Ast.FieldLine(
+          Ast.ArgRepeat.Required,
+          Ast.TypePath(packagePath.map(tId => Ast.Identifier(tId.value)), Ast.TypeIdentifier(Ast.Identifier(typeId.value))),
+          identifier = Ast.Identifier(id.value),
+          number = 0,
+        )
 
       case CommonAst.OptionType(inner)                => typeIdToProto(id, inner).copy(repeat = Ast.ArgRepeat.Optional)
       case CommonAst.ArrayType(inner)                 => typeIdToProto(id, inner).copy(repeat = Ast.ArgRepeat.Repeated)
@@ -127,11 +122,4 @@ class Proto2FromCommon(options: Options) extends FromCommon[Ast.AstEntity] {
     }
   }
 
-}
-
-object Proto2FromCommon {
-  case class Options(assumeIdType: Option[Ast.TypeIdentifier])
-  object Options {
-    val empty: Options = Options(None)
-  }
 }

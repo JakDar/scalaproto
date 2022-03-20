@@ -9,6 +9,7 @@ import com.github.jakdar.scalaproto.parser.FromCommon
 import com.github.jakdar.scalaproto.parser.Generator
 import com.github.jakdar.scalaproto.parser.Parser
 import com.github.jakdar.scalaproto.parser.ToCommon
+import mouse.all.anySyntaxMouse
 import com.github.jakdar.scalaproto.proto2.Proto2FromCommon
 import com.github.jakdar.scalaproto.proto2.Proto2Generator
 import com.github.jakdar.scalaproto.proto2.Proto2Homomorphisms
@@ -21,6 +22,7 @@ import _root_.scala.meta.Stat
 import ujson.Obj
 import com.github.jakdar.scalaproto.parser.Parser.ParseError
 import scala.annotation.tailrec
+import com.github.jakdar.scalaproto.parser.CommonHomomorphisms
 
 object Application {
   case class ConversionSupport[AstEntity](
@@ -42,13 +44,17 @@ object Application {
 
   val scalaSupport: ConversionSupport[Stat] = ConversionSupport(Scala2Generator, Scala2Parser, Scala2ToCommon, Scala2FromCommon)
 
-  val proto2FromCommon                                = new Proto2FromCommon(Proto2FromCommon.Options(assumeIdType = Some(proto2.Ast.stringTypeIdentifier)))
-  val proto2Support: ConversionSupport[Ast.AstEntity] = ConversionSupport(Proto2Generator, Proto2Parser, Proto2ToCommon, proto2FromCommon)
+  // TODO assume id type as a common homomorphism
+
+  val proto2Support: ConversionSupport[Ast.AstEntity] = ConversionSupport(Proto2Generator, Proto2Parser, Proto2ToCommon, Proto2FromCommon)
 
   val jsonSupport: ConversionSupport[Obj] = ConversionSupport(JsonGenerator, JsonParser, JsonToCommon, JsonFromCommon)
 
   def convert[S, D](code: String, source: ConversionSupport[S], dest: ConversionSupport[D]): Either[ParseError | ToCommon.Error, String] =
-    source.parseToCommon(code).map(dest.generateFromCommon)
+    source
+      .parseToCommon(code)
+      .map(_.toList |> CommonHomomorphisms.unknownIdTypesAsString)
+      .map(dest.generateFromCommon)
 
   def autoConvert[D](code: String, dest: ConversionSupport[D]): Either[ParseError | ToCommon.Error, String] = {
     def autoToCommon(acc: List[ConversionSupport[_]]): Either[ParseError | ToCommon.Error, Seq[CommonAst.AstEntity]] =
@@ -58,9 +64,9 @@ object Application {
         case head :: tail => head.parseToCommon(code).orElse(autoToCommon(tail))
       }
 
-    autoToCommon(
-      List(jsonSupport, proto2Support, scalaSupport)
-    ).map(dest.generateFromCommon)
+    autoToCommon(List(jsonSupport, proto2Support, scalaSupport))
+      .map(_.toList |> CommonHomomorphisms.unknownIdTypesAsString)
+      .map(dest.generateFromCommon)
 
   }
 

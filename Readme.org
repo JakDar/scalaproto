@@ -15,9 +15,11 @@ It can be integrated nicely with editors (e.g. vim / Emacs).
    - [ ] map field (add map to common?)
    - [ ] reserved?
 5. Usability improvements
-   - [ ] assume that Id is a string for json too
+   - [X] assume that Id is a string for json too
+   - [ ] Add proper commandline interface (decline?)
 * Technical improvements
 - [ ] Make code more scala3-like ([[https://docs.scala-lang.org/scala3/new-in-scala3.html][features]])
+- [ ] Experiment with [[https://github.com/disneystreaming/weaver-test][weaver-test]]?
 * Ideas
 -  Can scalaproto be replaced by [[https://github.com/tree-sitter][tree-sitter]]?
 

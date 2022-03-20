@@ -34,4 +34,24 @@ class ScalaToJsonTest extends munit.FunSuite {
     assertEquals(result.head, expected)
   }
 
+  test("scala to json - assume Id ") {
+    val example =
+      """case class Mama (
+        |    ala: Int,
+        |    ola: OlaId,
+        |    kola: List[ElaId])""".stripMargin.trim
+
+    val result   = scalaToJson(example)
+    val expected = ujson
+      .read("""
+            |{
+            |  "ala": 1,
+            |  "ola": "string",
+            |  "kola" : [ "string" ]
+            |}""".stripMargin)
+      .asInstanceOf[ujson.Obj]
+
+    assertEquals(result.head, expected)
+  }
+
 }

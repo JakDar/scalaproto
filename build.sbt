@@ -9,7 +9,8 @@ lazy val `scalaproto` = (project in file("."))
     name                     := "com.github.jakdar.scalaproto",
     resolvers ++= Dependencies.additionalResolvers,
     libraryDependencies ++= Dependencies.all,
-    scalacOptions ++= CompilerOps.all,
+    scalacOptions += "-no-indent",
+    scalacOptions -= "-Xfatal-warnings",
     Test / parallelExecution := true,
   )
 
