@@ -1,7 +1,7 @@
 object Dependencies {
   import sbt._
   val CatsParseVersion = "0.3.4"
-  val CatsVersion      = "2.6.1"
+  val CatsVersion      = "2.7.0"
   val MouseVersion     = "1.0.7"
   val GuavaVersion     = "30.1.1-jre"
   val ScalametaVersion = "4.4.30"
