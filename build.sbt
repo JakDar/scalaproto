@@ -2,7 +2,7 @@ name := "scalaproto"
 
 scalaVersion := "3.1.1"
 
-version := "0.2"
+version := "0.3"
 lazy val `scalaproto` = (project in file("."))
   .settings(
     organization             := "com.github.jakdar",
