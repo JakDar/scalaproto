@@ -14,6 +14,9 @@ install-jar-locally: build just-install
 release:
 	gh workflow run release.yml
 
+steward:
+	gh workflow run steward.yml
+
 test:
 	time scalaproto "scala-to-json" "case class Entity(id: Long, name: String)"
 	time scalaproto "scala-to-proto2" "case class Entity(id: Long, name: String)"

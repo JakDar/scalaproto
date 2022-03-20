@@ -15,8 +15,7 @@ It can be integrated nicely with editors (e.g. vim / Emacs).
    - [ ] map field (add map to common?)
    - [ ] reserved?
 5. Usability improvements
-   - [X] assume that Id is a string for json too
-   - [ ] Add proper commandline interface (decline?)
+   - [ ] improve error handling
 * Technical improvements
 - [ ] Make code more scala3-like ([[https://docs.scala-lang.org/scala3/new-in-scala3.html][features]])
 - [ ] Experiment with [[https://github.com/disneystreaming/weaver-test][weaver-test]]?
