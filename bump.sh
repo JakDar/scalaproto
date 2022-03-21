@@ -21,7 +21,7 @@ if [ "$1" == "--hash" ]; then
 	jar_hash=$(nix hash file ./scalaproto.jar)
 	update_hash "$jar_hash" package.nix
 
-	linux_hash=$(nix hash file ./scalaproto-linux)
+	linux_hash=$(nix hash file ./scalaproto-linux.tar.gz)
 	update_hash "$linux_hash" package-bin.nix
 else
 	old_version=$(grep "^version" <build.sbt | sed 's/"//g' | awk -F'.' '{print $2 }')
