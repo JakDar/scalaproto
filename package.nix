@@ -6,7 +6,7 @@ buildGraalvmNativeImage rec {
 
   src = fetchurl {
     url = "https://github.com/JakDar/${pname}/releases/download/${version}/scalaproto.jar";
-    sha256 = "sha256-iHmt8Kbz3UWv+alzrMTGw5yRImbKpvyRSgraZu1c01w=";
+    sha256 = "sha256-Kf+Ozl4hI2ZL8cDmk55rfMMZHfKvl6Hvw098Wh2MoLk=";
   };
 
   extraNativeImageBuildArgs = [

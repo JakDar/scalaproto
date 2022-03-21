@@ -30,6 +30,9 @@ jobs:
           -jar scalaproto.jar
 
           mv scalaproto scalaproto-linux
+          mkdir scalaproto
+          mv scalaproto-linux scalaproto/
+          tar czf scalaproto-linux.tar.gz scalaproto
       - name: update versions and hashes
         run: bash ./bump.sh --hash
       - name: Commit version bump
@@ -42,4 +45,4 @@ jobs:
           tag_name: ${{ steps.version.outputs.version }}
           files: |
             scalaproto.jar
-            scalaproto-linux
+            scalaproto-linux.tar.gz
