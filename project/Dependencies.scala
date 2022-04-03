@@ -16,7 +16,7 @@ object Dependencies {
     "com.google.guava" % "guava"      % GuavaVersion,
     "org.scalameta"   %% "scalameta"  % ScalametaVersion cross CrossVersion.for3Use2_13,
     "com.lihaoyi"     %% "ujson"      % "1.5.0" cross CrossVersion.for3Use2_13,
-    "com.lihaoyi"     %% "pprint"     % "0.7.2" cross CrossVersion.for3Use2_13,
+    "com.lihaoyi"     %% "pprint"     % "0.7.3" cross CrossVersion.for3Use2_13,
   )
 
   private val testDependencies = Seq(
