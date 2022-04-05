@@ -1,10 +1,10 @@
 object Dependencies {
   import sbt._
-  val CatsParseVersion = "0.3.6"
+  val CatsParseVersion = "0.3.7"
   val CatsVersion      = "2.7.0"
-  val MouseVersion     = "1.0.10"
+  val MouseVersion     = "1.0.11"
   val GuavaVersion     = "31.1-jre"
-  val ScalametaVersion = "4.5.1"
+  val ScalametaVersion = "4.5.6"
 
   val catsDependencies = Seq(
     "org.typelevel" %% "cats-core" % CatsVersion,
@@ -15,8 +15,8 @@ object Dependencies {
     "org.typelevel"   %% "cats-parse" % CatsParseVersion,
     "com.google.guava" % "guava"      % GuavaVersion,
     "org.scalameta"   %% "scalameta"  % ScalametaVersion cross CrossVersion.for3Use2_13,
-    "com.lihaoyi"     %% "ujson"      % "1.5.0" cross CrossVersion.for3Use2_13,
-    "com.lihaoyi"     %% "pprint"     % "0.7.2" cross CrossVersion.for3Use2_13,
+    "com.lihaoyi"     %% "ujson"      % "2.0.0" cross CrossVersion.for3Use2_13,
+    "com.lihaoyi"     %% "pprint"     % "0.7.3" cross CrossVersion.for3Use2_13,
   )
 
   private val testDependencies = Seq(

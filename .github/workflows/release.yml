@@ -22,7 +22,7 @@ jobs:
       - name: build artifacts
         run: sbt test assembly
       - name: Move JAR top-level
-        run: mv ./target/scala-3.1.1/scalaproto.jar scalaproto.jar
+        run: mv ./target/scala-3.1.2/scalaproto.jar scalaproto.jar
       - name: Build native image
         run: |
           native-image "-H:+ReportExceptionStackTraces" --initialize-at-build-time  \
