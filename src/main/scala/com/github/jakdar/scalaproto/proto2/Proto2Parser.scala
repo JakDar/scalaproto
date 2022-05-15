@@ -14,8 +14,8 @@ object Proto2Parser extends parser.Parser[AstEntity] {
     val codeWithoutComments = code.split("\n").filterNot(_.trim.startsWith("//")).mkString("\n")
 
     program.parse(codeWithoutComments) match {
-      case Left(ex)          => Left(parser.Parser.ParseError.GenericErr(s"Parsing proto failed with $ex"))
-      case Right((_, value)) => Right(value.toList)
+      case Left(ex)        => Left(parser.Parser.ParseError.GenericErr(s"Parsing proto failed with $ex"))
+      case Right(_, value) => Right(value.toList)
     }
 
   }
@@ -61,7 +61,7 @@ object Proto2Parser extends parser.Parser[AstEntity] {
     Ast.OneofField(id, entries.toList)
   }
 
-  def messageEntry: P[MessageEntry] = P.defer((fieldline | message | `enum` | oneofField))
+  def messageEntry: P[MessageEntry] = P.defer(fieldline | message | `enum` | oneofField)
 
   def message: P[Ast.Message] =
     ((P.string("message"), identifier.surroundedBy(whitespaces0), P.char('{')).tupled ~ (messageEntry
