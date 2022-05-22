@@ -59,7 +59,7 @@ object Scala2FromCommon extends FromCommon[Stat] {
   private def foldPath(packagePath: List[Ast.Identifier], name: Ast.Identifier): Type.Ref = {
     def foldPathRec(list: List[Ast.Identifier]): Term.Ref = list match {
       case a :: Nil => Term.Name(a.value)
-      case l        => Term.Select(qual = foldPathRec((l.init)), name = Term.Name(l.last.value))
+      case l        => Term.Select(qual = foldPathRec(l.init), name = Term.Name(l.last.value))
     }
 
     if (packagePath.isEmpty) Type.Name(name.value)
