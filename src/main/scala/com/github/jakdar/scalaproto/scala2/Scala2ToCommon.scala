@@ -35,7 +35,7 @@ object Scala2ToCommon extends ToCommon[Stat] {
     val id = CommonAst.Identifier(o.name.value)
 
     val (nonEnums, enums) = o.templ.stats.map {
-      case c: Defn.Object => (firstParentName(c).contains(id.value).either(objectToAst(c), Right(objectToEnumValue(c))))
+      case c: Defn.Object => firstParentName(c).contains(id.value).either(objectToAst(c), Right(objectToEnumValue(c)))
       case c: Defn.Class  => firstParentName(c).contains(id.value).either(classToCommon(c) :: Nil, Left(classToCommon(c)))
       case _: Defn.Trait  => ???
     }.separate
@@ -46,11 +46,11 @@ object Scala2ToCommon extends ToCommon[Stat] {
 
   def objectToEnumValue(o: Defn.Object): CommonAst.EnumValue = CommonAst.EnumValue(CommonAst.Identifier(o.name.value), parents = Nil)
 
-  def firstParentName(t: Tree): Option[String] = (t match {
+  def firstParentName(t: Tree): Option[String] = t match {
     case c: Defn.Class  => c.templ
     case c: Defn.Object => c.templ
     case c: Defn.Trait  => c.templ
-  }).inits.headOption.map(_.tpe).flatMap { case n: Type.Name => Some(n.value); case _ => None }
+  }.inits.headOption.map(_.tpe).flatMap { case n: Type.Name => Some(n.value); case _ => None }
 
   object TypeConversion {
     def typeToAst: Type => CommonAst.TypeIdentifier               = (basicTypeToAst _) andThen (fillPredefnidedTypes _)
