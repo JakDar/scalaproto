@@ -24,7 +24,7 @@ object Proto2Homomorphisms {
           case e: Ast.EnumAst                  => (acc :+ correctNumbers(e), lastNr)
           case m: Ast.Message                  => (acc :+ correctNumbers(m), lastNr)
           case f: FieldLine                    =>
-            val insertNr = if (f.identifier.value == "tracing") 100 else (lastNr + 1)
+            val insertNr = if (f.identifier.value == "tracing") 100 else lastNr + 1
             (acc :+ f.copy(number = insertNr), lastNr + 1)
           case OneofField(identifier, entries) =>
             val newEntries = entries.zipWithIndex.map { case (e, idx) => e.copy(number = idx + lastNr + 1) }
