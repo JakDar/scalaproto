@@ -61,7 +61,7 @@ object Proto2Parser extends parser.Parser[AstEntity] {
     Ast.OneofField(id, entries.toList)
   }
 
-  def messageEntry: P[MessageEntry] = P.defer((fieldline | message | `enum` | oneofField))
+  def messageEntry: P[MessageEntry] = P.defer(fieldline | message | `enum` | oneofField)
 
   def message: P[Ast.Message] =
     ((P.string("message"), identifier.surroundedBy(whitespaces0), P.char('{')).tupled ~ (messageEntry

@@ -35,7 +35,7 @@ object Scala2ToCommon extends ToCommon[Stat] {
     val id = CommonAst.Identifier(o.name.value)
 
     val (nonEnums, enums) = o.templ.stats.map {
-      case c: Defn.Object => (firstParentName(c).contains(id.value).either(objectToAst(c), Right(objectToEnumValue(c))))
+      case c: Defn.Object => firstParentName(c).contains(id.value).either(objectToAst(c), Right(objectToEnumValue(c)))
       case c: Defn.Class  => firstParentName(c).contains(id.value).either(classToCommon(c) :: Nil, Left(classToCommon(c)))
       case _: Defn.Trait  => ???
     }.separate
