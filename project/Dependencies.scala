@@ -2,9 +2,9 @@ object Dependencies {
   import sbt._
   val CatsParseVersion = "0.3.7"
   val CatsVersion      = "2.8.0"
-  val MouseVersion     = "1.0.11"
+  val MouseVersion     = "1.1.0"
   val GuavaVersion     = "31.1-jre"
-  val ScalametaVersion = "4.5.6"
+  val ScalametaVersion = "4.5.9"
 
   val catsDependencies = Seq(
     "org.typelevel" %% "cats-core" % CatsVersion,
