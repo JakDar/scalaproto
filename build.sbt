@@ -1,6 +1,6 @@
 name := "scalaproto"
 
-scalaVersion := "3.1.2"
+scalaVersion := "3.1.3"
 
 version := "0.4"
 lazy val `scalaproto` = (project in file("."))
