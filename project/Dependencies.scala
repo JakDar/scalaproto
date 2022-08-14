@@ -4,7 +4,7 @@ object Dependencies {
   val CatsVersion      = "2.8.0"
   val MouseVersion     = "1.1.0"
   val GuavaVersion     = "31.1-jre"
-  val ScalametaVersion = "4.5.9"
+  val ScalametaVersion = "4.5.12"
 
   val catsDependencies = Seq(
     "org.typelevel" %% "cats-core" % CatsVersion,
