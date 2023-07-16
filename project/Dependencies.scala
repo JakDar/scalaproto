@@ -12,11 +12,13 @@ object Dependencies {
   )
 
   private val miscDependencies = Seq(
-    "org.typelevel"   %% "cats-parse" % CatsParseVersion,
-    "com.google.guava" % "guava"      % GuavaVersion,
-    "org.scalameta"   %% "scalameta"  % ScalametaVersion cross CrossVersion.for3Use2_13,
-    "com.lihaoyi"     %% "ujson"      % "2.0.0" cross CrossVersion.for3Use2_13,
-    "com.lihaoyi"     %% "pprint"     % "0.7.3" cross CrossVersion.for3Use2_13,
+    "org.typelevel"    %% "cats-parse"      % CatsParseVersion,
+    "com.google.guava"  % "guava"           % GuavaVersion,
+    "org.scalameta"    %% "scalameta"       % ScalametaVersion cross CrossVersion.for3Use2_13,
+    "com.lihaoyi"      %% "ujson"           % "2.0.0" cross CrossVersion.for3Use2_13,
+    "com.lihaoyi"      %% "pprint"          % "0.7.3" cross CrossVersion.for3Use2_13,
+    "com.squareup.wire" % "wire-schema-jvm" % "4.4.2",
+"com.github.os72" % "protobuf-dynamic" % "1.0.1"
   )
 
   private val testDependencies = Seq(
