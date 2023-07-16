@@ -23,12 +23,12 @@ object Scala2ToCommon extends ToCommon[Stat] {
 
   def classToCommon(t: Defn.Class): CommonAst.ClassAst =
     t match {
-      case Defn.Class(_, name, _, constructor, _) =>
+      case cls: Defn.Class =>
         val argLists = NonEmptyList
-          .fromList(constructor.paramss)
+          .fromList(cls.ctor.paramClauses.map(_.values).toList)
           .get
           .map(params => CommonAst.Fields(params.map(p => (CommonAst.Identifier(p.name.value), TypeConversion.typeToAst(p.decltpe.get)))))
-        CommonAst.ClassAst(id = CommonAst.Identifier(name.value), argLists = argLists, parents = Nil) // TODO:bcm  fix parents
+        CommonAst.ClassAst(id = CommonAst.Identifier(cls.name.value), argLists = argLists, parents = Nil) // TODO:bcm  fix parents
     }
 
   def objectToAst(o: Defn.Object): List[parser.Ast.ObjectAst] = {
@@ -57,8 +57,8 @@ object Scala2ToCommon extends ToCommon[Stat] {
     private def basicTypeToAst(p: Type): CommonAst.TypeIdentifier = {
 
       p match {
-        case Type.Apply(prent, internal) =>
-          val outer = basicTypeToAst(prent)
+        case ap: Type.Apply =>
+          val outer = basicTypeToAst(ap.tpe)
           if (!outer.isSingleType || !outer.isInstanceOf[CommonAst.CustomSimpleTypeIdentifier]) {
             throw new IllegalArgumentException("Expected outer to be singletype")
           }
@@ -68,7 +68,7 @@ object Scala2ToCommon extends ToCommon[Stat] {
           CommonAst.CustomHigherTypeIdentifer(
             outerPackagePath = o.packagePath,
             outer = o.id,
-            inner = NonEmptyList.fromListUnsafe(internal.map(basicTypeToAst(_))),
+            inner = NonEmptyList.fromListUnsafe(ap.argClause.map(basicTypeToAst(_))),
           )
 
         case Type.Select(ref, name) =>

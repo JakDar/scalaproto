@@ -7,7 +7,7 @@ import com.google.common.base.CaseFormat
 object Scala2FromCommon extends FromCommon[Stat] {
   val emptyTemplate: Template     =
     Template(early = List(), inits = List(), self = Self(name = Name(""), decltpe = None), stats = List(), derives = List())
-  val noConstructor: Ctor.Primary = Ctor.Primary(mods = Nil, name = Name(""), paramss = Nil)
+  val noConstructor: Ctor.Primary = Ctor.Primary(mods = Nil, name = Name(""), paramClauses = Nil)
 
   override def fromCommon(ast: Seq[Ast.AstEntity]): Seq[Stat] = ast.flatMap {
     case c: Ast.ClassAst  => classToScala(c) :: Nil
@@ -21,12 +21,12 @@ object Scala2FromCommon extends FromCommon[Stat] {
       }
     )
     val templ   = emptyTemplate.copy(inits = clazz.parents.collect { case Ast.CustomSimpleTypeIdentifier(packagePath, id) =>
-      Init(tpe = foldPath(packagePath, id), name = Name(""), argss = Nil)
+      Init(tpe = foldPath(packagePath, id), name = Name(""), argClauses = Nil)
     // NOTE: ignoring higher type id for now
     })
 
-    val ctor = Ctor.Primary(mods = Nil, name = Name(""), paramss = paramss)
-    Defn.Class(mods = List(Mod.Case()), name = Type.Name(clazz.id.value), tparams = Nil, ctor = ctor, templ = templ)
+    val ctor = Ctor.Primary(mods = Nil, name = Name(""), paramClauses = paramss)
+    Defn.Class(mods = List(Mod.Case()), name = Type.Name(clazz.id.value), tparamClause = Nil, ctor = ctor, templ = templ)
   }
 
   private def typeIdentifierToScala(t: Ast.TypeIdentifier): Type = {
@@ -46,11 +46,11 @@ object Scala2FromCommon extends FromCommon[Stat] {
       case CustomHigherTypeIdentifer(outerPackagePath, outer, inner) =>
         val tpe = foldPath(outerPackagePath, outer)
 
-        Type.Apply(tpe = tpe, args = inner.toList.map(typeIdentifierToScala))
+        Type.Apply(tpe = tpe, argClause = inner.toList.map(typeIdentifierToScala))
       case OptionType(inner)                                         =>
-        Type.Apply(tpe = Type.Name("Option"), args = List(typeIdentifierToScala(inner)))
+        Type.Apply(tpe = Type.Name("Option"), argClause = List(typeIdentifierToScala(inner)))
       case ArrayType(inner)                                          =>
-        Type.Apply(tpe = Type.Name("List"), args = List(typeIdentifierToScala(inner)))
+        Type.Apply(tpe = Type.Name("List"), argClause = List(typeIdentifierToScala(inner)))
 
     }
   }
@@ -67,7 +67,8 @@ object Scala2FromCommon extends FromCommon[Stat] {
   }
 
   private def enumToScala(objCommon: Ast.ObjectAst): List[Stat] = {
-    val sealedTrait = Defn.Trait(mods = List(Mod.Sealed()), name = Type.Name(objCommon.id.value), Nil, ctor = noConstructor, templ = emptyTemplate)
+    val sealedTrait =
+      Defn.Trait(mods = List(Mod.Sealed()), name = Type.Name(objCommon.id.value), tparamClause = Nil, ctor = noConstructor, templ = emptyTemplate)
 
     def fixCasing(s: String) = // HACK: for changing enum casing from proto to scala
       if (s.filter(_.isLetter).forall(_.isUpper)) {
@@ -82,7 +83,7 @@ object Scala2FromCommon extends FromCommon[Stat] {
     val innerEnums = objCommon.enumEntries
       .flatMap {
         case Right(enumValue) =>
-          val extendsTemplate = emptyTemplate.copy(inits = List(Init(tpe = Type.Name(objCommon.id.value), name = Name(""), argss = Nil)))
+          val extendsTemplate = emptyTemplate.copy(inits = List(Init(tpe = Type.Name(objCommon.id.value), name = Name(""), argClauses = Nil)))
           List(Defn.Object(List(Mod.Case()), name = Term.Name(fixCasing(enumValue.id.value)), templ = extendsTemplate))
         case Left(clazz)      => (innerWithExtends _).andThen((fromCommon _).compose(List(_)))(clazz)
       }

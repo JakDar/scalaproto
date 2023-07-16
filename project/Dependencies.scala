@@ -4,7 +4,7 @@ object Dependencies {
   val CatsVersion      = "2.9.0"
   val MouseVersion     = "1.2.1"
   val GuavaVersion     = "31.1-jre"
-  val ScalametaVersion = "4.5.9"
+  val ScalametaVersion = "4.8.5"
 
   val catsDependencies = Seq(
     "org.typelevel" %% "cats-core" % CatsVersion,
@@ -15,7 +15,7 @@ object Dependencies {
     "org.typelevel"   %% "cats-parse" % CatsParseVersion,
     "com.google.guava" % "guava"      % GuavaVersion,
     "org.scalameta"   %% "scalameta"  % ScalametaVersion cross CrossVersion.for3Use2_13,
-    "com.lihaoyi"     %% "ujson"      % "2.0.0" cross CrossVersion.for3Use2_13,
+    "com.lihaoyi"     %% "ujson"      % "3.1.2" cross CrossVersion.for3Use2_13,
     "com.lihaoyi"     %% "pprint"     % "0.8.1" cross CrossVersion.for3Use2_13,
   )
 
