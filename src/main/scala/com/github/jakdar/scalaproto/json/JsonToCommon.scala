@@ -52,7 +52,7 @@ object JsonToCommon extends ToCommon[ujson.Obj] {
 
     case ujson.Obj(value) =>
       val objContent = value.map { case (k, v) =>
-        val (vType, nestedEntites: List[Ast.ClassAst]) = innerToCommon(v, rootName + StringUtils.titleCase(k))
+        val (vType, nestedEntites) = innerToCommon(v, rootName + StringUtils.titleCase(k))
         val id                                         = Ast.Identifier(k)
         (id, vType, nestedEntites)
       }
